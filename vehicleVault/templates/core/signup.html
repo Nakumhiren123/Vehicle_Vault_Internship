@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/signup.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="signup-wrapper">
+
+    <div class="signup-card">
+
+        <h2 class="brand-title">🚗 VehicleVault</h2>
+        <p class="subtitle">Create your account</p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Email -->
+            <div class="form-group">
+                <label>Email</label>
+                {{ form.email }}
+            </div>
+
+            <!-- Role -->
+            <div class="form-group">
+                <label>Role</label>
+                {{ form.role }}
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label>Password</label>
+                {{ form.password1 }}
+            </div>
+
+            <!-- Password Conditions Box -->
+            <div class="password-help">
+                <strong>🔒 Password must contain:</strong>
+                {{ form.password1.help_text }}
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+                <label>Confirm Password</label>
+                {{ form.password2 }}
+            </div>
+
+            <button type="submit" class="signup-btn">
+                Signup
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% comment %} <h1>Admin Dashboard</h1>
+<p>{{request.user}}</p> {% endcomment %}
+
+
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block navbar %}
+    {% include 'includes/admin_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h1>Admin Dashboard</h1>
+
+    <p>Welcome: {{ request.user.email }}</p>
+
+</div>
+
+{% endblock %}
