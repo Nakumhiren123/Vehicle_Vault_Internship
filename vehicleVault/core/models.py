@@ -33,11 +33,19 @@ class User(AbstractBaseUser):
         return self.is_admin
 
     email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=50, null=True, blank=True)
+    last_name = models.CharField(max_length=50, null=True, blank=True)
+    GENDER_CHOICES = (
+        ('male','Male'),
+        ('female','Female'),
+    )
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
     role_choices = (
         ('admin', 'Admin'),
         ('user', 'User'),
     )
-    role = models.CharField(max_length=10, choices=role_choices, default='user')
+
+    role = models.CharField(max_length=10, choices=role_choices)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)

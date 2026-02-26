@@ -1,0 +1,43 @@
+.footer {
+
+    background-color: #212529;
+
+    color: white;
+
+    padding: 15px 30px;
+
+    position: fixed;
+
+    bottom: 0;
+
+    width: 100%;
+
+}
+
+.footer-container {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+}
+
+.footer a {
+
+    color: #adb5bd;
+
+    margin-left: 15px;
+
+    text-decoration: none;
+
+}
+
+.footer a:hover {
+
+    color: white;
+
+}

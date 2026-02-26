@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% comment %} <h1>Admin Dashboard</h1>
+<p>{{request.user}}</p> {% endcomment %}
+
+{% block navbar %}
+    {% include 'compare/admin/admin_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+{% include 'compare/admin/admin_sidebar.html' %}
+
+<div class="main-content">
+
+    <h2> Admin Dashboard</h2>
+
+    <p>Welcome: {{ request.user.email }}</p>
+
+</div>
+
+{% endblock %}
+
+{% comment %} {% block title %}Admin Dashboard{% endblock %}
+
+{% block navbar %}
+    {% include 'compare/admin/admin_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h1>Admin Dashboard</h1>
+    <p>role: {{ request.user.role }}</p>
+    <p>Welcome: {{ request.user.email }}</p>
+
+</div>
+
+{% endblock %} {% endcomment %}

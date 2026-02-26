@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% comment %} <h1>User Dashboard</h1>
+<p>{{request.user}}</p> {% endcomment %}
+
+{% comment %} {% extends 'base.html' %} {% endcomment %}
+
+{% comment %} {% block title %}User Dashboard{% endblock %}
+
+{% block navbar %}
+    {% include 'compare/user/user_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    {% include 'compare/user/user_sidebar.html' %}
+
+    <!-- Main Content -->
+    <div class="dashboard-content">
+
+        <h2>User Dashboard</h2>
+
+        <p>Role: {{ request.user.role }}</p>
+        <p>Welcome: {{ request.user.email }}</p>
+
+    </div>
+
+</div>
+
+{% endblock %} {% endcomment %}
+
+{% comment %} {% extends 'base.html' %} {% endcomment %}
+
+{% block navbar %}
+    {% include 'compare/user/user_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+{% include 'compare/user/user_sidebar.html' %}
+
+<div class="main-content">
+
+    <h2>User Dashboard</h2>
+
+    <p>Welcome: {{ request.user.email }}</p>
+
+</div>
+
+{% endblock %}

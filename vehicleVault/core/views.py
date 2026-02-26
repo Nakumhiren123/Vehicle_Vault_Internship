@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from .forms import UserSignupForm, UserLoginForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 def userSignupView(request):
@@ -25,9 +25,9 @@ def userLoginView(request):
             user = authenticate(request, email=email, password=password)
             if user:
                 login(request, user)
-                if user.role == 'Admin':
+                if user.role == 'admin':
                     return redirect('admin-dashboard')
-                elif user.role == 'User':
+                elif user.role == 'user':
                     return redirect('user-dashboard')
                     
             else:
@@ -35,3 +35,8 @@ def userLoginView(request):
     else:
         form = UserLoginForm()
     return render(request, 'core/login.html', {'form': form})
+
+
+def userLogoutView(request):
+    logout(request)
+    return redirect('login')
