@@ -1,132 +1,205 @@
-/* Center wrapper */
-.signup-wrapper {
-
-    min-height: 100vh;
-
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: flex-start;   /* FIX */
-
-    /* padding-top: 20px;            FIX */
-    padding-bottom: 0px;         /* Add space top & bottom */
-
-    background: linear-gradient(135deg, #667eea, #764ba2);
-
+.auth-container{
+    display:flex;
+    height:100vh;
+    overflow:hidden;
 }
 
-/* Card */
-.signup-card {
-
-    background: white;
-
-    padding: 35px;
-
-    width: 100%;
-    max-width: 420px;
-    /* max-height: 90vh; */
-    /* overflow-y: auto; */
-
-    border-radius: 12px;
-
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-
+.signup-bg{
+    flex:1;
+    background:url('/static/images/yellow-car.jpg') no-repeat center center/cover;
 }
 
-
-/* Title */
-.brand-title {
-
-    text-align: center;
-
-    font-weight: bold;
-
+/* RIGHT SIDE FORM */
+.auth-right.light{
+    flex:1;
+    background:#f5f5f5;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
-/* Subtitle */
-.subtitle {
-
-    text-align: center;
-
-    color: gray;
-
-    margin-bottom: 20px;
-
+.auth-right.light .form-box{
+    width:450px;
 }
 
-/* Form spacing */
-.form-group {
-
-    margin-bottom: 15px;
-
+.auth-right.light h2{
+    margin-bottom:30px;
+    font-size:28px;
 }
 
-/* Inputs */
-.form-control {
-
-    width: 100%;
-
-    padding: 10px;
-
-    border-radius: 8px;
-
-    border: 1px solid #ccc;
-
+.input-group{
+    margin-bottom:18px;
 }
 
-/* Gender radio */
-.gender-group {
-
-    display: flex;
-
-    gap: 20px;
-
+.input-group label{
+    display:block;
+    margin-bottom:6px;
+    font-size:14px;
 }
 
-.radio-label {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 5px;
-
+.auth-right.light input,
+.auth-right.light select{
+    width:100%;
+    padding:12px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    font-size:14px;
 }
 
-/* Password help */
-.password-help {
-
-    font-size: 13px;
-
-    background: #f8f9fa;
-
-    padding: 10px;
-
-    border-radius: 8px;
-
+/* Radio alignment */
+.input-group div{
+    display:flex;
+    gap:15px;
+    align-items:center;
 }
 
-/* Button */
-.signup-btn {
-
-    width: 100%;
-
-    padding: 12px;
-
-    border: none;
-
-    border-radius: 8px;
-
-    background: linear-gradient(135deg, #667eea, #764ba2);
-
-    color: white;
-
-    font-weight: bold;
-
-    margin-top: 10px;
-
-    cursor: pointer;
-
+.primary-btn{
+    width:100%;
+    padding:14px;
+    background:#5a4bff;
+    border:none;
+    color:#fff;
+    font-weight:600;
+    border-radius:6px;
+    margin-top:15px;
+    cursor:pointer;
 }
+
+.primary-btn:hover{
+    background:#4637e6;
+}
+
+/* Gender radio alignment */
+/* Gender field clean alignment */
+/* Hide default radio */
+/* Gender alignment */
+.gender-options{
+    display:flex;
+    gap:30px;
+    margin-top:10px;
+}
+
+.gender-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:15px;
+    cursor:pointer;
+}
+
+/* Style radio button */
+.gender-item input[type="radio"]{
+    width:16px;
+    height:16px;
+    accent-color:#5a4bff; /* modern purple */
+    cursor:pointer;
+}
+
+/* *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+}
+
+.signup-wrapper{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+}
+
+.signup-card{
+    width:500px;
+    padding:40px;
+    background:rgba(255,255,255,0.07);
+    backdrop-filter:blur(20px);
+    border-radius:20px;
+    color:#fff;
+    box-shadow:0 0 50px rgba(0,0,0,0.6);
+    animation:fadeUp 1s ease;
+}
+
+@keyframes fadeUp{
+    from{opacity:0; transform:translateY(40px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+.brand-title{
+    text-align:center;
+    font-size:28px;
+    margin-bottom:5px;
+    letter-spacing:1px;
+}
+
+.subtitle{
+    text-align:center;
+    margin-bottom:30px;
+    color:#ccc;
+}
+
+.form-group{
+    margin-bottom:20px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:6px;
+    font-size:14px;
+}
+
+.form-group input,
+.form-group select{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:none;
+    outline:none;
+    background:rgba(255,255,255,0.15);
+    color:#fff;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+    border:1px solid #00f2ff;
+}
+
+.gender-group{
+    display:flex;
+    gap:20px;
+}
+
+.radio-label{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+}
+
+.password-help{
+    font-size:12px;
+    color:#bbb;
+    margin-bottom:15px;
+}
+
+.signup-btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:30px;
+    background:#00f2ff;
+    color:#000;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.signup-btn:hover{
+    background:#fff;
+    transform:scale(1.05);
+} */

@@ -1,12 +1,34 @@
 from django.shortcuts import render,redirect
 from .forms import UserSignupForm, UserLoginForm
 from django.contrib.auth import authenticate, login, logout
-
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.conf import settings
 # Create your views here.
 def userSignupView(request):
     if request.method == 'POST':
         form = UserSignupForm(request.POST)
         if form.is_valid():
+            email = form.cleaned_data['email']
+            subject = "Welcome to VehicleVault"
+            from_email = settings.EMAIL_HOST_USER
+            to = [email]
+
+            html_content = render_to_string(
+                'emails/welcome_email.html', {'user_email': email}
+
+            )
+
+            text_content = strip_tags(html_content)
+            email_message = EmailMultiAlternatives(
+                subject, text_content, from_email, to
+            )
+
+            email_message.attach_alternative(html_content, "text/html")
+            email_message.attach_file('static/images/red-car.jpg')
+            email_message.send()
+
             form.save()
             return redirect('login')
         else:
@@ -40,3 +62,6 @@ def userLoginView(request):
 def userLogoutView(request):
     logout(request)
     return redirect('login')
+
+def homeView(request):
+    return render(request, 'core/home.html')

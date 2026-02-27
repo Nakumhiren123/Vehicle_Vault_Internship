@@ -1,41 +1,236 @@
-body {
-    background: linear-gradient(135deg,  #667eea, #764ba2);
-    height: 100vh;
+.auth-container{
+    display:flex;
+    height:100vh;
+    overflow:hidden;
 }
 
-.login-container {
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    height: 100vh;
+/* LEFT IMAGE */
+.auth-left{
+    flex:1;
+    background:url('/static/images/red-car.jpg') no-repeat center center/cover;
+    position:relative;
 }
 
-.login-card {
-
-    background: white;
-    padding: 40px;
-    border-radius: 12px;
-
-    width: 100%;
-    max-width: 400px;
-
+.overlay-text{
+    position:absolute;
+    bottom:40px;
+    left:40px;
+    color:#fff;
 }
 
-.login-card input {
-
-    width: 100%;
-    padding: 10px;
-
-    border-radius: 6px;
-    border: 1px solid #ccc;
-
+.overlay-text h1{
+    font-size:38px;
+    margin-bottom:10px;
 }
 
-.login-card button {
-
-    padding: 10px;
-    font-weight: bold;
-
+/* RIGHT PANEL */
+.auth-input{
+    width:100%;
+    padding:14px;
+    background:#1c1c1c;
+    border:1px solid #333;
+    border-radius:6px;
+    color:#fff;
+    font-size:14px;
+    margin-top:6px;
+    transition:0.3s ease;
 }
+
+.auth-input:focus{
+    border:1px solid #ff1e1e;
+    box-shadow:0 0 5px rgba(255,30,30,0.5);
+    outline:none;
+}
+
+.auth-right{
+    flex:1;
+    background:#111;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.form-box{
+    width:420px;
+    color:#fff;
+}
+
+.form-box h2{
+    margin-bottom:35px;
+    font-size:28px;
+    font-weight:600;
+}
+
+.input-group{
+    margin-bottom:25px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:8px;
+    font-size:14px;
+    color:#ccc;
+}
+
+.input-group input{
+    width:100%;
+    padding:14px;
+    background:#1e1e1e;
+    border:1px solid #333;
+    border-radius:6px;
+    color:#fff;
+    font-size:14px;
+}
+
+.input-group input:focus{
+    border:1px solid #ff1e1e;
+    outline:none;
+}
+
+.primary-btn{
+    width:100%;
+    padding:14px;
+    background:#ff1e1e;
+    border:none;
+    color:#fff;
+    font-weight:600;
+    border-radius:6px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+.primary-btn:hover{
+    background:#e60000;
+}
+
+.bottom-links{
+    margin-top:20px;
+    text-align:center;
+}
+.p{
+    color: #fff;;
+    font-size:14px;
+    text-align: center;
+}
+.secondary-btn{
+    display:block;
+    width:100%;
+    text-align:center;
+    margin-top:20px;
+    padding:12px;
+    background-color: #f7f6fa;
+    border:1px solid #ff1e1e;
+    color:#3313b3;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:500;
+    transition:0.3s ease;
+}
+
+.secondary-btn:hover{
+    color:#fff;
+}
+/* *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+}
+
+body{
+    height:100vh;
+    background:url('/static/images/luxury-car.jpg') no-repeat center center/cover;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.login-container{
+    width:100%;
+    height:100vh;
+    background:rgba(0,0,0,0.7);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.login-box{
+    width:400px;
+    padding:40px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+    border-radius:15px;
+    color:#fff;
+    box-shadow:0 0 40px rgba(0,0,0,0.6);
+    animation:fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(30px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+.login-box h2{
+    text-align:center;
+    margin-bottom:30px;
+    letter-spacing:1px;
+}
+
+.input-box{
+    position:relative;
+    margin-bottom:25px;
+}
+
+.input-box input{
+    width:100%;
+    padding:12px 40px;
+    background:transparent;
+    border:none;
+    border-bottom:2px solid #fff;
+    outline:none;
+    color:#fff;
+}
+
+.input-box label{
+    position:absolute;
+    left:40px;
+    top:12px;
+    transition:0.3s;
+}
+
+.input-box input:focus + label,
+.input-box input:valid + label{
+    top:-8px;
+    font-size:12px;
+    color:#00f2ff;
+}
+
+.input-box i{
+    position:absolute;
+    left:10px;
+    top:12px;
+}
+
+.toggle{
+    position:absolute;
+    right:10px;
+    top:12px;
+    cursor:pointer;
+}
+
+.btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:30px;
+    background:#00f2ff;
+    color:#000;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn:hover{
+    background:#fff;
+    transform:scale(1.05);
+} */

@@ -2,7 +2,7 @@
 
 {% comment %} <h1>Admin Dashboard</h1>
 <p>{{request.user}}</p> {% endcomment %}
-
+{% load static %}
 {% block navbar %}
     {% include 'compare/admin/admin_navbar.html' %}
 {% endblock %}
@@ -11,13 +11,127 @@
 
 {% include 'compare/admin/admin_sidebar.html' %}
 
+<style>
+.main-content {
+    min-height: 100vh;
+    padding: 50px;
+    background: 
+        linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)),
+        url("{% static 'images/car-bg.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Welcome Section */
+.welcome-box {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.welcome-box h2 {
+    font-weight: 600;
+    color: #222;
+}
+
+/* Stats Section */
+.stats {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.stat-card {
+    flex: 1;
+    min-width: 220px;
+    max-width: 250px;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-8px);
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #0077b6;
+    margin-top: 10px;
+}
+
+/* Chart Section */
+.chart-box {
+    margin-top: 60px;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+</style>
+
 <div class="main-content">
 
-    <h2> Admin Dashboard</h2>
+    <div class="welcome-box">
+        <h2>Welcome, {{ request.user.first_name }} {{request.user.last_name}}</h2>
+        <p>Explore your vehicle insights below</p>
+    </div>
 
-    <p>Welcome: {{ request.user.email }}</p>
+    <!-- Stats Cards -->
+    <div class="stats">
+        <div class="stat-card">
+            Cars Viewed
+            <div class="stat-number">120</div>
+        </div>
+
+        <div class="stat-card">
+            Saved Vehicles
+            <div class="stat-number">15</div>
+        </div>
+
+        <div class="stat-card">
+            Offers Available
+            <div class="stat-number">8</div>
+        </div>
+    </div>
+
+    <!-- Interactive Chart -->
+    <div class="chart-box">
+        <h4>Vehicle Price Comparison (Lakhs)</h4>
+        <canvas id="priceChart"></canvas>
+    </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+new Chart(document.getElementById('priceChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Tesla', 'BMW', 'Audi', 'Kia'],
+        datasets: [{
+            label: 'Price',
+            data: [60, 55, 50, 45],
+            backgroundColor: [
+                '#48cae4',
+                '#90e0ef',
+                '#00b4d8',
+                '#0096c7'
+            ]
+        }]
+    },
+    options: {
+        responsive: true
+    }
+});
+</script>
 
 {% endblock %}
 

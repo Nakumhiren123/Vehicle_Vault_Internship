@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VehicleVault | Secure Vehicle Management</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo"> VehicleVault</div>
+    <ul class="nav-links">
+        <li><a href="{% url "home" %}">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="{% url "login" %}">Login</a></li>
+        <li><a href="{% url "signup" %}" class="btn">Sign Up</a></li>
+    </ul>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Secure & Smart Vehicle Comparison System</h1>
+        <p>Compare vehicles, track features, and access everything securely in one place.</p>
+        <a href="{% url "signup" %}" class="hero-btn">Get Started</a>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+    <h2>Our Features</h2>
+    <div class="feature-container">
+        <div class="feature-box">
+            <i class="fa-solid fa-car"></i>
+            <h3>Vehicle Features</h3>
+            <p>Store and manage complete vehicle information securely.</p>
+        </div>
+
+        <div class="feature-box">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h3>Secure Access</h3>
+            <p>Authentication system with admin & user dashboards.</p>
+        </div>
+
+        <div class="feature-box">
+            <i class="fa-solid fa-chart-line"></i>
+            <h3>Analytics</h3>
+            <p>Track vehicle data and generate smart insights.</p>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works" id="how">
+    <h2>How It Works</h2>
+    <div class="steps">
+        <div class="step">
+            <span>1</span>
+            <p>Create Account</p>
+        </div>
+        <div class="step">
+            <span>2</span>
+            <p>Add Vehicle Details</p>
+        </div>
+        <div class="step">
+            <span>3</span>
+            <p>Compare & Track</p>
+        </div>
+    </div>
+</section>
+
+<!-- Call To Action -->
+<section class="cta">
+    <h2>Start Managing Your Vehicles Today!</h2>
+    <a href="{% url "signup" %}" class="cta-btn">Create Free Account</a>
+</section>
+
+<!-- Footer -->
+<footer>
+    <p>© 2026 VehicleVault | All Rights Reserved</p>
+</footer>
+
+</body>
+</html>

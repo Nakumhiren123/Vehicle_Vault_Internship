@@ -1,5 +1,84 @@
-{% extends 'base.html' %}
+{% comment %} {% extends 'base.html' %} {% endcomment %}
 {% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/signup.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="auth-container">
+
+    <!-- LEFT IMAGE -->
+    <div class="auth-left signup-bg"></div>
+
+    <!-- RIGHT FORM -->
+    <div class="auth-right light">
+
+        <div class="form-box">
+
+            <h2>Create Account</h2>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="input-group">
+                    <label>First Name</label>
+                    {{ form.first_name }}
+                </div>
+
+                <div class="input-group">
+                    <label>Last Name</label>
+                    {{ form.last_name }}
+                </div>
+
+                <div class="input-group">
+                    <label>Gender</label>
+                    <div class="gender-options">
+                        {% for radio in form.gender %}
+                            <label class="gender-item">{{ radio.tag }} 
+                                <span>{{ radio.choice_label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Email</label>
+                    {{ form.email }}
+                </div>
+
+                <div class="input-group">
+                    <label>Role</label>
+                    {{ form.role }}
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    {{ form.password1 }}
+                </div>
+
+                <div class="input-group">
+                    <label>Confirm Password</label>
+                    {{ form.password2 }}
+                </div>
+
+                <button type="submit" class="primary-btn">
+                    Create Account
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% comment %} {% extends 'base.html' %} {% endcomment %}
+{% comment %} {% load static %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/signup.css' %}">
@@ -78,4 +157,4 @@
 
 </div>
 
-{% endblock %}
+{% endblock %} {% endcomment %}

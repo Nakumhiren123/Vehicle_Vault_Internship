@@ -1,4 +1,60 @@
+{% comment %} {% extends 'base.html' %} {% endcomment %}
 {% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="auth-container">
+
+    <!-- LEFT IMAGE SECTION -->
+    <div class="auth-left">
+        <div class="overlay-text">
+            <h1>Journey Beyond</h1>
+            <p>Access your VehicleVault dashboard</p>
+        </div>
+    </div>
+
+    <!-- RIGHT FORM SECTION -->
+    <div class="auth-right">
+        <div class="form-box">
+            <h2>PLEASE LOG IN</h2>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="input-group">
+                    <label>Email</label>
+                    {{ form.email }}
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    {{ form.password }}
+                </div>
+
+                <button type="submit" class="primary-btn">
+                    LOG IN
+                </button>
+                <p class="p">Don't have an account?</p>
+                <button class="secondary-btn">
+                    
+                     <a href="{% url 'signup' %}">Sign up</a>
+                </button>
+                    {% comment %} <a href="{% url 'signup' %}">Sign up</a> {% endcomment %}
+                {% comment %} </div> {% endcomment %}
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% comment %} {% load static %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
@@ -8,7 +64,8 @@
 
     <div class="login-card">
 
-        <h2>Login</h2>
+        <h2>Welcome Back</h2>
+        <p style="text-align:center; margin-bottom:25px;">Login to access your dashboard</p>
 
         <form method="post">
 
@@ -25,4 +82,4 @@
     </div>
 
 </div>
-{% endblock content %}
+{% endblock content %} {% endcomment %}

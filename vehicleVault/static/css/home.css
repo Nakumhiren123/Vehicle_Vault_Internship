@@ -1,0 +1,193 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: #f4f7fb;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    background: #0d1b2a;
+    color: white;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #00b4d8;
+}
+
+.btn {
+    background: #00b4d8;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+/* Hero */
+.hero {
+    height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+    url("https://images.unsplash.com/photo-1503376780353-7e6692767b70") no-repeat center center/cover;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+.hero-content {
+   transform: translateY(-20px);
+}
+
+.hero-content h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+.hero-content p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.hero-btn {
+    display: inline-block;
+    background: #00b4d8;
+    padding: 14px 30px;
+    font-size: 16px;
+    text-decoration: none;
+    color: white;
+    border-radius: 6px;
+    transition: 0.3s ease;
+}
+
+.hero-btn:hover {
+    background: #0077b6;
+}
+
+/* Features */
+.features {
+    padding: 70px 50px;
+    text-align: center;
+}
+
+.feature-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.feature-box {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 280px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.feature-box:hover {
+    transform: translateY(-8px);
+}
+
+.feature-box i {
+    font-size: 30px;
+    color: #0077b6;
+    margin-bottom: 15px;
+}
+
+/* How It Works */
+.how-it-works {
+    background: #e9f5ff;
+    padding: 60px;
+    text-align: center;
+}
+
+.steps {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.step span {
+    display: block;
+    font-size: 28px;
+    font-weight: bold;
+    color: #0077b6;
+}
+
+/* CTA */
+.cta {
+    padding: 100px 20px;
+    text-align: center;
+    background: #0d1b2a;
+    color: white;
+}
+.cta h2 {
+    font-size: 32px;
+    margin-bottom: 30px;   /* 👈 Adds space between text & button */
+    font-weight: 600;
+}
+
+.cta-btn {
+    display: inline-block;
+    margin-top: 10px;
+    background: #00b4d8;
+    padding: 16px 40px;
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: none;
+    color: white;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.cta-btn:hover {
+    background: #0077b6;
+    transform: translateY(-3px);
+}
+
+/* Footer */
+footer {
+    padding: 15px;
+    text-align: center;
+    background: #000;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .feature-container,
+    .steps {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+    }
+}
