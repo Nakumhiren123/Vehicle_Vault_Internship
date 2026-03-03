@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5 mb-5 pb-5">
+
+    <h2 class="mb-4 text-center">Explore Cars</h2>
+
+    <form method="GET" action="{% url 'compare_cars' %}">
+        <div class="row">
+
+            {% for car in cars %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow h-100 position-relative">
+
+                    <!-- Compare Checkbox -->
+                    <div class="form-check text-end p-2">
+                        <input class="form-check-input"
+                            type="checkbox"
+                            name="cars"
+                            value="{{ car.id }}">
+                    </div>
+
+                    {% if car.carImage %}
+                        <img src="{{ car.carImage.url }}"
+                            class="card-img-top"
+                            style="height:200px; object-fit:cover;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/500x300"
+                            class="card-img-top"
+                            style="height:200px; object-fit:cover;">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ car.carName }}</h5>
+                        <p class="card-text">
+                            Brand: {{ car.brand }} <br>
+                            Price: ₹ {{ car.price }} <br>
+                            Fuel: {{ car.fuelType }} <br>
+                            Mileage: {{ car.mileage }} km/l
+                        </p>
+
+                        <a href="{% url 'car_detail' car.id %}"
+                        class="btn btn-primary w-100">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit">
+                TEST BUTTON
+            </button>
+        </div>
+
+    </form>
+
+</div>
+<script>
+console.log("Script loaded");
+</script>
+{% endblock %}

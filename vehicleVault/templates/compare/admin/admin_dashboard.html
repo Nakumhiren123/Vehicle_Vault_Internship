@@ -1,8 +1,154 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+    {% include 'compare/admin/admin_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+{% include 'compare/admin/admin_sidebar.html' %}
+
+<style>
+.dashboard-wrapper {
+    padding: 50px;
+    background: #f5f7fa;
+    min-height: 100vh;
+}
+
+.module-card {
+    background: white;
+    border-radius: 18px;
+    padding: 35px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    transition: 0.3s ease;
+    cursor: pointer;
+    height: 100%;
+}
+
+.module-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+}
+
+.module-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.module-count {
+    font-size: 36px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.module-sub {
+    color: #888;
+    font-size: 14px;
+}
+
+.module-action {
+    margin-top: 20px;
+    font-weight: 500;
+    color: #007bff;
+}
+</style>
+
+<div class="dashboard-wrapper">
+
+    <h2 class="mb-5">Admin Command Center</h2>
+
+    <div class="row g-4">
+
+        <!-- VEHICLE MODULE -->
+        <div class="col-md-6 col-lg-3">
+            <a href="{% url 'car_list' %}" style="text-decoration:none;">
+                <div class="module-card">
+                    <div class="module-title">Vehicle Management</div>
+                    <div class="module-count">{{ total_cars }}</div>
+                    <div class="module-sub">
+                        Active: {{ active_cars }}
+                    </div>
+                    <div class="module-action">
+                        Manage Inventory →
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- USER MODULE -->
+        <div class="col-md-6 col-lg-3">
+            <a href="{% url 'admin_users' %}" style="text-decoration:none;">
+                <div class="module-card">
+                    <div class="module-title">User Management</div>
+                    <div class="module-count">{{ total_users }}</div>
+                    <div class="module-sub">
+                        Registered Users
+                    </div>
+                    <div class="module-action">
+                        View & Manage Users →
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- REVIEW MODULE -->
+        <div class="col-md-6 col-lg-3">
+            <a href="{% url 'admin_reviews' %}" style="text-decoration:none;">
+                <div class="module-card">
+                    <div class="module-title">Review Moderation</div>
+                    <div class="module-count">{{ total_reviews }}</div>
+                    <div class="module-sub">
+                        User Submitted Reviews
+                    </div>
+                    <div class="module-action">
+                        Moderate Reviews →
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- COMPARISON MODULE -->
+        <div class="col-md-6 col-lg-3">
+            <a href="{% url 'admin_comparisons' %}" style="text-decoration:none;">
+                <div class="module-card">
+                    <div class="module-title">Comparison Analytics</div>
+                    <div class="module-count">{{ total_comparisons }}</div>
+                    <div class="module-sub">
+                        Total Comparisons
+                    </div>
+                    <div class="module-action">
+                        View Comparison Logs →
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <a href="{% url 'admin_analytics' %}" style="text-decoration:none;">
+                <div class="module-card">
+                    <div class="module-title">Advanced Analytics</div>
+                    <div class="module-count">Insights</div>
+                    <div class="module-sub">
+                        Platform Growth & Trends
+                    </div>
+                    <div class="module-action">
+                        View Analytics →
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
 
 {% comment %} <h1>Admin Dashboard</h1>
 <p>{{request.user}}</p> {% endcomment %}
-{% load static %}
+{% comment %} {% load static %}
 {% block navbar %}
     {% include 'compare/admin/admin_navbar.html' %}
 {% endblock %}
@@ -85,17 +231,17 @@
 
     <!-- Stats Cards -->
     <div class="stats">
-        <div class="stat-card">
+        <div class="stat-card fade-in hover-lift">
             Cars Viewed
             <div class="stat-number">120</div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card fade-in hover-lift">
             Saved Vehicles
             <div class="stat-number">15</div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card fade-in hover-lift">
             Offers Available
             <div class="stat-number">8</div>
         </div>
@@ -110,6 +256,27 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const numbers = document.querySelectorAll('.stat-number');
+
+numbers.forEach(num => {
+    let start = 0;
+    let end = parseInt(num.innerText);
+    let duration = 1000;
+    let step = end / (duration / 20);
+
+    function update() {
+        start += step;
+        if (start < end) {
+            num.innerText = Math.floor(start);
+            setTimeout(update, 20);
+        } else {
+            num.innerText = end;
+        }
+    }
+    update();
+});
+</script>
 
 <script>
 new Chart(document.getElementById('priceChart'), {
@@ -133,7 +300,7 @@ new Chart(document.getElementById('priceChart'), {
 });
 </script>
 
-{% endblock %}
+{% endblock %} {% endcomment %}
 
 {% comment %} {% block title %}Admin Dashboard{% endblock %}
 

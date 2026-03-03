@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block navbar %}
+    {% include 'compare/admin/admin_navbar.html' %}
+{% endblock %}
+{% block content %}
+{% include 'compare/admin/admin_sidebar.html' %}
+
+<div class="container mt-5">
+
+    <h2>Comparison Logs</h2>
+
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Car 1</th>
+                <th>Car 2</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comp in comparisons %}
+            <tr>
+                <td>{{ comp.user.email }}</td>
+                <td>{{ comp.car1.carName }}</td>
+                <td>{{ comp.car2.carName }}</td>
+                <td>{{ comp.comparedAt }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

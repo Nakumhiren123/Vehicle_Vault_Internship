@@ -1,43 +1,29 @@
 .footer {
-
-    background-color: #212529;
-
-    color: white;
-
-    padding: 15px 30px;
-
-    position: fixed;
-
-    bottom: 0;
-
+    background: #111;
+    color: #ccc;
+    padding: 20px 40px;
     width: 100%;
-
 }
 
 .footer-container {
-
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
     flex-wrap: wrap;
-
 }
 
-.footer a {
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
 
-    color: #adb5bd;
-
-    margin-left: 15px;
-
+.footer-links a {
+    color: #ccc;
     text-decoration: none;
-
+    font-size: 14px;
 }
 
-.footer a:hover {
-
-    color: white;
-
+.footer-links a:hover {
+    color: #0d6efd;
 }

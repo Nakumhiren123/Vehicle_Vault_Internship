@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block navbar %}
+    {% include 'compare/admin/admin_navbar.html' %}
+{% endblock %}
+{% block content %}
+{% include 'compare/admin/admin_sidebar.html' %}
+
+<div class="container mt-5">
+
+    <h2>Review Moderation</h2>
+
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Car</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for review in reviews %}
+            <tr>
+                <td>{{ review.user.email }}</td>
+                <td>{{ review.car.carName }}</td>
+                <td>{{ review.rating }}</td>
+                <td>{{ review.comment }}</td>
+                <td>{{ review.createdAt }}</td>
+                <td>
+                    <a href="{% url 'delete_review' review.id %}"
+                       class="btn btn-danger btn-sm">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

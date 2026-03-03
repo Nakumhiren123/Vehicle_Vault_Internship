@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5 mb-5 pb-5">
+
+    <div class="card shadow-lg border-0 rounded-4">
+
+        <div class="card-header bg-dark text-white rounded-top-4 d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                {% if form.instance.pk %}
+                    ✏ Edit Car
+                {% else %}
+                    ➕ Add Car
+                {% endif %}
+            </h4>
+            <a href="{% url 'car_list' %}" class="btn btn-outline-light btn-sm">
+                Back
+            </a>
+        </div>
+
+        <div class="card-body p-4">
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <!-- LEFT SIDE -->
+                    <div class="col-md-6">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Car Name</label>
+                            {{ form.carName }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Brand</label>
+                            {{ form.brand }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Price (₹)</label>
+                            {{ form.price }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Fuel Type</label>
+                            {{ form.fuelType }}
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT SIDE -->
+                    <div class="col-md-6">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Transmission</label>
+                            {{ form.transmission }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Mileage (km/l)</label>
+                            {{ form.mileage }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Launch Year</label>
+                            {{ form.launchYear }}
+                        </div>
+
+                        <div class="form-check mb-3">
+                            {{ form.status }}
+                            <label class="form-check-label fw-semibold">
+                                Active
+                            </label>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- IMAGE SECTION -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">Car Image</label>
+                        {{ form.carImage }}
+
+                    </div>
+
+                    <div class="col-md-6 text-center">
+
+                        {% if form.instance.carImage %}
+                            <img src="{{ form.instance.carImage.url }}"
+                                 class="img-fluid rounded shadow"
+                                 style="max-height: 200px;">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x200"
+                                 class="img-fluid rounded shadow">
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="mt-4 d-flex justify-content-end gap-2">
+
+                    <button type="button"
+                            class="btn btn-outline-danger"
+                            onclick="clearForm()">
+                        🗑 Clear All
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+                        💾 Save
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+function clearForm() {
+    const form = document.querySelector("form");
+    form.reset();
+
+    // Remove image preview if needed
+    const img = document.querySelector("img");
+    if (img) {
+        img.src = "https://via.placeholder.com/300x200";
+    }
+}
+</script>
+
+{% endblock %}

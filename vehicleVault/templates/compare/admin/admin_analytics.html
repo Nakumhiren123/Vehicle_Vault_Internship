@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block navbar %}
+    {% include 'compare/admin/admin_navbar.html' %}
+{% endblock %}
+{% block content %}
+{% include 'compare/admin/admin_sidebar.html' %}
+
+<div class="container mt-5">
+    <h2>Platform Analytics</h2>
+
+    <div class="row mt-4">
+
+        <div class="col-md-6">
+            <div class="card p-4 shadow-sm">
+                <h5>Monthly Comparisons</h5>
+                <canvas id="comparisonChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-4 shadow-sm">
+                <h5>Monthly User Registrations</h5>
+                <canvas id="userChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6 mt-4">
+            <div class="card p-4 shadow-sm">
+                <h5>Top Reviewed Cars</h5>
+                <canvas id="reviewChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6 mt-4">
+            <div class="card p-4 shadow-sm">
+                <h5>Fuel Type Distribution</h5>
+                <canvas id="fuelChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+new Chart(document.getElementById('comparisonChart'), {
+    type: 'line',
+    data: {
+        labels: {{ comp_labels|safe }},
+        datasets: [{
+            label: 'Comparisons',
+            data: {{ comp_data|safe }},
+            borderColor: '#007bff',
+            fill: false
+        }]
+    }
+});
+
+new Chart(document.getElementById('userChart'), {
+    type: 'line',
+    data: {
+        labels: {{ user_labels|safe }},
+        datasets: [{
+            label: 'Users',
+            data: {{ user_data|safe }},
+            borderColor: '#28a745',
+            fill: false
+        }]
+    }
+});
+
+new Chart(document.getElementById('reviewChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ review_labels|safe }},
+        datasets: [{
+            label: 'Reviews',
+            data: {{ review_data|safe }},
+            backgroundColor: '#ffc107'
+        }]
+    }
+});
+
+new Chart(document.getElementById('fuelChart'), {
+    type: 'pie',
+    data: {
+        labels: {{ fuel_labels|safe }},
+        datasets: [{
+            data: {{ fuel_data|safe }},
+        }]
+    }
+});
+
+</script>
+
+{% endblock %}
