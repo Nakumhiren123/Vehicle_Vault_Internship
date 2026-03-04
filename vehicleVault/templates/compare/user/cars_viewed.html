@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<h2>Cars You Viewed</h2>
+
+{% for i in interactions %}
+
+<div class="card mb-3 p-3">
+
+<img src="{{ i.car.carImage.url }}" width="200">
+
+<h5>{{ i.car.carName }}</h5>
+
+<p>₹ {{ i.car.price }}</p>
+
+</div>
+
+{% empty %}
+
+<p>No cars viewed yet.</p>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

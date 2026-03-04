@@ -8,9 +8,11 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Avg, Count
 from core.models import User
 from django.db.models.functions import TruncMonth
-from django.utils.timezone import now
+from django.utils import timezone 
 from datetime import timedelta
-
+from .models import UserInteraction
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 # @login_required(login_url='login')
 @role_required(allowed_roles=['admin'])
@@ -176,11 +178,19 @@ def admin_analytics_view(request):
 # @login_required(login_url='login')
 @role_required(allowed_roles=['user'])
 def userDashboardView(request):
+    recent_cars = Car.objects.filter(status=True)[:4]
+
+    context = {
+        "recent_cars": recent_cars,
+        "cars_viewed": 5,
+        "comparisons": 2,
+        "reviews": 3
+    }
     return render(request, 'compare/user/user_dashboard.html')
 
 
 
-from django.core.paginator import Paginator
+
 
 @role_required(allowed_roles=['admin'])
 def car_list(request):
@@ -206,10 +216,25 @@ def car_list(request):
         'search_query': search_query
     })
 
+# def public_car_list(request):
+#     cars = Car.objects.filter(status=True).order_by('id')
+#     return render(request, 'compare/user/car_list.html', {'cars':cars})
 def public_car_list(request):
-    cars = Car.objects.filter(status=True).order_by('id')
-    return render(request, 'compare/user/car_list.html', {'cars':cars})
-
+    search = request.GET.get('search', '').strip()
+    
+    cars = Car.objects.all()
+    
+    if search:
+        cars = cars.filter(
+            Q(carName__icontains=search) |
+            Q(brand__icontains=search)   |
+            Q(fuelType__icontains=search)
+        )
+    
+    return render(request, 'compare/user/car_list.html', {
+        'cars': cars,
+        'search': search,   # pass it back so input stays filled
+    })
 
 @role_required(allowed_roles=['admin'])
 def car_create(request):
@@ -244,10 +269,18 @@ def car_delete(request, pk):
 
 
 
-from django.db.models import Avg
+
 
 def car_detail(request, pk):
+
     car = get_object_or_404(Car, pk=pk)
+    if request.user.is_authenticated:
+        UserInteraction.objects.create(
+            user=request.user,
+            car=car,
+            interactionType="view",
+            interactionDate=timezone.now().date()  # ← this line fixes the error
+        )
     reviews = Review.objects.filter(car=car).order_by('-createdAt')
 
     average_rating = reviews.aggregate(avg=Avg('rating'))['avg']
@@ -307,6 +340,61 @@ def compare_cars(request):
     return render(request, 'compare/user/compare.html', {
         'comparison_data': comparison_data
     })
+
+
+
+@login_required
+def user_cars_viewed(request):
+
+    interactions = UserInteraction.objects.filter(
+        user=request.user,
+        interactionType="view"
+    ).select_related("car")
+
+    context = {
+        "interactions": interactions
+    }
+
+    return render(request, "compare/user/cars_viewed.html", context)
+
+@login_required
+def user_comparisons(request):
+
+    comparisons = Comparison.objects.filter(user=request.user).order_by('-comparedAt')
+
+    context = {
+        "comparisons": comparisons
+    }
+
+    return render(request, "compare/user/user_comparisons.html", context)
+
+# @login_required
+# def user_reviews(request):
+
+#     reviews = Review.objects.filter(user=request.user).order_by('-createdAt')
+
+#     context = {
+#         "reviews": reviews
+#     }
+
+#     return render(request, "compare/user/user_reviews.html", context)
+@login_required
+def user_reviews(request):
+    reviews = Review.objects.filter(user=request.user).order_by('-createdAt')
+    return render(request, 'compare/user/user_reviews.html', {
+        'reviews': reviews,
+    })
+@login_required
+def user_profile(request):
+    cars_viewed  = UserInteraction.objects.filter(user=request.user, interactionType='view').count()
+    comparisons  = Comparison.objects.filter(user=request.user).count()
+    reviews      = Review.objects.filter(user=request.user).count()
+    return render(request, 'compare/user/user_profile.html', {
+        'cars_viewed': cars_viewed,
+        'comparisons': comparisons,
+        'reviews':     reviews,
+    })
+
 
 # ==============================
 # Footer Static Pages

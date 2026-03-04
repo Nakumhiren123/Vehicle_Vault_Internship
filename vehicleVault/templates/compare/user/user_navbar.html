@@ -1,4 +1,182 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ── Override Bootstrap navbar ── */
+  .navbar.bg-primary {
+    background: #ffffff !important;
+    border-bottom: 1.5px solid rgba(0,0,0,0.07) !important;
+    box-shadow: 0 2px 20px rgba(15,23,42,0.06) !important;
+    padding: 10px 28px !important;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ── Hamburger ── */
+  #menu-toggle {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 10px !important;
+    background: #fff0f1 !important;
+    border: 1.5px solid rgba(230,57,70,0.22) !important;
+    color: #e63946 !important;
+    font-size: 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    transition: all 0.25s ease !important;
+    box-shadow: none !important;
+  }
+  #menu-toggle:hover {
+    background: #e63946 !important;
+    color: #fff !important;
+    border-color: #e63946 !important;
+    box-shadow: 0 4px 14px rgba(230,57,70,0.3) !important;
+    transform: scale(1.05);
+  }
+
+  /* ── Brand ── */
+  .navbar .navbar-brand {
+    font-family: 'Bebas Neue', sans-serif !important;
+    font-size: 24px !important;
+    letter-spacing: 3px !important;
+    color: #0f172a !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+  .navbar .navbar-brand::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #e63946; flex-shrink: 0;
+    animation: navDot 2.5s ease-in-out infinite;
+  }
+  @keyframes navDot {
+    0%,100% { box-shadow: 0 0 0 0 rgba(230,57,70,0.4); }
+    50%      { box-shadow: 0 0 0 5px rgba(230,57,70,0); }
+  }
+
+  /* ── Profile dropdown trigger ── */
+  .navbar .dropdown > a {
+    background: #fff0f1 !important;
+    border: 1.5px solid rgba(230,57,70,0.18) !important;
+    border-radius: 12px !important;
+    padding: 7px 14px 7px 8px !important;
+    color: #0f172a !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    transition: all 0.25s ease !important;
+  }
+  .navbar .dropdown > a:hover {
+    border-color: rgba(230,57,70,0.4) !important;
+    box-shadow: 0 4px 16px rgba(230,57,70,0.12) !important;
+    transform: translateY(-1px);
+  }
+  .navbar .dropdown > a img {
+    border: 2px solid rgba(230,57,70,0.2) !important;
+  }
+
+  /* ── Dropdown menu ── */
+  .navbar .dropdown-menu {
+    border: 1.5px solid rgba(0,0,0,0.07) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 16px 48px rgba(15,23,42,0.13) !important;
+    padding: 8px !important;
+    margin-top: 8px !important;
+    min-width: 220px !important;
+  }
+  .navbar .dropdown-header {
+    background: #fff0f1 !important;
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
+    margin-bottom: 6px !important;
+    font-size: 12px !important;
+    color: #94a3b8 !important;
+  }
+  .navbar .dropdown-header strong { color: #0f172a !important; font-size: 13px !important; }
+  .navbar .dropdown-item {
+    border-radius: 8px !important;
+    padding: 9px 14px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #334155 !important;
+    transition: all 0.2s !important;
+  }
+  .navbar .dropdown-item:hover { background: #fff0f1 !important; color: #e63946 !important; }
+  .navbar .dropdown-item.text-danger { color: #e63946 !important; }
+  .navbar .dropdown-item.text-danger:hover { background: #e63946 !important; color: #fff !important; }
+  .navbar .dropdown-divider { margin: 6px 8px !important; border-color: rgba(0,0,0,0.07) !important; }
+</style>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+
+  <div class="container-fluid">
+
+    <!-- Left side -->
+    <div class="d-flex align-items-center">
+
+        <button class="btn btn-outline-light me-2" id="menu-toggle">
+            ☰
+        </button>
+
+        <a class="navbar-brand fw-bold mb-0"> VehicleVault</a>
+
+    </div>
+
+    <!-- Right side -->
+    <div class="dropdown ms-auto">
+
+        <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+           href="#"
+           id="profileDropdown"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+
+            <img src="https://ui-avatars.com/api/?name={{ request.user.email }}"
+                 width="35"
+                 height="35"
+                 class="rounded-circle me-2">
+            {{request.user.first_name }} {{ request.user.last_name }}
+            {{ request.user.email }}
+
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow">
+
+            <li class="dropdown-header">
+                Signed in as<br>
+                <strong>{{ request.user.email }}</strong>
+            </li>
+
+            <li><hr class="dropdown-divider"></li>
+
+            <li>
+                <a class="dropdown-item" href="{% url "user_profile" %}">
+                    👤 Profile
+                </a>
+            </li>
+
+            
+
+            <li><hr class="dropdown-divider"></li>
+
+            <li>
+                <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                    🚪 Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+  </div>
+
+</nav>
+
+
+{% comment %} <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
 
   <div class="container-fluid">
 
@@ -67,7 +245,7 @@
 
   </div>
 
-</nav>
+</nav> {% endcomment %}
 
 {% comment %} <nav class="navbar navbar-dark bg-primary shadow">
 

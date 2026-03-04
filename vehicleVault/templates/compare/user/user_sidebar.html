@@ -1,3 +1,128 @@
+<style>
+  /* ── Sidebar ── */
+  #sidebar.sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 260px;
+    background: #0f172a !important;
+    z-index: 1050;
+    transform: translateX(-260px);
+    transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+    box-shadow: 4px 0 40px rgba(15,23,42,0.18);
+    display: flex;
+    flex-direction: column;
+    font-family: 'DM Sans', sans-serif;
+    overflow-y: auto;
+  }
+
+  /* When sidebar.js adds .active */
+  #sidebar.sidebar.active {
+    transform: translateX(0);
+  }
+
+  /* ── Sidebar heading ── */
+  #sidebar .text-center.mt-3 {
+    font-family: 'Bebas Neue', sans-serif !important;
+    font-size: 22px !important;
+    letter-spacing: 4px !important;
+    color: #ffffff !important;
+    padding: 28px 24px 20px !important;
+    margin: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #sidebar .text-center.mt-3::before {
+    content: '';
+    display: inline-block;
+    width: 4px; height: 20px;
+    background: linear-gradient(180deg, #e63946, #f4a261);
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  /* ── Nav list ── */
+  #sidebar .nav.flex-column {
+    padding: 12px 10px;
+    flex: 1;
+  }
+
+  /* ── Nav items ── */
+  #sidebar .nav-item {
+    margin-bottom: 2px;
+  }
+
+  #sidebar .nav-link {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 11px 14px !important;
+    border-radius: 12px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: rgba(255,255,255,0.65) !important;
+    text-decoration: none !important;
+    transition: all 0.25s cubic-bezier(0.22,1,0.36,1) !important;
+    position: relative;
+    overflow: hidden;
+  }
+  #sidebar .nav-link::before {
+    content: '';
+    position: absolute; left: 0; top: 20%; bottom: 20%;
+    width: 3px; border-radius: 3px;
+    background: linear-gradient(180deg, #e63946, #f4a261);
+    opacity: 0; transform: scaleY(0);
+    transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+  }
+  #sidebar .nav-link:hover {
+    background: rgba(255,255,255,0.07) !important;
+    color: #ffffff !important;
+    padding-left: 20px !important;
+  }
+  #sidebar .nav-link:hover::before {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+
+  /* Active link - auto set by sidebar script */
+  #sidebar .nav-link.active-link {
+    background: rgba(230,57,70,0.15) !important;
+    color: #ffffff !important;
+    padding-left: 20px !important;
+  }
+  #sidebar .nav-link.active-link::before {
+    opacity: 1; transform: scaleY(1);
+  }
+
+  /* Logout link */
+  #sidebar .nav-link.text-danger {
+    color: rgba(230,57,70,0.8) !important;
+    margin-top: 8px;
+  }
+  #sidebar .nav-link.text-danger:hover {
+    background: rgba(230,57,70,0.2) !important;
+    color: #e63946 !important;
+  }
+
+  /* ── Overlay ── */
+  #sidebar-overlay.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1049;
+    background: rgba(15,23,42,0.45);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  #sidebar-overlay.sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+</style>
+
+<!-- ORIGINAL HTML UNCHANGED -->
 <div id="sidebar" class="sidebar">
 
     <h4 class="text-center mt-3">VehicleVault</h4>
@@ -6,29 +131,103 @@
 
         <li class="nav-item">
             <a href="/core/user-dashboard/" class="nav-link text-white">
-                Dashboard
+                🏠 Dashboard
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="#" class="nav-link text-white">
-                My Vehicles
+            <a href="{% url 'public_car_list' %}" class="nav-link text-white">
+                🚗 View Cars
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="#" class="nav-link text-white">
-                Profile
+            <a href="{% url 'user_cars_viewed' %}" class="nav-link text-white">
+                👀 Cars Viewed
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="{% url "logout" %}" class="nav-link text-danger">
-                Logout
+            <a href="{% url 'user_comparisons' %}" class="nav-link text-white">
+                ⚖ Comparisons
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{% url 'user_reviews' %}" class="nav-link text-white">
+                ⭐ Reviews Given
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{% url "user_profile" %}" class="nav-link text-white">
+                👤 Profile
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{% url 'logout' %}" class="nav-link text-danger">
+                🚪 Logout
             </a>
         </li>
 
     </ul>
 
 </div>
+
 <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+
+{% comment %} <div id="sidebar" class="sidebar">
+
+    <h4 class="text-center mt-3">VehicleVault</h4>
+
+    <ul class="nav flex-column mt-4">
+
+        <li class="nav-item">
+            <a href="/core/user-dashboard/" class="nav-link text-white">
+                🏠 Dashboard
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{% url 'public_car_list' %}" class="nav-link text-white">
+                🚗 View Cars
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{% url 'user_cars_viewed' %}" class="nav-link text-white">
+                👀 Cars Viewed
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{% url 'user_comparisons' %}" class="nav-link text-white">
+                ⚖ Comparisons
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{% url 'user_reviews' %}" class="nav-link text-white">
+                ⭐ Reviews Given
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="#" class="nav-link text-white">
+                👤 Profile
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{% url 'logout' %}" class="nav-link text-danger">
+                🚪 Logout
+            </a>
+        </li>
+
+    </ul>
+
+</div>
+
+<div id="sidebar-overlay" class="sidebar-overlay"></div> {% endcomment %}
