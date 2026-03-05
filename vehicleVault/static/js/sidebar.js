@@ -1,26 +1,26 @@
-document.addEventListener("DOMContentLoaded", function () {
+// document.addEventListener("DOMContentLoaded", function () {
 
-    const toggleBtn = document.getElementById("menu-toggle");
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("sidebar-overlay");
+//     const toggleBtn = document.getElementById("menu-toggle");
+//     const sidebar = document.getElementById("sidebar");
+//     const overlay = document.getElementById("sidebar-overlay");
 
-    // Open sidebar
-    toggleBtn.addEventListener("click", function () {
+//     // Open sidebar
+//     toggleBtn.addEventListener("click", function () {
 
-        sidebar.classList.toggle("active");
-        overlay.classList.toggle("active");
+//         sidebar.classList.toggle("active");
+//         overlay.classList.toggle("active");
 
-    });
+//     });
 
-    // Close sidebar when clicking overlay
-    overlay.addEventListener("click", function () {
+//     // Close sidebar when clicking overlay
+//     overlay.addEventListener("click", function () {
 
-        sidebar.classList.remove("active");
-        overlay.classList.remove("active");
+//         sidebar.classList.remove("active");
+//         overlay.classList.remove("active");
 
-    });
+//     });
 
-});
+// });
 
 // document.addEventListener("DOMContentLoaded", function () {
 

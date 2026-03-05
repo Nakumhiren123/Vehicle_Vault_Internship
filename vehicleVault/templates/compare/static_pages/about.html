@@ -1,10 +1,120 @@
 {% extends 'base.html' %}
-
+{% load static %}
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <h2>About VehicleVault</h2>
-    <p>
-        VehicleVault is a professional car comparison and analytics platform.
-    </p>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--red:#e63946;--red-l:#fff0f1;--accent:#f4a261;--dark:#0f172a;--text:#1e293b;--text2:#475569;--muted:#94a3b8;--bg:#f5f6fa;--card:#fff;--border:rgba(0,0,0,0.07);--sh-md:0 8px 32px rgba(15,23,42,.10);--sh-lg:0 24px 64px rgba(15,23,42,.13);--sh-red:0 12px 40px rgba(230,57,70,.22);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes dot-pulse{0%,100%{box-shadow:0 0 0 0 rgba(230,57,70,.4)}50%{box-shadow:0 0 0 8px rgba(230,57,70,0)}}
+.pg-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(0,0,0,.042) 1px,transparent 1px);background-size:28px 28px;}
+.pg-blob{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 45% at 8% 4%,rgba(230,57,70,.06),transparent 55%),radial-gradient(ellipse 50% 38% at 92% 96%,rgba(244,162,97,.05),transparent 55%);}
+.deco{position:fixed;border-radius:50%;pointer-events:none;z-index:0;border:1.5px solid rgba(230,57,70,.05);}
+.deco-1{width:540px;height:540px;top:-190px;right:-170px;animation:spin 68s linear infinite;}
+.deco-2{width:310px;height:310px;bottom:-110px;left:-110px;animation:spin 48s linear infinite reverse;}
+.wrap{position:relative;z-index:1;max-width:1020px;margin:0 auto;padding:52px 40px 100px;}
+
+/* Hero */
+.hero{text-align:center;padding:60px 20px 68px;animation:fadeUp .65s ease both;}
+.eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);display:inline-flex;align-items:center;gap:10px;margin-bottom:18px;}
+.eyebrow::before,.eyebrow::after{content:'';width:24px;height:2px;background:var(--red);border-radius:2px;}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,9vw,104px);letter-spacing:3px;line-height:.88;color:var(--dark);margin-bottom:22px;}
+.hero-title em{color:var(--red);font-style:normal;}
+.hero-sub{font-size:16.5px;color:var(--text2);max-width:540px;margin:0 auto;line-height:1.72;font-weight:300;}
+
+/* Section label */
+.sec{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin:0 0 22px;display:flex;align-items:center;gap:12px;}
+.sec::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.sec-dot{width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;animation:dot-pulse 2.2s ease-in-out infinite;}
+
+/* Mission */
+.mission{background:var(--dark);border-radius:26px;padding:52px 48px;position:relative;overflow:hidden;margin-bottom:52px;animation:fadeUp .65s ease .1s both;}
+.mission::before{content:'MISSION';position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-family:'Bebas Neue',sans-serif;font-size:150px;color:rgba(255,255,255,.022);letter-spacing:10px;pointer-events:none;}
+.mission-in{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center;}
+.m-tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(230,57,70,.85);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.m-tag::before{content:'';width:16px;height:2px;background:var(--red);border-radius:2px;}
+.m-h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,4vw,54px);letter-spacing:2px;color:#fff;line-height:1;margin-bottom:18px;}
+.m-h2 em{color:var(--red);font-style:normal;}
+.m-p{font-size:15px;color:rgba(255,255,255,.58);line-height:1.76;font-weight:300;}
+.stats{display:flex;flex-direction:column;gap:16px;}
+.stat{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px 22px;}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:2px;color:#fff;line-height:1;}
+.stat-n span{color:var(--red);}
+.stat-l{font-size:11px;color:rgba(255,255,255,.42);letter-spacing:2px;text-transform:uppercase;font-family:'Space Mono',monospace;margin-top:3px;}
+
+/* Values */
+.v-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:52px;}
+.v-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:30px 26px;position:relative;overflow:hidden;animation:fadeUp .6s ease both;transition:transform .32s cubic-bezier(.22,1,.36,1),box-shadow .32s,border-color .28s;}
+.v-card:nth-child(1){animation-delay:.14s}.v-card:nth-child(2){animation-delay:.20s}.v-card:nth-child(3){animation-delay:.26s}
+.v-card:nth-child(4){animation-delay:.32s}.v-card:nth-child(5){animation-delay:.38s}.v-card:nth-child(6){animation-delay:.44s}
+.v-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.22,1,.36,1);}
+.v-card:hover{transform:translateY(-6px);box-shadow:var(--sh-lg);border-color:transparent;}
+.v-card:hover::before{transform:scaleX(1);}
+.v-ico{font-size:28px;margin-bottom:14px;display:inline-block;transition:transform .3s;}
+.v-card:hover .v-ico{transform:scale(1.15) rotate(-6deg);}
+.v-title{font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:1.5px;color:var(--dark);margin-bottom:7px;}
+.v-desc{font-size:13.5px;color:var(--text2);line-height:1.65;font-weight:300;}
+
+/* Team */
+.t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.t-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:30px 22px;text-align:center;animation:fadeUp .6s ease both;transition:all .3s cubic-bezier(.22,1,.36,1);}
+.t-card:nth-child(1){animation-delay:.18s}.t-card:nth-child(2){animation-delay:.26s}.t-card:nth-child(3){animation-delay:.34s}
+.t-card:hover{transform:translateY(-5px);box-shadow:var(--sh-md);}
+.t-av{width:72px;height:72px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:26px;color:#fff;}
+.t-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.5px;color:var(--dark);margin-bottom:3px;}
+.t-role{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:9px;}
+.t-bio{font-size:13px;color:var(--text2);line-height:1.6;font-weight:300;}
+
+@media(max-width:768px){.wrap{padding:32px 20px 80px;}.mission-in{grid-template-columns:1fr;}.v-grid{grid-template-columns:1fr 1fr;}.t-grid{grid-template-columns:1fr;}.mission{padding:34px 26px;}}
+@media(max-width:480px){.v-grid{grid-template-columns:1fr;}}
+</style>
+
+<div class="pg-bg"></div><div class="pg-blob"></div>
+<div class="deco deco-1"></div><div class="deco deco-2"></div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Our Story</div>
+    <div class="hero-title">About<br><em>VehicleVault</em></div>
+    <p class="hero-sub">We built VehicleVault to make car research smarter, faster, and genuinely enjoyable — putting real data in the hands of real buyers.</p>
+  </div>
+
+  <div class="mission">
+    <div class="mission-in">
+      <div>
+        <div class="m-tag">Our Mission</div>
+        <div class="m-h2">Drive Better<br><em>Decisions</em></div>
+        <p class="m-p">VehicleVault was born from a simple frustration: buying a car shouldn't require sifting through dozens of inconsistent websites. We aggregate detailed specs, real user reviews, and intelligent comparisons so you can make confident choices — in minutes, not hours.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">500<span>+</span></div><div class="stat-l">Vehicles Listed</div></div>
+        <div class="stat"><div class="stat-n">12<span>K+</span></div><div class="stat-l">Registered Users</div></div>
+        <div class="stat"><div class="stat-n">98<span>%</span></div><div class="stat-l">Satisfaction Rate</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec"><span class="sec-dot"></span> What We Stand For</div>
+  <div class="v-grid">
+    <div class="v-card"><div class="v-ico">🎯</div><div class="v-title">Accuracy</div><p class="v-desc">Every spec, price, and rating is verified against manufacturer data and real owner feedback before it goes live.</p></div>
+    <div class="v-card"><div class="v-ico">⚡</div><div class="v-title">Speed</div><p class="v-desc">Compare any two vehicles side-by-side in seconds. No waiting, no friction — just instant, structured data.</p></div>
+    <div class="v-card"><div class="v-ico">🔒</div><div class="v-title">Privacy</div><p class="v-desc">Your data stays yours. We never sell personal information and use industry-standard encryption on all accounts.</p></div>
+    <div class="v-card"><div class="v-ico">💡</div><div class="v-title">Transparency</div><p class="v-desc">No hidden agendas, no paid placements. Rankings reflect genuine data — not advertising dollars.</p></div>
+    <div class="v-card"><div class="v-ico">🤝</div><div class="v-title">Community</div><p class="v-desc">Real reviews from real owners. Our community-driven ratings help buyers separate marketing from reality.</p></div>
+    <div class="v-card"><div class="v-ico">🚀</div><div class="v-title">Innovation</div><p class="v-desc">We constantly improve our comparison tools, UI, and data pipelines to stay ahead of what car buyers need.</p></div>
+  </div>
+
+  <div class="sec"><span class="sec-dot"></span> The Team</div>
+  <div class="t-grid">
+    <div class="t-card"><div class="t-av" style="background:linear-gradient(135deg,#e63946,#f4a261)">KN & VN</div><div class="t-name">Kishor Nakum & Vijay Nakum</div><div class="t-role">Founder & CEO</div><p class="t-bio">Car enthusiast turned entrepreneur. Aryan built VehicleVault after spending 3 months trying to buy his first car.</p></div>
+    <div class="t-card"><div class="t-av" style="background:linear-gradient(135deg,#2563eb,#7c3aed)">HN</div><div class="t-name">Hiren Nakum</div><div class="t-role">Head of Product</div><p class="t-bio">UX veteran with 8 years building data-heavy interfaces. Sara obsesses over making complexity feel simple.</p></div>
+    <div class="t-card"><div class="t-av" style="background:linear-gradient(135deg,#0d9488,#2563eb)">MN</div><div class="t-name">Milan Nakum</div><div class="t-role">Lead Engineer</div><p class="t-bio">Full-stack developer and Django specialist. Rohan keeps VehicleVault fast, reliable, and scalable.</p></div>
+  </div>
 </div>
+
+
 {% endblock %}

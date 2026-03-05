@@ -1,10 +1,189 @@
 {% extends 'base.html' %}
-
+{% load static %}
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <h2>Support</h2>
-    <p>
-        VehicleVault is a professional car comparison and analytics platform.
-    </p>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--red:#e63946;--red-l:#fff0f1;--accent:#f4a261;--accent-l:#fff4ea;--blue:#2563eb;--blue-l:#eff6ff;--teal:#0d9488;--teal-l:#f0fdfa;--purple:#7c3aed;--purple-l:#faf5ff;--dark:#0f172a;--text:#1e293b;--text2:#475569;--muted:#94a3b8;--bg:#f5f6fa;--card:#fff;--border:rgba(0,0,0,0.07);--sh-md:0 8px 32px rgba(15,23,42,.10);--sh-lg:0 24px 64px rgba(15,23,42,.13);--sh-red:0 12px 40px rgba(230,57,70,.22);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(230,57,70,.4)}50%{box-shadow:0 0 0 8px rgba(230,57,70,0)}}
+.pg-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(0,0,0,.042) 1px,transparent 1px);background-size:28px 28px;}
+.pg-blob{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 58% 42% at 95% 5%,rgba(230,57,70,.06),transparent 55%),radial-gradient(ellipse 48% 36% at 5% 95%,rgba(244,162,97,.05),transparent 55%);}
+.deco{position:fixed;border-radius:50%;pointer-events:none;z-index:0;border:1.5px solid rgba(230,57,70,.05);}
+.deco-1{width:520px;height:520px;top:-180px;left:-160px;animation:spin 68s linear infinite;}
+.wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:52px 40px 100px;}
+.hero{text-align:center;padding:56px 20px 62px;animation:fadeUp .65s ease both;}
+.eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);display:inline-flex;align-items:center;gap:10px;margin-bottom:16px;}
+.eyebrow::before,.eyebrow::after{content:'';width:22px;height:2px;background:var(--red);border-radius:2px;}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,8vw,94px);letter-spacing:3px;line-height:.9;color:var(--dark);margin-bottom:18px;}
+.hero-title em{color:var(--red);font-style:normal;}
+.hero-sub{font-size:15.5px;color:var(--text2);max-width:520px;margin:0 auto;line-height:1.72;font-weight:300;}
+.sec{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin:0 0 22px;display:flex;align-items:center;gap:12px;}
+.sec::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.sec-dot{width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;animation:pulse 2.2s ease-in-out infinite;}
+
+/* Channel cards */
+.channel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:52px;}
+.ch-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:30px 24px;text-align:center;text-decoration:none;display:block;position:relative;overflow:hidden;animation:fadeUp .6s ease both;transition:all .3s cubic-bezier(.22,1,.36,1);}
+.ch-card:nth-child(1){animation-delay:.1s}.ch-card:nth-child(2){animation-delay:.17s}.ch-card:nth-child(3){animation-delay:.24s}
+.ch-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.22,1,.36,1);}
+.ch-card:nth-child(1)::before{background:linear-gradient(90deg,var(--red),var(--accent));}
+.ch-card:nth-child(2)::before{background:linear-gradient(90deg,var(--blue),var(--purple));}
+.ch-card:nth-child(3)::before{background:linear-gradient(90deg,var(--teal),#34d399);}
+.ch-card:hover{transform:translateY(-6px);box-shadow:var(--sh-lg);border-color:transparent;}
+.ch-card:hover::before{transform:scaleX(1);}
+.ch-ico{font-size:32px;margin-bottom:12px;display:inline-block;transition:transform .3s;}
+.ch-card:hover .ch-ico{transform:scale(1.14) rotate(-5deg);}
+.ch-title{font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:1.5px;color:var(--dark);margin-bottom:6px;}
+.ch-desc{font-size:13px;color:var(--text2);line-height:1.6;font-weight:300;margin-bottom:14px;}
+.ch-badge{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:20px;}
+.ch-badge.red{background:var(--red-l);color:var(--red);border:1px solid rgba(230,57,70,.2);}
+.ch-badge.blue{background:var(--blue-l);color:var(--blue);border:1px solid rgba(37,99,235,.2);}
+.ch-badge.teal{background:var(--teal-l);color:var(--teal);border:1px solid rgba(13,148,136,.2);}
+
+/* Ticket form */
+.ticket-card{background:var(--card);border:1.5px solid var(--border);border-radius:22px;padding:42px 40px;box-shadow:var(--sh-md);margin-bottom:52px;animation:fadeUp .65s ease .1s both;}
+.ticket-header{margin-bottom:28px;}
+.ticket-title{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:var(--dark);margin-bottom:5px;}
+.ticket-sub{font-size:13px;color:var(--muted);}
+.fg{margin-bottom:18px;}
+.fg label{display:block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:13px 16px;background:#f9fafb;border:1.5px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--dark);outline:none;transition:border-color .25s,box-shadow .25s;resize:none;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,70,.1);background:#fff;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.priority-opts{display:flex;gap:10px;}
+.prio-opt{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;background:#f9fafb;border:1.5px solid var(--border);cursor:pointer;font-size:13px;color:var(--text2);transition:all .2s;}
+.prio-opt:has(input:checked){border-color:rgba(230,57,70,.3);background:var(--red-l);color:var(--red);}
+.prio-opt input{accent-color:var(--red);width:14px;height:14px;}
+.btn-ticket{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--red);color:#fff;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:15px 28px;border-radius:12px;transition:all .25s;box-shadow:var(--sh-red);margin-top:6px;}
+.btn-ticket:hover{background:#cf2533;transform:translateY(-2px);box-shadow:0 16px 48px rgba(230,57,70,.35);}
+.ticket-success{display:none;background:#f0fdfa;border:1.5px solid rgba(13,148,136,.2);border-radius:12px;padding:16px 20px;font-size:14px;color:#0d9488;margin-top:16px;text-align:center;}
+.ticket-id{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;}
+
+/* Status checker */
+.status-card{background:var(--dark);border-radius:22px;padding:38px 40px;animation:fadeUp .65s ease .15s both;}
+.status-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:#fff;margin-bottom:6px;}
+.status-title em{color:var(--red);font-style:normal;}
+.status-sub{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:24px;font-weight:300;}
+.status-row{display:flex;gap:12px;}
+.status-input{flex:1;padding:13px 18px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;color:#fff;outline:none;transition:border-color .25s;}
+.status-input:focus{border-color:var(--red);}
+.status-input::placeholder{color:rgba(255,255,255,.35);}
+.btn-check{all:unset;cursor:pointer;padding:13px 24px;background:var(--red);color:#fff;border-radius:12px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;transition:all .25s;white-space:nowrap;}
+.btn-check:hover{background:#cf2533;}
+.status-result{margin-top:16px;display:none;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px 18px;font-size:13px;color:rgba(255,255,255,.7);}
+
+@media(max-width:768px){.wrap{padding:32px 20px 80px;}.channel-grid{grid-template-columns:1fr;}.ticket-card{padding:28px 22px;}.status-card{padding:28px 22px;}.status-row{flex-direction:column;}.fg-row{grid-template-columns:1fr;}.priority-opts{flex-direction:column;}}
+</style>
+
+<div class="pg-bg"></div><div class="pg-blob"></div><div class="deco deco-1"></div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Support</div>
+    <div class="hero-title">We're Here<br><em>To Help</em></div>
+    <p class="hero-sub">Choose how you'd like to reach us, or submit a support ticket and we'll get back to you as soon as possible.</p>
+  </div>
+
+  <div class="sec"><span class="sec-dot"></span> Support Channels</div>
+  <div class="channel-grid">
+    <a href="{% url 'contact_page' %}" class="ch-card">
+      <div class="ch-ico">✉️</div>
+      <div class="ch-title">Email Support</div>
+      <p class="ch-desc">Send us an email and expect a reply within 24 hours on business days.</p>
+      <span class="ch-badge red">24hr Response</span>
+    </a>
+    <a href="{% url 'help_page' %}" class="ch-card">
+      <div class="ch-ico">📖</div>
+      <div class="ch-title">Help Centre</div>
+      <p class="ch-desc">Browse our FAQs and guides for instant answers to common questions.</p>
+      <span class="ch-badge blue">Instant</span>
+    </a>
+    <div class="ch-card">
+      <div class="ch-ico">🎫</div>
+      <div class="ch-title">Support Ticket</div>
+      <p class="ch-desc">Submit a detailed ticket below and our team will investigate and follow up.</p>
+      <span class="ch-badge teal">Tracked</span>
+    </div>
+  </div>
+
+  <div class="sec"><span class="sec-dot"></span> Submit a Ticket</div>
+  <div class="ticket-card">
+    <div class="ticket-header">
+      <div class="ticket-title">Open a Support Ticket</div>
+      <div class="ticket-sub">Provide as much detail as possible so we can resolve your issue faster.</div>
+    </div>
+    <form id="ticketForm">
+      {% csrf_token %}
+      <div class="fg-row">
+        <div class="fg"><label>Your Name</label><input type="text" placeholder="Full name" required></div>
+        <div class="fg"><label>Email Address</label><input type="email" placeholder="you@example.com" required></div>
+      </div>
+      <div class="fg">
+        <label>Issue Category</label>
+        <select required>
+          <option value="">Select a category</option>
+          <option>Login / Authentication</option>
+          <option>OTP Not Received</option>
+          <option>Password Reset</option>
+          <option>Vehicle Data Error</option>
+          <option>Review or Comparison Issue</option>
+          <option>Account Deletion</option>
+          <option>Bug Report</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Priority</label>
+        <div class="priority-opts">
+          <label class="prio-opt"><input type="radio" name="priority" value="low"> 🟢 Low</label>
+          <label class="prio-opt"><input type="radio" name="priority" value="medium" checked> 🟡 Medium</label>
+          <label class="prio-opt"><input type="radio" name="priority" value="high"> 🔴 High</label>
+        </div>
+      </div>
+      <div class="fg"><label>Subject</label><input type="text" placeholder="Brief summary of your issue" required></div>
+      <div class="fg"><label>Description</label><textarea rows="5" placeholder="Describe your issue in detail — include any error messages, steps to reproduce, etc." required></textarea></div>
+      <button type="submit" class="btn-ticket">🎫 &nbsp;Submit Ticket</button>
+      <div class="ticket-success" id="ticketOk">
+        ✓ Ticket submitted! Your reference ID is <span class="ticket-id" id="ticketRef"></span>. We'll email you shortly.
+      </div>
+    </form>
+  </div>
+
+  <div class="status-card">
+    <div class="status-title">Check Ticket <em>Status</em></div>
+    <p class="status-sub">Enter your ticket reference ID to see the current status of your request.</p>
+    <div class="status-row">
+      <input class="status-input" type="text" id="statusInput" placeholder="e.g. VV-2026-0042">
+      <button class="btn-check" onclick="checkStatus()">Check →</button>
+    </div>
+    <div class="status-result" id="statusResult"></div>
+  </div>
 </div>
+
+<script>
+document.getElementById('ticketForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const ref = 'VV-2026-' + Math.floor(Math.random()*9000+1000);
+  document.getElementById('ticketRef').textContent = ref;
+  document.getElementById('ticketOk').style.display = 'block';
+  this.reset();
+});
+
+function checkStatus() {
+  const val = document.getElementById('statusInput').value.trim();
+  const res = document.getElementById('statusResult');
+  if (!val) return;
+  res.style.display = 'block';
+  res.innerHTML = val.startsWith('VV-')
+    ? `<strong style="color:#34d399">Ticket ${val}</strong> — Status: <strong style="color:#34d399">Under Review</strong>. Our team is investigating your issue and will respond within 24 hours.`
+    : `<strong style="color:#e63946">Ticket ID not found.</strong> Please check the reference number from your confirmation email.`;
+}
+</script>
+
+
 {% endblock %}

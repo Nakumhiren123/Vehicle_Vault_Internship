@@ -2,17 +2,19 @@ from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .decorators import role_required
-from .models import Car, Review,Comparison
+from .models import Car, Review,Comparison, SearchHistory
 from .forms import CarForm, ReviewForm
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Avg, Count
 from core.models import User
 from django.db.models.functions import TruncMonth
 from django.utils import timezone 
+# from django.utils.timezone import now
 from datetime import timedelta
 from .models import UserInteraction
 from django.core.paginator import Paginator
 from django.db.models import Q
+
 
 # @login_required(login_url='login')
 @role_required(allowed_roles=['admin'])
@@ -109,12 +111,9 @@ def admin_comparisons_view(request):
 @role_required(allowed_roles=['admin'])
 def admin_analytics_view(request):
 
-    from .models import Comparison, Review
-    from core.models import User
-    from .models import Car
 
     # 1️⃣ Monthly Comparisons (last 6 months)
-    six_months_ago = now() - timedelta(days=180)
+    six_months_ago = timezone.now() - timedelta(days=180)
 
     monthly_comparisons = (
         Comparison.objects
@@ -178,15 +177,53 @@ def admin_analytics_view(request):
 # @login_required(login_url='login')
 @role_required(allowed_roles=['user'])
 def userDashboardView(request):
-    recent_cars = Car.objects.filter(status=True)[:4]
+    from .models import Car, Review, Comparison, UserPreference, SearchHistory, UserInteraction
+
+    # ── Core stats (used by activity cards) ──────────────────
+    cars_viewed = UserInteraction.objects.filter(
+        user=request.user, interactionType='view'
+    ).count()
+
+    comparisons = Comparison.objects.filter(user=request.user).count()
+
+    reviews = Review.objects.filter(user=request.user).count()
+
+    # ── Featured cars (6 most recent active cars) ────────────
+    recent_cars = Car.objects.filter(status=True).order_by('-id')[:6]
+
+    # ── User preferences (UserPreference model) ──────────────
+    try:
+        user_preference = UserPreference.objects.get(user=request.user)
+    except UserPreference.DoesNotExist:
+        user_preference = None
+
+    # ── Recent comparisons (Comparison model) ────────────────
+    recent_comparisons = Comparison.objects.filter(
+        user=request.user
+    ).select_related('car1', 'car2').order_by('-comparedAt')[:4]
+
+    # ── Recent search history (SearchHistory model) ──────────
+    recent_searches = SearchHistory.objects.filter(
+        user=request.user
+    ).order_by('-searchedAt')[:8]
+
+    # ── My recent reviews (Review model) ─────────────────────
+    my_reviews = Review.objects.filter(
+        user=request.user
+    ).select_related('car').order_by('-createdAt')[:3]
 
     context = {
-        "recent_cars": recent_cars,
-        "cars_viewed": 5,
-        "comparisons": 2,
-        "reviews": 3
+        'cars_viewed':        cars_viewed,
+        'comparisons':        comparisons,
+        'reviews':            reviews,
+        'recent_cars':        recent_cars,
+        'user_preference':    user_preference,
+        'recent_comparisons': recent_comparisons,
+        'recent_searches':    recent_searches,
+        'my_reviews':         my_reviews,
     }
-    return render(request, 'compare/user/user_dashboard.html')
+
+    return render(request, 'compare/user/user_dashboard.html', context)
 
 
 
@@ -386,6 +423,16 @@ def user_reviews(request):
     })
 @login_required
 def user_profile(request):
+    cars_viewed  = UserInteraction.objects.filter(user=request.user, interactionType='view').count()
+    comparisons  = Comparison.objects.filter(user=request.user).count()
+    reviews      = Review.objects.filter(user=request.user).count()
+    return render(request, 'compare/user/user_profile.html', {
+        'cars_viewed': cars_viewed,
+        'comparisons': comparisons,
+        'reviews':     reviews,
+    })
+@login_required
+def admin_profile(request):
     cars_viewed  = UserInteraction.objects.filter(user=request.user, interactionType='view').count()
     comparisons  = Comparison.objects.filter(user=request.user).count()
     reviews      = Review.objects.filter(user=request.user).count()

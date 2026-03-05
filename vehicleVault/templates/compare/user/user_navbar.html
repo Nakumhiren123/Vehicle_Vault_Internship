@@ -2,178 +2,159 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-  /* ── Override Bootstrap navbar ── */
-  .navbar.bg-primary {
-    background: #ffffff !important;
-    border-bottom: 1.5px solid rgba(0,0,0,0.07) !important;
-    box-shadow: 0 2px 20px rgba(15,23,42,0.06) !important;
-    padding: 10px 28px !important;
-    font-family: 'DM Sans', sans-serif;
-  }
+.vv-unav {
+  position: sticky; top: 0; z-index: 1000;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1.5px solid rgba(0,0,0,0.07);
+  box-shadow: 0 2px 20px rgba(15,23,42,0.06);
+  padding: 0 28px; height: 62px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: 'DM Sans', sans-serif;
+}
 
-  /* ── Hamburger ── */
-  #menu-toggle {
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 10px !important;
-    background: #fff0f1 !important;
-    border: 1.5px solid rgba(230,57,70,0.22) !important;
-    color: #e63946 !important;
-    font-size: 18px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0 !important;
-    transition: all 0.25s ease !important;
-    box-shadow: none !important;
-  }
-  #menu-toggle:hover {
-    background: #e63946 !important;
-    color: #fff !important;
-    border-color: #e63946 !important;
-    box-shadow: 0 4px 14px rgba(230,57,70,0.3) !important;
-    transform: scale(1.05);
-  }
+/* Hamburger */
+.vv-uham {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: #fff0f1; border: 1.5px solid rgba(230,57,70,0.22);
+  color: #e63946; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.25s ease;
+}
+.vv-uham:hover {
+  background: #e63946; color: #fff; border-color: #e63946;
+  box-shadow: 0 4px 14px rgba(230,57,70,0.3); transform: scale(1.05);
+}
 
-  /* ── Brand ── */
-  .navbar .navbar-brand {
-    font-family: 'Bebas Neue', sans-serif !important;
-    font-size: 24px !important;
-    letter-spacing: 3px !important;
-    color: #0f172a !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-  }
-  .navbar .navbar-brand::before {
-    content: '';
-    display: inline-block;
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #e63946; flex-shrink: 0;
-    animation: navDot 2.5s ease-in-out infinite;
-  }
-  @keyframes navDot {
-    0%,100% { box-shadow: 0 0 0 0 rgba(230,57,70,0.4); }
-    50%      { box-shadow: 0 0 0 5px rgba(230,57,70,0); }
-  }
+/* Brand */
+.vv-ubrand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 3px; color: #0f172a;
+  display: flex; align-items: center; gap: 8px;
+  text-decoration: none;
+}
+.vv-ubrand::before {
+  content: '';
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: #e63946; flex-shrink: 0;
+  animation: brandDot 2.5s ease-in-out infinite;
+}
+@keyframes brandDot {
+  0%,100% { box-shadow: 0 0 0 0 rgba(230,57,70,0.4); }
+  50%      { box-shadow: 0 0 0 5px rgba(230,57,70,0); }
+}
 
-  /* ── Profile dropdown trigger ── */
-  .navbar .dropdown > a {
-    background: #fff0f1 !important;
-    border: 1.5px solid rgba(230,57,70,0.18) !important;
-    border-radius: 12px !important;
-    padding: 7px 14px 7px 8px !important;
-    color: #0f172a !important;
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    transition: all 0.25s ease !important;
-  }
-  .navbar .dropdown > a:hover {
-    border-color: rgba(230,57,70,0.4) !important;
-    box-shadow: 0 4px 16px rgba(230,57,70,0.12) !important;
-    transform: translateY(-1px);
-  }
-  .navbar .dropdown > a img {
-    border: 2px solid rgba(230,57,70,0.2) !important;
-  }
+/* Nav left group */
+.vv-unav-left { display: flex; align-items: center; gap: 14px; }
 
-  /* ── Dropdown menu ── */
-  .navbar .dropdown-menu {
-    border: 1.5px solid rgba(0,0,0,0.07) !important;
-    border-radius: 16px !important;
-    box-shadow: 0 16px 48px rgba(15,23,42,0.13) !important;
-    padding: 8px !important;
-    margin-top: 8px !important;
-    min-width: 220px !important;
-  }
-  .navbar .dropdown-header {
-    background: #fff0f1 !important;
-    border-radius: 10px !important;
-    padding: 10px 14px !important;
-    margin-bottom: 6px !important;
-    font-size: 12px !important;
-    color: #94a3b8 !important;
-  }
-  .navbar .dropdown-header strong { color: #0f172a !important; font-size: 13px !important; }
-  .navbar .dropdown-item {
-    border-radius: 8px !important;
-    padding: 9px 14px !important;
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    color: #334155 !important;
-    transition: all 0.2s !important;
-  }
-  .navbar .dropdown-item:hover { background: #fff0f1 !important; color: #e63946 !important; }
-  .navbar .dropdown-item.text-danger { color: #e63946 !important; }
-  .navbar .dropdown-item.text-danger:hover { background: #e63946 !important; color: #fff !important; }
-  .navbar .dropdown-divider { margin: 6px 8px !important; border-color: rgba(0,0,0,0.07) !important; }
+/* Nav right group */
+.vv-unav-right { display: flex; align-items: center; gap: 12px; }
+
+/* User chip */
+.vv-user-chip {
+  background: #fff0f1; border: 1.5px solid rgba(230,57,70,0.18);
+  color: #e63946; font-size: 11px; font-weight: 600;
+  padding: 4px 12px; border-radius: 20px;
+  font-family: 'Space Mono', monospace; letter-spacing: 0.5px;
+}
+
+/* Profile dropdown trigger */
+.vv-uprofile {
+  display: flex; align-items: center; gap: 10px;
+  background: #fff0f1; border: 1.5px solid rgba(230,57,70,0.18);
+  border-radius: 12px; padding: 6px 12px 6px 8px;
+  cursor: pointer; color: #0f172a; text-decoration: none;
+  transition: all 0.25s ease; position: relative;
+}
+.vv-uprofile:hover {
+  border-color: rgba(230,57,70,0.4);
+  box-shadow: 0 4px 16px rgba(230,57,70,0.12);
+  transform: translateY(-1px); text-decoration: none; color: #0f172a;
+}
+.vv-uprofile img {
+  width: 30px; height: 30px; border-radius: 8px;
+  border: 1.5px solid rgba(230,57,70,0.2); object-fit: cover;
+}
+.vv-uprofile-name { font-size: 13px; font-weight: 600; line-height: 1; color: #0f172a; }
+.vv-uprofile-email { font-size: 11px; color: #94a3b8; line-height: 1; margin-top: 2px; }
+.vv-uchev { font-size: 10px; color: #94a3b8; margin-left: 2px; transition: transform 0.2s; }
+
+/* Dropdown */
+.vv-udropdown { position: relative; }
+.vv-udropdown-menu {
+  position: absolute; top: calc(100% + 10px); right: 0;
+  background: #ffffff; border: 1.5px solid rgba(0,0,0,0.07);
+  border-radius: 16px; width: 230px; padding: 8px;
+  box-shadow: 0 16px 48px rgba(15,23,42,0.13);
+  opacity: 0; transform: translateY(-8px); pointer-events: none;
+  transition: all 0.22s cubic-bezier(.16,1,.3,1); z-index: 9999;
+}
+.vv-udropdown.open .vv-udropdown-menu { opacity: 1; transform: translateY(0); pointer-events: all; }
+.vv-udropdown.open .vv-uchev { transform: rotate(180deg); }
+
+.vv-udd-head {
+  background: #fff0f1; border-radius: 10px; padding: 10px 14px;
+  margin-bottom: 6px;
+}
+.vv-udd-signed { font-size: 11px; color: #94a3b8; margin-bottom: 2px; }
+.vv-udd-email  { font-size: 12px; font-weight: 600; color: #0f172a; }
+
+.vv-udd-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px; border-radius: 8px; color: #334155;
+  text-decoration: none; font-size: 13px; transition: all 0.15s;
+}
+.vv-udd-item:hover { background: #fff0f1; color: #e63946; text-decoration: none; }
+.vv-udd-item.danger { color: #e63946; }
+.vv-udd-item.danger:hover { background: #e63946; color: #fff; }
+
+.vv-udd-divider { border: none; border-top: 1px solid rgba(0,0,0,0.07); margin: 6px 0; }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+<nav class="vv-unav">
 
-  <div class="container-fluid">
+  <div class="vv-unav-left">
+    <button class="vv-uham" id="menu-toggle">☰</button>
+    <a class="vv-ubrand">VehicleVault</a>
+  </div>
 
-    <!-- Left side -->
-    <div class="d-flex align-items-center">
+  <div class="vv-unav-right">
+    <div class="vv-user-chip">🚗 User</div>
 
-        <button class="btn btn-outline-light me-2" id="menu-toggle">
-            ☰
-        </button>
+    <div class="vv-udropdown" id="userProfileDropdown">
+      <div class="vv-uprofile" onclick="document.getElementById('userProfileDropdown').classList.toggle('open')">
+        <img src="https://ui-avatars.com/api/?name={{ request.user.email }}&background=fff0f1&color=e63946&bold=true"
+             alt="avatar">
+        <div>
+          <div class="vv-uprofile-name">{{ request.user.first_name }} {{ request.user.last_name }}</div>
+          <div class="vv-uprofile-email">{{ request.user.email }}</div>
+        </div>
+        <div class="vv-uchev">▼</div>
+      </div>
 
-        <a class="navbar-brand fw-bold mb-0"> VehicleVault</a>
-
+      <div class="vv-udropdown-menu">
+        <div class="vv-udd-head">
+          <div class="vv-udd-signed">Signed in as</div>
+          <div class="vv-udd-email">{{ request.user.email }}</div>
+        </div>
+        <a class="vv-udd-item" href="{% url 'user_profile' %}">👤 &nbsp;Profile</a>
+        <a class="vv-udd-item" href="{% url 'user_cars_viewed' %}">👁 &nbsp;Cars Viewed</a>
+        <a class="vv-udd-item" href="{% url 'user_comparisons' %}">⚖️ &nbsp;My Comparisons</a>
+        <a class="vv-udd-item" href="{% url 'user_reviews' %}">⭐ &nbsp;My Reviews</a>
+        <hr class="vv-udd-divider">
+        <a class="vv-udd-item danger" href="{% url 'logout' %}">🚪 &nbsp;Logout</a>
+      </div>
     </div>
-
-    <!-- Right side -->
-    <div class="dropdown ms-auto">
-
-        <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-           href="#"
-           id="profileDropdown"
-           data-bs-toggle="dropdown"
-           aria-expanded="false">
-
-            <img src="https://ui-avatars.com/api/?name={{ request.user.email }}"
-                 width="35"
-                 height="35"
-                 class="rounded-circle me-2">
-            {{request.user.first_name }} {{ request.user.last_name }}
-            {{ request.user.email }}
-
-        </a>
-
-        <ul class="dropdown-menu dropdown-menu-end shadow">
-
-            <li class="dropdown-header">
-                Signed in as<br>
-                <strong>{{ request.user.email }}</strong>
-            </li>
-
-            <li><hr class="dropdown-divider"></li>
-
-            <li>
-                <a class="dropdown-item" href="{% url "user_profile" %}">
-                    👤 Profile
-                </a>
-            </li>
-
-            
-
-            <li><hr class="dropdown-divider"></li>
-
-            <li>
-                <a class="dropdown-item text-danger" href="{% url 'logout' %}">
-                    🚪 Logout
-                </a>
-            </li>
-
-        </ul>
-
-    </div>
-
   </div>
 
 </nav>
+
+<script>
+document.addEventListener('click', function(e) {
+  const dd = document.getElementById('userProfileDropdown');
+  if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+});
+</script>
 
 
 {% comment %} <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">

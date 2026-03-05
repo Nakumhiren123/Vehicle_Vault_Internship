@@ -1,10 +1,141 @@
 {% extends 'base.html' %}
-
+{% load static %}
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <h2>Terms</h2>
-    <p>
-        VehicleVault is a professional car comparison and analytics platform.
-    </p>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--red:#e63946;--red-l:#fff0f1;--accent:#f4a261;--dark:#0f172a;--text:#1e293b;--text2:#475569;--muted:#94a3b8;--bg:#f5f6fa;--card:#fff;--border:rgba(0,0,0,0.07);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(230,57,70,.4)}50%{box-shadow:0 0 0 8px rgba(230,57,70,0)}}
+.pg-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(0,0,0,.042) 1px,transparent 1px);background-size:28px 28px;}
+.pg-blob{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 45% at 92% 4%,rgba(244,162,97,.06),transparent 55%);}
+.deco{position:fixed;border-radius:50%;pointer-events:none;z-index:0;border:1.5px solid rgba(230,57,70,.05);}
+.deco-1{width:520px;height:520px;top:-180px;left:-160px;animation:spin 68s linear infinite;}
+.wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:52px 40px 100px;}
+.hero{text-align:center;padding:56px 20px 60px;animation:fadeUp .65s ease both;}
+.eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);display:inline-flex;align-items:center;gap:10px;margin-bottom:16px;}
+.eyebrow::before,.eyebrow::after{content:'';width:22px;height:2px;background:var(--red);border-radius:2px;}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,8vw,94px);letter-spacing:3px;line-height:.9;color:var(--dark);margin-bottom:18px;}
+.hero-title em{color:var(--red);font-style:normal;}
+.hero-sub{font-size:15.5px;color:var(--text2);line-height:1.72;font-weight:300;}
+.updated{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:14px;}
+.toc{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:26px 28px;margin-bottom:36px;animation:fadeUp .6s ease .08s both;}
+.toc-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.toc-title::before{content:'';width:14px;height:2px;background:var(--red);border-radius:2px;}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.toc-list a{font-size:13.5px;color:var(--text2);text-decoration:none;display:flex;align-items:center;gap:8px;transition:color .2s;}
+.toc-list a::before{content:'→';color:var(--red);font-size:12px;}
+.toc-list a:hover{color:var(--red);}
+.ts{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:34px 32px;margin-bottom:16px;animation:fadeUp .6s ease both;}
+.ts:nth-child(1){animation-delay:.1s}.ts:nth-child(2){animation-delay:.16s}.ts:nth-child(3){animation-delay:.22s}
+.ts:nth-child(4){animation-delay:.28s}.ts:nth-child(5){animation-delay:.34s}.ts:nth-child(6){animation-delay:.40s}
+.ts:nth-child(7){animation-delay:.46s}.ts:nth-child(8){animation-delay:.52s}
+.ts-num{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:7px;}
+.ts-title{font-family:'Bebas Neue',sans-serif;font-size:23px;letter-spacing:1.5px;color:var(--dark);margin-bottom:13px;}
+.ts-body{font-size:14.5px;color:var(--text2);line-height:1.78;font-weight:300;}
+.ts-body p{margin-bottom:11px;}
+.ts-body p:last-child{margin-bottom:0;}
+.ts-body ul{margin:8px 0 11px 20px;display:flex;flex-direction:column;gap:6px;}
+.ts-body li{font-size:14px;color:var(--text2);}
+.ts-body strong{color:var(--dark);font-weight:600;}
+.ts-warn{background:#fff4ea;border:1.5px solid rgba(244,162,97,.3);border-radius:10px;padding:13px 17px;font-size:13.5px;color:#b45309;margin-top:13px;line-height:1.6;}
+@media(max-width:768px){.wrap{padding:32px 20px 80px;}.ts{padding:24px 20px;}}
+</style>
+
+<div class="pg-bg"></div><div class="pg-blob"></div><div class="deco deco-1"></div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Legal</div>
+    <div class="hero-title">Terms of<br><em>Service</em></div>
+    <p class="hero-sub">By using VehicleVault, you agree to the following terms. Please read them carefully before creating an account.</p>
+    <div class="updated">Effective: March 1, 2026</div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ul class="toc-list">
+      <li><a href="#acceptance">Acceptance of Terms</a></li>
+      <li><a href="#accounts">User Accounts</a></li>
+      <li><a href="#conduct">Acceptable Use</a></li>
+      <li><a href="#content">User-Generated Content</a></li>
+      <li><a href="#ip">Intellectual Property</a></li>
+      <li><a href="#disclaimer">Disclaimers</a></li>
+      <li><a href="#termination">Termination</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+
+  <div id="acceptance" class="ts">
+    <div class="ts-num">01 —</div>
+    <div class="ts-title">Acceptance of Terms</div>
+    <div class="ts-body"><p>By accessing or using VehicleVault ("the Service"), you confirm that you are at least 13 years of age and agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, please do not use the Service.</p><p>We reserve the right to update these terms at any time. Continued use of the Service after changes constitutes acceptance of the revised terms.</p></div>
+  </div>
+
+  <div id="accounts" class="ts">
+    <div class="ts-num">02 —</div>
+    <div class="ts-title">User Accounts</div>
+    <div class="ts-body">
+      <p>When you create an account, you agree to:</p>
+      <ul>
+        <li>Provide accurate and complete registration information</li>
+        <li>Keep your password confidential and not share it with others</li>
+        <li>Notify us immediately of any unauthorised account access</li>
+        <li>Be responsible for all activity that occurs under your account</li>
+      </ul>
+      <p>We reserve the right to suspend or terminate accounts that violate these terms.</p>
+    </div>
+  </div>
+
+  <div id="conduct" class="ts">
+    <div class="ts-num">03 —</div>
+    <div class="ts-title">Acceptable Use</div>
+    <div class="ts-body">
+      <p>You agree <strong>not</strong> to use VehicleVault to:</p>
+      <ul>
+        <li>Post false, misleading, or defamatory vehicle reviews</li>
+        <li>Attempt to hack, scrape, or disrupt the platform</li>
+        <li>Use automated bots to create accounts or submit content</li>
+        <li>Impersonate other users, staff, or real-world entities</li>
+        <li>Transmit spam, viruses, or any malicious code</li>
+      </ul>
+      <div class="ts-warn">⚠ Violations may result in immediate account suspension and potential legal action.</div>
+    </div>
+  </div>
+
+  <div id="content" class="ts">
+    <div class="ts-num">04 —</div>
+    <div class="ts-title">User-Generated Content</div>
+    <div class="ts-body"><p>By submitting reviews, ratings, or comparisons on VehicleVault, you grant us a non-exclusive, royalty-free licence to display and distribute that content as part of the Service. You retain ownership of your content.</p><p>You are solely responsible for the accuracy and legality of content you submit. We reserve the right to remove content that violates these terms without prior notice.</p></div>
+  </div>
+
+  <div id="ip" class="ts">
+    <div class="ts-num">05 —</div>
+    <div class="ts-title">Intellectual Property</div>
+    <div class="ts-body"><p>All VehicleVault branding, design, code, and original content are the intellectual property of VehicleVault and its team. You may not reproduce, distribute, or create derivative works without explicit written permission.</p><p>Vehicle manufacturer names, logos, and specifications are the property of their respective owners and are used for informational purposes only.</p></div>
+  </div>
+
+  <div id="disclaimer" class="ts">
+    <div class="ts-num">06 —</div>
+    <div class="ts-title">Disclaimers</div>
+    <div class="ts-body"><p>VehicleVault is provided "as is" without warranties of any kind. We strive for accuracy but do not guarantee that all vehicle data is current, complete, or error-free. Always verify specifications directly with manufacturers or dealers before making a purchase.</p><p>We are not liable for any purchasing decisions made based on information found on VehicleVault.</p></div>
+  </div>
+
+  <div id="termination" class="ts">
+    <div class="ts-num">07 —</div>
+    <div class="ts-title">Termination</div>
+    <div class="ts-body"><p>We may suspend or terminate your access to VehicleVault at our discretion if you breach these terms or engage in conduct harmful to the platform or its users. You may also delete your account at any time by contacting us.</p><p>Upon termination, your right to use the Service ceases immediately. Provisions that by nature should survive termination (intellectual property, disclaimers) will continue to apply.</p></div>
+  </div>
+
+  <div id="contact" class="ts">
+    <div class="ts-num">08 —</div>
+    <div class="ts-title">Contact</div>
+    <div class="ts-body"><p>For questions about these Terms, please contact:</p><ul><li>Email: <strong>legal@vehiclevault.com</strong></li><li>Address: VehicleVault, Ahmedabad, Gujarat — 380015, India</li></ul></div>
+  </div>
 </div>
+
 {% endblock %}

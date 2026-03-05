@@ -1,10 +1,156 @@
 {% extends 'base.html' %}
-
+{% load static %}
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <h2>Help</h2>
-    <p>
-        VehicleVault is a professional car comparison and analytics platform.
-    </p>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--red:#e63946;--red-l:#fff0f1;--accent:#f4a261;--accent-l:#fff4ea;--dark:#0f172a;--text:#1e293b;--text2:#475569;--muted:#94a3b8;--bg:#f5f6fa;--card:#fff;--border:rgba(0,0,0,0.07);--sh-md:0 8px 32px rgba(15,23,42,.10);--sh-lg:0 24px 64px rgba(15,23,42,.13);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(230,57,70,.4)}50%{box-shadow:0 0 0 8px rgba(230,57,70,0)}}
+.pg-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(0,0,0,.042) 1px,transparent 1px);background-size:28px 28px;}
+.pg-blob{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 55% 42% at 5% 96%,rgba(230,57,70,.06),transparent 55%),radial-gradient(ellipse 50% 38% at 95% 5%,rgba(244,162,97,.05),transparent 55%);}
+.deco{position:fixed;border-radius:50%;pointer-events:none;z-index:0;border:1.5px solid rgba(230,57,70,.05);}
+.deco-1{width:520px;height:520px;top:-180px;right:-160px;animation:spin 68s linear infinite;}
+.wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:52px 40px 100px;}
+.hero{text-align:center;padding:56px 20px 60px;animation:fadeUp .65s ease both;}
+.eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);display:inline-flex;align-items:center;gap:10px;margin-bottom:16px;}
+.eyebrow::before,.eyebrow::after{content:'';width:22px;height:2px;background:var(--red);border-radius:2px;}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,8vw,94px);letter-spacing:3px;line-height:.9;color:var(--dark);margin-bottom:18px;}
+.hero-title em{color:var(--red);font-style:normal;}
+.hero-sub{font-size:15.5px;color:var(--text2);max-width:520px;margin:0 auto;line-height:1.72;font-weight:300;}
+.sec{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin:0 0 22px;display:flex;align-items:center;gap:12px;}
+.sec::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.sec-dot{width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;animation:pulse 2.2s ease-in-out infinite;}
+
+/* Search bar */
+.help-search{position:relative;max-width:520px;margin:0 auto 52px;animation:fadeUp .6s ease .1s both;}
+.help-search input{width:100%;padding:16px 52px 16px 22px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--dark);outline:none;box-shadow:var(--sh-md);transition:border-color .25s,box-shadow .25s;}
+.help-search input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,70,.1);}
+.help-search input::placeholder{color:var(--muted);}
+.search-ico{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;}
+
+/* Quick links */
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:52px;}
+.q-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;display:block;transition:all .28s cubic-bezier(.22,1,.36,1);animation:fadeUp .6s ease both;}
+.q-card:nth-child(1){animation-delay:.12s}.q-card:nth-child(2){animation-delay:.18s}.q-card:nth-child(3){animation-delay:.24s}
+.q-card:nth-child(4){animation-delay:.30s}.q-card:nth-child(5){animation-delay:.36s}.q-card:nth-child(6){animation-delay:.42s}
+.q-card:hover{transform:translateY(-5px);box-shadow:var(--sh-lg);border-color:transparent;}
+.q-ico{font-size:28px;margin-bottom:10px;}
+.q-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1.5px;color:var(--dark);margin-bottom:5px;}
+.q-desc{font-size:12.5px;color:var(--text2);line-height:1.55;font-weight:300;}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:12px;margin-bottom:52px;}
+.faq-item{background:var(--card);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;animation:fadeUp .55s ease both;}
+.faq-item:nth-child(1){animation-delay:.1s}.faq-item:nth-child(2){animation-delay:.16s}.faq-item:nth-child(3){animation-delay:.22s}
+.faq-item:nth-child(4){animation-delay:.28s}.faq-item:nth-child(5){animation-delay:.34s}.faq-item:nth-child(6){animation-delay:.40s}
+.faq-q{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;cursor:pointer;transition:background .2s;}
+.faq-q:hover{background:var(--red-l);}
+.faq-q-text{font-size:15px;font-weight:600;color:var(--dark);}
+.faq-arrow{font-size:18px;color:var(--red);transition:transform .3s;flex-shrink:0;}
+.faq-item.open .faq-arrow{transform:rotate(180deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .3s;}
+.faq-item.open .faq-a{max-height:300px;}
+.faq-a-inner{padding:0 24px 20px;font-size:14px;color:var(--text2);line-height:1.72;font-weight:300;}
+
+/* CTA */
+.help-cta{background:var(--dark);border-radius:22px;padding:44px 44px;text-align:center;animation:fadeUp .65s ease .2s both;}
+.cta-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;color:#fff;margin-bottom:10px;}
+.cta-title em{color:var(--red);font-style:normal;}
+.cta-sub{font-size:14px;color:rgba(255,255,255,.55);margin-bottom:24px;font-weight:300;}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.cta-btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:12px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;transition:all .25s;}
+.cta-btn.primary{background:var(--red);color:#fff;box-shadow:0 8px 28px rgba(230,57,70,.35);}
+.cta-btn.primary:hover{background:#cf2533;transform:translateY(-2px);}
+.cta-btn.secondary{background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.1);}
+.cta-btn.secondary:hover{background:rgba(255,255,255,.14);}
+
+@media(max-width:768px){.wrap{padding:32px 20px 80px;}.quick-grid{grid-template-columns:1fr 1fr;}.help-cta{padding:32px 24px;}.cta-btns{flex-direction:column;align-items:center;}}
+@media(max-width:480px){.quick-grid{grid-template-columns:1fr;}}
+</style>
+
+<div class="pg-bg"></div><div class="pg-blob"></div><div class="deco deco-1"></div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Help Centre</div>
+    <div class="hero-title">How Can We<br><em>Help?</em></div>
+    <p class="hero-sub">Find answers to common questions or browse our guides below.</p>
+  </div>
+
+  <div class="help-search">
+    <input type="text" placeholder="Search for help topics…" id="helpSearch">
+    <div class="search-ico">🔍</div>
+  </div>
+
+  <div class="sec"><span class="sec-dot"></span> Browse Topics</div>
+  <div class="quick-grid">
+    <a href="#faq" class="q-card"><div class="q-ico">🔐</div><div class="q-title">Account & Login</div><p class="q-desc">Password reset, OTP issues, account settings</p></a>
+    <a href="#faq" class="q-card"><div class="q-ico">🚗</div><div class="q-title">Comparing Cars</div><p class="q-desc">How to use the comparison tool effectively</p></a>
+    <a href="#faq" class="q-card"><div class="q-ico">⭐</div><div class="q-title">Reviews</div><p class="q-desc">Submitting, editing, and deleting reviews</p></a>
+    <a href="#faq" class="q-card"><div class="q-ico">📊</div><div class="q-title">Dashboard</div><p class="q-desc">Understanding your activity stats and history</p></a>
+    <a href="#faq" class="q-card"><div class="q-ico">🔒</div><div class="q-title">Privacy & Data</div><p class="q-desc">What data we store and how to delete your account</p></a>
+    <a href="#faq" class="q-card"><div class="q-ico">🐛</div><div class="q-title">Report a Bug</div><p class="q-desc">Found something broken? Let us know</p></a>
+  </div>
+
+  <div id="faq" class="sec"><span class="sec-dot"></span> Frequently Asked Questions</div>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">Why am I not receiving my OTP email?</span><span class="faq-arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Check your spam or junk folder first. If it's not there, make sure the email address on your account is correct. OTPs expire after 5 minutes — if yours expired, click "Resend OTP" on the login screen. If the issue persists, contact us at hello@vehiclevault.com.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">How do I reset my password?</span><span class="faq-arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Go to your Profile page and click "Reset Password" in the Account Details section. You'll need to enter your current password and then choose a new one. Your new password must be at least 8 characters long.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">How do I compare two vehicles?</span><span class="faq-arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Navigate to the vehicle list from your dashboard, select any car, and use the "Compare" button. You can compare two vehicles side-by-side across all specs including fuel type, mileage, transmission, price, and launch year.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">Can I edit or delete a review I submitted?</span><span class="faq-arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Yes. Go to your Profile → My Reviews to see all your submitted reviews. From there you can edit the rating or comment, or delete the review entirely. Deletions are permanent.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">How do I delete my account?</span><span class="faq-arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">To permanently delete your account and all associated data, contact us at privacy@vehiclevault.com with the subject "Account Deletion Request". We will process your request within 7 business days.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">Is VehicleVault free to use?</span><span class="faq-arrow">▾</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Yes, VehicleVault is completely free for all registered users. Browse vehicles, compare specs, and submit reviews at no cost. We have no plans to introduce paid tiers for core features.</div></div>
+    </div>
+  </div>
+
+  <div class="help-cta">
+    <div class="cta-title">Still Need <em>Help?</em></div>
+    <p class="cta-sub">Our team is available Monday–Saturday, 9 AM to 7 PM IST</p>
+    <div class="cta-btns">
+      <a href="{% url 'contact_page' %}" class="cta-btn primary">✉️ &nbsp;Contact Us</a>
+      <a href="{% url 'support_page' %}" class="cta-btn secondary">🎫 &nbsp;Open a Ticket</a>
+    </div>
+  </div>
 </div>
+
+<script>
+function toggleFaq(el) {
+  const item = el.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+/* Simple search filter */
+document.getElementById('helpSearch').addEventListener('input', function(){
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const text = item.querySelector('.faq-q-text').textContent.toLowerCase();
+    item.style.display = text.includes(q) ? '' : 'none';
+  });
+});
+</script>
+
+
 {% endblock %}

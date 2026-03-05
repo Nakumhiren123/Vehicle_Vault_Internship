@@ -7,6 +7,274 @@
 
 {% block content %}
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+
+.auth-page{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;font-family:'DM Sans',sans-serif;}
+
+/* ── Left panel ── */
+.auth-left{
+  position:relative;
+  background:linear-gradient(140deg,#0f172a 0%,#1a1040 55%,#0f172a 100%);
+  display:flex;flex-direction:column;
+  align-items:flex-start;justify-content:flex-end;
+  padding:56px 52px;overflow:hidden;
+}
+.auth-left::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.035) 1px,transparent 1px);background-size:26px 26px;animation:meshDrift 22s linear infinite;}
+@keyframes meshDrift{to{background-position:26px 26px;}}
+
+.auth-orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(60px);}
+.orb-1{width:320px;height:320px;background:rgba(124,58,237,0.22);top:-60px;right:-50px;}
+.orb-2{width:260px;height:260px;background:rgba(230,57,70,0.17);bottom:60px;left:-80px;}
+.orb-3{width:180px;height:180px;background:rgba(37,99,235,0.14);top:44%;right:10%;}
+
+.auth-bg-text{position:absolute;bottom:0;right:-10px;font-family:'Bebas Neue',sans-serif;font-size:200px;line-height:1;color:rgba(255,255,255,0.025);letter-spacing:10px;user-select:none;pointer-events:none;}
+
+.auth-left-content{position:relative;z-index:1;}
+.auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:64px;}
+.auth-brand-dot{width:10px;height:10px;border-radius:50%;background:#7c3aed;animation:bdot 2.5s ease-in-out infinite;}
+@keyframes bdot{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,0.5);}50%{box-shadow:0 0 0 8px rgba(124,58,237,0);}}
+.auth-brand-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:5px;color:#fff;}
+
+.auth-left-tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(167,139,250,0.9);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.auth-left-tag::before{content:'';width:22px;height:2px;background:#7c3aed;border-radius:2px;}
+.auth-left-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,6vw,80px);line-height:0.9;letter-spacing:2px;color:#fff;margin-bottom:22px;}
+.auth-left-h1 em{color:#a78bfa;font-style:normal;}
+.auth-left-p{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.65;max-width:320px;font-weight:300;}
+
+.auth-steps{display:flex;flex-direction:column;gap:12px;margin-top:36px;}
+.step-row{display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,0.58);}
+.step-num{width:28px;height:28px;border-radius:8px;background:rgba(124,58,237,0.3);border:1px solid rgba(167,139,250,0.3);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#a78bfa;flex-shrink:0;}
+
+/* ── Right panel ── */
+.auth-right{background:#f5f6fa;display:flex;align-items:center;justify-content:center;padding:48px 40px;position:relative;overflow-y:auto;}
+.auth-right::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(0,0,0,0.038) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;}
+
+.auth-form-wrap{width:100%;max-width:430px;position:relative;z-index:1;}
+
+/* Header */
+.form-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#7c3aed;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.form-eyebrow::before{content:'';width:18px;height:2px;background:#7c3aed;border-radius:2px;}
+.form-title{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:2px;color:#0f172a;line-height:0.92;margin-bottom:8px;}
+.form-sub{font-size:14px;color:#94a3b8;margin-bottom:28px;font-weight:300;}
+
+/* Errors */
+.form-errs{background:#fff0f1;border:1.5px solid rgba(230,57,70,0.22);border-radius:12px;padding:12px 16px;font-size:13px;color:#e63946;margin-bottom:20px;}
+.form-errs ul{margin:0;padding-left:16px;}
+
+/* Two-column row */
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+/* Field */
+.fg{margin-bottom:18px;}
+.fg label{display:block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;margin-bottom:8px;}
+.fg input,.fg select{
+  width:100%;padding:13px 16px;
+  background:#fff;border:1.5px solid rgba(0,0,0,0.09);
+  border-radius:13px;font-family:'DM Sans',sans-serif;
+  font-size:14px;color:#0f172a;outline:none;
+  transition:border-color 0.25s,box-shadow 0.25s;
+  appearance:none;-webkit-appearance:none;
+}
+.fg input:focus,.fg select:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,0.1);}
+.fg-wrap{position:relative;}
+.fg input.has-eye{padding-right:44px;}
+.fg-eye{position:absolute;right:13px;top:50%;transform:translateY(-50%);all:unset;cursor:pointer;font-size:16px;color:#94a3b8;transition:color 0.2s;}
+.fg-eye:hover{color:#7c3aed;}
+
+/* Gender radios */
+.gender-opts{display:flex;gap:8px;flex-wrap:wrap;}
+.gender-item{
+  display:flex;align-items:center;gap:7px;
+  padding:9px 14px;border-radius:10px;
+  background:#fff;border:1.5px solid rgba(0,0,0,0.09);
+  cursor:pointer;font-size:13px;color:#334155;transition:all 0.2s;
+}
+.gender-item:has(input:checked){background:#faf5ff;border-color:rgba(124,58,237,0.3);color:#7c3aed;}
+.gender-item input{accent-color:#7c3aed;width:14px;height:14px;}
+
+/* Strength */
+.pw-str-wrap{height:4px;border-radius:4px;background:#f1f5f9;overflow:hidden;margin-top:7px;}
+.pw-str-bar{height:100%;border-radius:4px;width:0%;transition:width 0.4s,background 0.4s;}
+.pw-str-lbl{font-size:11px;color:#94a3b8;margin-top:5px;}
+
+/* Submit */
+.btn-auth{
+  all:unset;cursor:pointer;width:100%;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  background:#7c3aed;color:#fff;
+  font-family:'Space Mono',monospace;font-size:12px;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:15px 24px;border-radius:13px;
+  transition:all 0.25s;
+  box-shadow:0 8px 28px rgba(124,58,237,0.28);
+  margin-top:6px;
+}
+.btn-auth:hover{background:#6d28d9;box-shadow:0 12px 36px rgba(124,58,237,0.4);transform:translateY(-2px);}
+
+.auth-switch{text-align:center;font-size:13px;color:#94a3b8;margin-top:20px;}
+.auth-switch a{color:#7c3aed;font-weight:600;text-decoration:none;transition:color 0.2s;}
+.auth-switch a:hover{color:#6d28d9;text-decoration:underline;}
+
+@media(max-width:860px){.auth-page{grid-template-columns:1fr;}.auth-left{display:none;}.auth-right{min-height:100vh;}}
+@media(max-width:480px){.fg-row{grid-template-columns:1fr;}}
+</style>
+
+<div class="auth-page">
+
+  <!-- Left -->
+  <div class="auth-left">
+    <div class="auth-orb orb-1"></div>
+    <div class="auth-orb orb-2"></div>
+    <div class="auth-orb orb-3"></div>
+    <div class="auth-bg-text">JOIN</div>
+    <div class="auth-left-content">
+      <div class="auth-brand">
+        <div class="auth-brand-dot"></div>
+        <div class="auth-brand-name">VEHICLEVAULT</div>
+      </div>
+      <div class="auth-left-tag">Get Started</div>
+      <div class="auth-left-h1">Create Your<br><em>Account</em></div>
+      <p class="auth-left-p">Join thousands of car enthusiasts comparing, reviewing, and tracking vehicles on VehicleVault.</p>
+      <div class="auth-steps">
+        <div class="step-row"><div class="step-num">01</div>Fill in your details</div>
+        <div class="step-row"><div class="step-num">02</div>Verify email with OTP on login</div>
+        <div class="step-row"><div class="step-num">03</div>Start exploring cars</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right -->
+  <div class="auth-right">
+    <div class="auth-form-wrap">
+
+      <div class="form-eyebrow">New Account</div>
+      <div class="form-title">Sign Up</div>
+      <div class="form-sub">All fields are required</div>
+
+      {% if form.errors %}
+      <div class="form-errs">
+        <ul>
+          {% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}
+          {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="fg-row">
+          <div class="fg">
+            <label>First Name</label>
+            {{ form.first_name }}
+          </div>
+          <div class="fg">
+            <label>Last Name</label>
+            {{ form.last_name }}
+          </div>
+        </div>
+
+        <div class="fg">
+          <label>Gender</label>
+          <div class="gender-opts">
+            {% for radio in form.gender %}
+            <label class="gender-item">{{ radio.tag }}<span>{{ radio.choice_label }}</span></label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="fg">
+          <label>Email Address</label>
+          {{ form.email }}
+        </div>
+
+        <div class="fg">
+          <label>Role</label>
+          {{ form.role }}
+        </div>
+
+        <div class="fg">
+          <label>Password</label>
+          <div class="fg-wrap">
+            {{ form.password1 }}
+            <button type="button" class="fg-eye" onclick="togglePw('id_password1',this)">👁</button>
+          </div>
+          <div class="pw-str-wrap"><div class="pw-str-bar" id="sBar"></div></div>
+          <div class="pw-str-lbl" id="sLbl"></div>
+        </div>
+
+        <div class="fg">
+          <label>Confirm Password</label>
+          <div class="fg-wrap">
+            {{ form.password2 }}
+            <button type="button" class="fg-eye" onclick="togglePw('id_password2',this)">👁</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-auth">Create Account &nbsp;→</button>
+      </form>
+
+      <div class="auth-switch">Already have an account? <a href="{% url 'login' %}">Sign in →</a></div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* Style Django-rendered inputs to match design */
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.fg input, .fg select').forEach(el => {
+    el.style.cssText = 'width:100%;padding:13px 16px;background:#fff;border:1.5px solid rgba(0,0,0,0.09);border-radius:13px;font-family:DM Sans,sans-serif;font-size:14px;color:#0f172a;outline:none;';
+  });
+  /* inputs next to eye button need right padding */
+  document.querySelectorAll('.fg-wrap input').forEach(el => {
+    el.style.paddingRight = '44px';
+  });
+});
+
+function togglePw(id, btn){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const show = el.type==='password';
+  el.type = show?'text':'password';
+  btn.textContent = show?'🙈':'👁';
+}
+
+const pw1 = document.getElementById('id_password1');
+if(pw1) pw1.addEventListener('input', ()=>checkStr(pw1.value));
+
+function checkStr(v){
+  const bar=document.getElementById('sBar'), lbl=document.getElementById('sLbl');
+  let s=0;
+  if(v.length>=8) s++;
+  if(/[A-Z]/.test(v)) s++;
+  if(/[0-9]/.test(v)) s++;
+  if(/[^A-Za-z0-9]/.test(v)) s++;
+  const m={0:['0%','#f1f5f9',''],1:['25%','#ef4444','Weak'],2:['50%','#f59e0b','Fair'],3:['75%','#3b82f6','Good'],4:['100%','#10b981','Strong ✓']};
+  bar.style.width=m[s][0]; bar.style.background=m[s][1];
+  lbl.textContent=m[s][2]; lbl.style.color=m[s][1];
+}
+</script>
+
+{% endblock %}
+
+
+
+
+{% comment %} {% extends 'base.html' %} {% endcomment %}
+{% comment %} {% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/signup.css' %}">
+{% endblock %}
+
+{% block content %}
+
 <div class="auth-container">
 
     <!-- LEFT IMAGE -->
@@ -75,7 +343,7 @@
 
 </div>
 
-{% endblock %}
+{% endblock %} {% endcomment %}
 
 {% comment %} {% extends 'base.html' %} {% endcomment %}
 {% comment %} {% load static %}

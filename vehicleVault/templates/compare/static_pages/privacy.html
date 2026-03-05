@@ -1,10 +1,161 @@
 {% extends 'base.html' %}
-
+{% load static %}
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <h2>Privacy</h2>
-    <p>
-        VehicleVault is a professional car comparison and analytics platform.
-    </p>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--red:#e63946;--red-l:#fff0f1;--accent:#f4a261;--dark:#0f172a;--text:#1e293b;--text2:#475569;--muted:#94a3b8;--bg:#f5f6fa;--card:#fff;--border:rgba(0,0,0,0.07);--sh-md:0 8px 32px rgba(15,23,42,.10);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(230,57,70,.4)}50%{box-shadow:0 0 0 8px rgba(230,57,70,0)}}
+.pg-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(0,0,0,.042) 1px,transparent 1px);background-size:28px 28px;}
+.pg-blob{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 45% at 8% 4%,rgba(230,57,70,.06),transparent 55%);}
+.deco{position:fixed;border-radius:50%;pointer-events:none;z-index:0;border:1.5px solid rgba(230,57,70,.05);}
+.deco-1{width:520px;height:520px;top:-180px;right:-160px;animation:spin 68s linear infinite;}
+.wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:52px 40px 100px;}
+.hero{text-align:center;padding:56px 20px 60px;animation:fadeUp .65s ease both;}
+.eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);display:inline-flex;align-items:center;gap:10px;margin-bottom:16px;}
+.eyebrow::before,.eyebrow::after{content:'';width:22px;height:2px;background:var(--red);border-radius:2px;}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,8vw,94px);letter-spacing:3px;line-height:.9;color:var(--dark);margin-bottom:18px;}
+.hero-title em{color:var(--red);font-style:normal;}
+.hero-sub{font-size:15.5px;color:var(--text2);line-height:1.72;font-weight:300;}
+.updated{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:14px;}
+
+/* TOC */
+.toc{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:28px 28px;margin-bottom:36px;animation:fadeUp .6s ease .08s both;}
+.toc-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.toc-title::before{content:'';width:14px;height:2px;background:var(--red);border-radius:2px;}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.toc-list a{font-size:13.5px;color:var(--text2);text-decoration:none;display:flex;align-items:center;gap:8px;transition:color .2s;}
+.toc-list a::before{content:'→';color:var(--red);font-size:12px;}
+.toc-list a:hover{color:var(--red);}
+
+/* Sections */
+.policy-section{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:34px 32px;margin-bottom:18px;animation:fadeUp .6s ease both;}
+.policy-section:nth-child(1){animation-delay:.1s}.policy-section:nth-child(2){animation-delay:.15s}.policy-section:nth-child(3){animation-delay:.2s}
+.policy-section:nth-child(4){animation-delay:.25s}.policy-section:nth-child(5){animation-delay:.3s}.policy-section:nth-child(6){animation-delay:.35s}
+.ps-num{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
+.ps-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1.5px;color:var(--dark);margin-bottom:14px;}
+.ps-body{font-size:14.5px;color:var(--text2);line-height:1.78;font-weight:300;}
+.ps-body p{margin-bottom:12px;}
+.ps-body p:last-child{margin-bottom:0;}
+.ps-body ul{margin:10px 0 12px 20px;display:flex;flex-direction:column;gap:6px;}
+.ps-body li{font-size:14px;color:var(--text2);}
+.ps-body strong{color:var(--dark);font-weight:600;}
+
+/* Highlight box */
+.ps-note{background:var(--red-l);border:1.5px solid rgba(230,57,70,.18);border-radius:10px;padding:14px 18px;font-size:13.5px;color:#c0303b;margin-top:14px;line-height:1.6;}
+
+@media(max-width:768px){.wrap{padding:32px 20px 80px;}.policy-section{padding:24px 20px;}}
+</style>
+
+<div class="pg-bg"></div><div class="pg-blob"></div><div class="deco deco-1"></div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Legal</div>
+    <div class="hero-title">Privacy<br><em>Policy</em></div>
+    <p class="hero-sub">We take your privacy seriously. This policy explains what data we collect, how we use it, and your rights as a user.</p>
+    <div class="updated">Last updated: March 1, 2026</div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Table of Contents</div>
+    <ul class="toc-list">
+      <li><a href="#collect">Information We Collect</a></li>
+      <li><a href="#use">How We Use Your Data</a></li>
+      <li><a href="#share">Data Sharing</a></li>
+      <li><a href="#security">Security</a></li>
+      <li><a href="#rights">Your Rights</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+    </ul>
+  </div>
+
+  <div id="collect" class="policy-section">
+    <div class="ps-num">01 —</div>
+    <div class="ps-title">Information We Collect</div>
+    <div class="ps-body">
+      <p>When you register on VehicleVault, we collect the following personal information:</p>
+      <ul>
+        <li>Full name and email address</li>
+        <li>Gender and account role (user or admin)</li>
+        <li>Password (stored as a secure hash — never in plain text externally)</li>
+        <li>Account creation date and last activity timestamp</li>
+      </ul>
+      <p>We also automatically collect usage data such as vehicles viewed, comparisons made, reviews submitted, and general interaction logs to improve your experience.</p>
+    </div>
+  </div>
+
+  <div id="use" class="policy-section">
+    <div class="ps-num">02 —</div>
+    <div class="ps-title">How We Use Your Data</div>
+    <div class="ps-body">
+      <p>Your data is used solely to power your VehicleVault experience:</p>
+      <ul>
+        <li>Authenticating your account and keeping it secure with OTP login</li>
+        <li>Displaying your activity stats and personalised dashboard</li>
+        <li>Sending transactional emails (OTPs, welcome messages, password resets)</li>
+        <li>Improving our platform based on anonymised usage patterns</li>
+      </ul>
+      <div class="ps-note">🔒 We <strong>never</strong> use your data for targeted advertising or sell it to third parties under any circumstances.</div>
+    </div>
+  </div>
+
+  <div id="share" class="policy-section">
+    <div class="ps-num">03 —</div>
+    <div class="ps-title">Data Sharing</div>
+    <div class="ps-body">
+      <p>VehicleVault does not sell, trade, or rent your personal information to any third parties. We may share anonymised, aggregated data (e.g. "most compared cars this month") publicly, but this data is never traceable to individual users.</p>
+      <p>We use <strong>Django's email infrastructure</strong> to send transactional emails. Email delivery providers may process your email address in transit — they are contractually prohibited from using it for any other purpose.</p>
+    </div>
+  </div>
+
+  <div id="security" class="policy-section">
+    <div class="ps-num">04 —</div>
+    <div class="ps-title">Security</div>
+    <div class="ps-body">
+      <p>We implement multiple layers of security to protect your account:</p>
+      <ul>
+        <li>Passwords are hashed using Django's PBKDF2-SHA256 algorithm</li>
+        <li>Login requires OTP verification sent to your registered email</li>
+        <li>All sessions use CSRF protection and signed cookies</li>
+        <li>HTTPS is enforced on all pages in production</li>
+      </ul>
+      <p>While we take every reasonable precaution, no system is 100% immune. We encourage you to use a strong, unique password and keep your email account secure.</p>
+    </div>
+  </div>
+
+  <div id="rights" class="policy-section">
+    <div class="ps-num">05 —</div>
+    <div class="ps-title">Your Rights</div>
+    <div class="ps-body">
+      <p>You have the following rights over your personal data:</p>
+      <ul>
+        <li><strong>Access:</strong> Request a copy of the data we hold about you</li>
+        <li><strong>Correction:</strong> Update incorrect or outdated information via your profile</li>
+        <li><strong>Deletion:</strong> Request complete removal of your account and associated data</li>
+        <li><strong>Portability:</strong> Receive your data in a structured, machine-readable format</li>
+      </ul>
+      <p>To exercise any of these rights, contact us at <strong>privacy@vehiclevault.com</strong>. We will respond within 7 business days.</p>
+    </div>
+  </div>
+
+  <div id="contact" class="policy-section">
+    <div class="ps-num">06 —</div>
+    <div class="ps-title">Contact Us</div>
+    <div class="ps-body">
+      <p>If you have any questions about this Privacy Policy or how we handle your data, please reach out:</p>
+      <ul>
+        <li>Email: <strong>privacy@vehiclevault.com</strong></li>
+        <li>Address: VehicleVault, Ahmedabad, Gujarat — 380015, India</li>
+        <li>Response time: within 24–48 business hours</li>
+      </ul>
+    </div>
+  </div>
 </div>
+
+
 {% endblock %}

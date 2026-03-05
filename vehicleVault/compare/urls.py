@@ -26,6 +26,7 @@ urlpatterns = [
     path('user/comparisons/', views.user_comparisons, name='user_comparisons'),
     path('user/reviews/', views.user_reviews, name='user_reviews'),
     path('user/profile/',  views.user_profile,  name='user_profile'),
+    path('admin/profile/',  views.admin_profile,  name='admin_profile'),
     path('.well-known/appspecific/com.chrome.devtools.json', devtools_json),
     # Footer Pages
     path('about/', views.about_page, name='about_page'),

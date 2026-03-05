@@ -130,7 +130,7 @@
     <ul class="nav flex-column mt-4">
 
         <li class="nav-item">
-            <a href="/core/user-dashboard/" class="nav-link text-white">
+            <a href="{% url "user-dashboard" %}" class="nav-link text-white">
                 🏠 Dashboard
             </a>
         </li>
@@ -176,6 +176,54 @@
 </div>
 
 <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<script>
+(function () {
+  function openSidebar() {
+    document.getElementById('sidebar').classList.add('active');
+    document.getElementById('sidebar-overlay').classList.add('active');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('active');
+    document.getElementById('sidebar-overlay').classList.remove('active');
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    /* Hamburger button */
+    var btn = document.getElementById('menu-toggle');
+    if (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var sidebar = document.getElementById('sidebar');
+        sidebar.classList.contains('active') ? closeSidebar() : openSidebar();
+      });
+    }
+
+    /* Click on overlay closes sidebar */
+    var overlay = document.getElementById('sidebar-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', closeSidebar);
+    }
+
+    /* Click anywhere outside sidebar also closes it */
+    document.addEventListener('click', function (e) {
+      var sidebar = document.getElementById('sidebar');
+      var toggle  = document.getElementById('menu-toggle');
+      if (!sidebar || !sidebar.classList.contains('active')) return;
+      if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+        closeSidebar();
+      }
+    });
+
+    /* Highlight active nav link */
+    document.querySelectorAll('#sidebar .nav-link').forEach(function (link) {
+      if (link.href && window.location.href.startsWith(link.href)) {
+        link.classList.add('active-link');
+      }
+    });
+  });
+})();
+</script>
 
 
 {% comment %} <div id="sidebar" class="sidebar">

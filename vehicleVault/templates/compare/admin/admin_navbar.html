@@ -1,73 +1,190 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <div class="container-fluid">
+<style>
+.adnav-root * { box-sizing: border-box; }
 
-    <!-- Left side -->
-    <div class="d-flex align-items-center">
+.adnav-root {
+  position: sticky; top: 0; z-index: 1100;
+  height: 64px;
+  background: #ffffff;
+  border-bottom: 1px solid #e8edf5;
+  box-shadow: 0 1px 0 #e8edf5, 0 4px 24px rgba(15,23,42,0.05);
+  display: flex; align-items: center;
+  padding: 0 32px;
+  justify-content: space-between;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
 
-        <button class="btn btn-outline-light me-2" id="menu-toggle">
-            ☰
-        </button>
+.adnav-left { display: flex; align-items: center; gap: 16px; }
 
-        <a class="navbar-brand fw-bold mb-0"> VehicleVault</a>
+/* Hamburger */
+#menu-toggle {
+  all: unset; cursor: pointer;
+  width: 38px; height: 38px; border-radius: 10px;
+  background: #f0f4ff; border: 1px solid #c7d7fd;
+  color: #3b5bdb; display: flex; align-items: center;
+  justify-content: center; font-size: 17px;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+#menu-toggle:hover {
+  background: #3b5bdb; color: #fff; border-color: #3b5bdb;
+  box-shadow: 0 4px 12px rgba(59,91,219,0.3); transform: scale(1.06);
+}
 
+/* Brand */
+.adnav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.adnav-brand-icon {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, #3b5bdb 0%, #7048e8 100%);
+  border-radius: 9px; display: flex; align-items: center;
+  justify-content: center; font-size: 16px;
+  box-shadow: 0 3px 10px rgba(59,91,219,0.28); flex-shrink: 0;
+}
+.adnav-brand-text { font-size: 18px; font-weight: 800; color: #0f172a; letter-spacing: -0.4px; }
+.adnav-brand-text span { color: #3b5bdb; }
+
+/* Breadcrumb */
+.adnav-bc {
+  display: flex; align-items: center; gap: 6px;
+  background: #f8faff; border: 1px solid #e0e7ff;
+  border-radius: 20px; padding: 5px 12px;
+  font-size: 12px; color: #64748b; font-weight: 500;
+}
+.adnav-bc .sep { color: #cbd5e1; }
+.adnav-bc .cur { color: #3b5bdb; font-weight: 600; }
+
+/* Right */
+.adnav-right { display: flex; align-items: center; gap: 10px; }
+
+/* Role badge */
+.adnav-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg, #eef2ff, #f0f4ff);
+  border: 1px solid #c7d7fd; border-radius: 20px;
+  padding: 5px 13px; font-size: 11px; font-weight: 700;
+  color: #3b5bdb; letter-spacing: 0.3px;
+}
+.adnav-badge-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: #3b5bdb;
+  animation: abdot 2s ease-in-out infinite;
+}
+@keyframes abdot {
+  0%,100% { box-shadow: 0 0 0 0 rgba(59,91,219,0.4); }
+  50%      { box-shadow: 0 0 0 4px rgba(59,91,219,0); }
+}
+
+/* Profile dropdown */
+.adnav-pdrop { position: relative; }
+
+.adnav-ptrigger {
+  display: flex; align-items: center; gap: 10px;
+  padding: 5px 10px 5px 6px; border-radius: 12px;
+  border: 1px solid #e2e8f0; background: #fafbfc;
+  cursor: pointer; transition: all 0.2s; user-select: none;
+}
+.adnav-ptrigger:hover {
+  border-color: #c7d7fd; background: #f0f4ff;
+  box-shadow: 0 2px 12px rgba(59,91,219,0.08);
+}
+.adnav-pavatar {
+  width: 32px; height: 32px; border-radius: 9px;
+  object-fit: cover; border: 2px solid #e0e7ff; display: block;
+}
+.adnav-pname  { font-size: 13px; font-weight: 700; color: #0f172a; line-height: 1.2; }
+.adnav-pemail { font-size: 11px; color: #94a3b8; line-height: 1.2; }
+.adnav-pchev  { font-size: 10px; color: #94a3b8; margin-left: 2px; transition: transform 0.22s; }
+
+/* Dropdown */
+.adnav-dmenu {
+  position: absolute; top: calc(100% + 10px); right: 0;
+  width: 240px; background: #fff;
+  border: 1px solid #e8edf5; border-radius: 16px; padding: 8px;
+  box-shadow: 0 8px 30px rgba(15,23,42,0.12), 0 2px 8px rgba(15,23,42,0.05);
+  opacity: 0; transform: translateY(-6px) scale(0.98);
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.16,1,0.3,1); z-index: 9999;
+}
+.adnav-pdrop.open .adnav-dmenu  { opacity:1; transform:translateY(0) scale(1); pointer-events:all; }
+.adnav-pdrop.open .adnav-pchev  { transform: rotate(180deg); }
+
+.adnav-dhead {
+  background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+  border-radius: 10px; padding: 12px 14px;
+  margin-bottom: 6px; border: 1px solid #e0e7ff;
+}
+.adnav-dsigned { font-size: 10px; color: #94a3b8; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 3px; }
+.adnav-demail  { font-size: 12px; font-weight: 700; color: #0f172a; }
+
+.adnav-ditem {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 9px; color: #475569;
+  text-decoration: none; font-size: 13px; font-weight: 500; transition: all 0.15s;
+}
+.adnav-ditem:hover { background: #f0f4ff; color: #3b5bdb; text-decoration: none; }
+.adnav-ditem.danger { color: #dc2626; }
+.adnav-ditem.danger:hover { background: #fef2f2; color: #dc2626; }
+.adnav-ddivider { border: none; border-top: 1px solid #f1f5f9; margin: 5px 0; }
+</style>
+
+<div class="adnav-root">
+
+  <div class="adnav-left">
+    <button id="menu-toggle" title="Toggle sidebar">☰</button>
+
+    <a class="adnav-brand" href="/core/admin-dashboard/">
+      
+      <div class="adnav-brand-text">Vehicle<span>Vault</span></div>
+    </a>
+
+    <div class="adnav-bc">
+      <span>Admin</span>
+      <span class="sep">/</span>
+      <span class="cur">Dashboard</span>
     </div>
-
-    <!-- Right side -->
-    <div class="dropdown ms-auto">
-
-        <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-           href="#"
-           id="profileDropdown"
-           data-bs-toggle="dropdown"
-           aria-expanded="false">
-
-            <img src="https://ui-avatars.com/api/?name={{ request.user.email }}"
-                 width="35"
-                 height="35"
-                 class="rounded-circle me-2">
-            <span class="fw-bold">{{request.user.first_name }} {{ request.user.last_name }}</span>
-            <small class="text-muted d-block">{{ request.user.email }}</small>
-
-        </a>
-
-        <!-- IMPORTANT: dropdown-menu-end -->
-        <ul class="dropdown-menu dropdown-menu-end shadow">
-
-            <li class="dropdown-header">
-                Signed in as<br>
-                <strong>{{ request.user.email }}</strong>
-            </li>
-
-            <li><hr class="dropdown-divider"></li>
-
-            <li>
-                <a class="dropdown-item" href="#">
-                    👤 Profile
-                </a>
-            </li>
-
-            <li>
-                <a class="dropdown-item" href="#">
-                    ⚙ Settings
-                </a>
-            </li>
-
-            <li><hr class="dropdown-divider"></li>
-
-            <li>
-                <a class="dropdown-item text-danger" href="{% url 'logout' %}">
-                    🚪 Logout
-                </a>
-            </li>
-
-        </ul>
-
-    </div>
-
   </div>
 
-</nav>
+  <div class="adnav-right">
+    <div class="adnav-badge">
+      <span class="adnav-badge-dot"></span>
+      Admin Panel
+    </div>
+
+    <div class="adnav-pdrop" id="adminProfileDrop">
+      <div class="adnav-ptrigger"
+           onclick="document.getElementById('adminProfileDrop').classList.toggle('open')">
+        <img class="adnav-pavatar"
+             src="https://ui-avatars.com/api/?name={{ request.user.email }}&background=eef2ff&color=3b5bdb&bold=true"
+             alt="avatar">
+        <div>
+          <div class="adnav-pname">{{ request.user.first_name|default:request.user.email }} {{ request.user.last_name|default:"" }}</div>
+          <div class="adnav-pemail">{{ request.user.email }}</div>
+        </div>
+        <div class="adnav-pchev">▼</div>
+      </div>
+
+      <div class="adnav-dmenu">
+        <div class="adnav-dhead">
+          <div class="adnav-dsigned">Signed in as</div>
+          <div class="adnav-demail">{{ request.user.email }}</div>
+        </div>
+        <a class="adnav-ditem" href="{% url "admin_profile" %}">👤 &nbsp;Profile</a>
+        
+        <hr class="adnav-ddivider">
+        <a class="adnav-ditem danger" href="{% url 'logout' %}">🚪 &nbsp;Logout</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener('click', function (e) {
+  const dd = document.getElementById('adminProfileDrop');
+  if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+});
+</script>
 
 
 {% comment %} <nav class="navbar navbar-expand-lg navbar-dark bg-danger shadow">
