@@ -1,0 +1,521 @@
+/* ================================================================
+   VehicleVault — Shared Page Stylesheet
+   Path : static/css/vv-pages.css
+   Pages: admin_reviews, admin_users, car_form, cars_viewed, compare
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+
+/* ── CSS Variables ─────────────────────────────────────────── */
+:root {
+  --red:       #e63946;
+  --red-d:     #c1121f;
+  --red-l:     #fff0f1;
+  --red-m:     #ffdde0;
+  --orange:    #f4a261;
+  --dark:      #0f172a;
+  --dark2:     #1e293b;
+  --dark3:     #334155;
+  --card:      #ffffff;
+  --bg:        #f4f6fb;
+  --border:    rgba(15,23,42,0.08);
+  --text:      #0f172a;
+  --text2:     #475569;
+  --muted:     #94a3b8;
+  --teal:      #0d9488;
+  --teal-l:    #f0fdfa;
+  --blue:      #2563eb;
+  --blue-l:    #eff6ff;
+  --green:     #16a34a;
+  --green-l:   #f0fdf4;
+  --amber:     #d97706;
+  --amber-l:   #fffbeb;
+  --sh-sm:     0 2px 12px rgba(15,23,42,0.06);
+  --sh-md:     0 8px 32px rgba(15,23,42,0.10);
+  --sh-lg:     0 24px 64px rgba(15,23,42,0.14);
+  --sh-red:    0 12px 40px rgba(230,57,70,0.22);
+  --r:         18px;
+  --r-sm:      10px;
+}
+
+/* ── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Keyframes ─────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);   }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes rowIn {
+  from { opacity: 0; transform: translateX(-18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(32px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);   }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0   rgba(230,57,70,.45); }
+  50%     { box-shadow: 0 0 0 8px rgba(230,57,70,0);   }
+}
+@keyframes barGrow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes floatY {
+  0%,100% { transform: translateY(0);   }
+  50%     { transform: translateY(-7px);}
+}
+@keyframes shimmer {
+  0%   { background-position: -500px 0; }
+  100% { background-position:  500px 0; }
+}
+
+/* ── Page scaffold ─────────────────────────────────────────── */
+.vv-wrap {
+  min-height: 100vh;
+  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Dot-grid */
+.vv-wrap::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(0,0,0,.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+/* Ambient glow */
+.vv-wrap::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 45% at 0% 0%,   rgba(230,57,70,.06),  transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 100%,rgba(230,57,70,.04),  transparent 55%);
+}
+
+/* Decorative rings */
+.vv-ring {
+  position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+  border: 1.5px solid rgba(230,57,70,.045);
+}
+.vv-ring-a { width:580px;height:580px;top:-220px;right:-180px; animation:spin 75s linear infinite; }
+.vv-ring-b { width:340px;height:340px;bottom:-130px;left:-130px; animation:spin 52s linear infinite reverse; }
+
+/* Inner content */
+.vv-page {
+  position: relative; z-index: 1;
+  max-width: 1160px; margin: 0 auto;
+  padding: 52px 40px 100px;
+}
+
+/* ── Page header ───────────────────────────────────────────── */
+.vv-ph {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+  margin-bottom: 36px;
+  animation: fadeUp .65s cubic-bezier(.22,1,.36,1) both;
+}
+.vv-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--red);
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-bottom: 10px;
+}
+.vv-eyebrow::before, .vv-eyebrow::after {
+  content: ''; display: inline-block;
+  width: 22px; height: 2px;
+  background: linear-gradient(90deg,var(--red),var(--orange));
+  border-radius: 2px;
+}
+.vv-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(38px, 5vw, 62px);
+  letter-spacing: 2px; line-height: .9;
+  color: var(--dark);
+}
+.vv-title em { color: var(--red); font-style: normal; }
+.vv-sub {
+  font-size: 13px; color: var(--muted);
+  margin-top: 8px; font-weight: 300;
+}
+
+/* Count pill */
+.vv-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--dark); color: #fff;
+  border-radius: 30px; padding: 9px 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; letter-spacing: 1.5px;
+}
+.vv-pill .live {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--red); animation: pulse 2s ease-in-out infinite;
+}
+
+/* ── Card shell ────────────────────────────────────────────── */
+.vv-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: var(--sh-md);
+  overflow: hidden;
+  animation: fadeUp .7s cubic-bezier(.22,1,.36,1) .06s both;
+}
+
+/* Dark bar on top of card */
+.vv-card-bar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--red), var(--orange), var(--red));
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+/* ── Table ─────────────────────────────────────────────────── */
+.vv-tbl-wrap { overflow-x: auto; }
+
+.vv-tbl {
+  width: 100%; border-collapse: collapse;
+}
+
+/* Head */
+.vv-tbl thead { background: var(--dark); }
+.vv-tbl thead th {
+  padding: 16px 22px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; letter-spacing: 3.5px; text-transform: uppercase;
+  color: rgba(255,255,255,.6); font-weight: 400;
+  white-space: nowrap; border: none;
+}
+
+/* Body rows – staggered entrance */
+.vv-tbl tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background .2s;
+  animation: rowIn .38s ease both;
+}
+.vv-tbl tbody tr:nth-child(1)  { animation-delay:.05s }
+.vv-tbl tbody tr:nth-child(2)  { animation-delay:.10s }
+.vv-tbl tbody tr:nth-child(3)  { animation-delay:.15s }
+.vv-tbl tbody tr:nth-child(4)  { animation-delay:.20s }
+.vv-tbl tbody tr:nth-child(5)  { animation-delay:.25s }
+.vv-tbl tbody tr:nth-child(6)  { animation-delay:.30s }
+.vv-tbl tbody tr:nth-child(7)  { animation-delay:.35s }
+.vv-tbl tbody tr:nth-child(8)  { animation-delay:.40s }
+.vv-tbl tbody tr:nth-child(9)  { animation-delay:.45s }
+.vv-tbl tbody tr:nth-child(10) { animation-delay:.50s }
+.vv-tbl tbody tr:last-child { border-bottom: none; }
+.vv-tbl tbody tr:hover { background: #fafbff; }
+
+.vv-tbl td {
+  padding: 14px 22px;
+  font-size: 13.5px; color: var(--text2);
+  vertical-align: middle;
+}
+.vv-tbl td strong { color: var(--text); font-weight: 600; }
+
+/* Comment truncate */
+.vv-comment {
+  max-width: 260px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 12.5px; color: var(--text2);
+}
+
+/* ── Badges ────────────────────────────────────────────────── */
+.vv-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700;
+}
+.b-green  { background: var(--green-l);  color: var(--green); }
+.b-red    { background: var(--red-l);    color: var(--red);   }
+.b-blue   { background: var(--blue-l);   color: var(--blue);  }
+.b-teal   { background: var(--teal-l);   color: var(--teal);  }
+.b-amber  { background: var(--amber-l);  color: var(--amber); }
+.b-dark   { background: var(--dark2);    color: rgba(255,255,255,.75); }
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.vv-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 20px; border-radius: 10px;
+  border: none; cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700;
+  text-decoration: none;
+  transition: all .25s cubic-bezier(.22,1,.36,1);
+}
+.vv-btn-red {
+  background: var(--red); color: #fff; box-shadow: var(--sh-red);
+}
+.vv-btn-red:hover {
+  background: var(--red-d); color: #fff; text-decoration: none;
+  transform: translateY(-3px); box-shadow: 0 16px 44px rgba(230,57,70,.38);
+}
+.vv-btn-ghost {
+  background: var(--red-l); color: var(--red);
+  border: 1.5px solid rgba(230,57,70,.22);
+}
+.vv-btn-ghost:hover {
+  background: var(--red); color: #fff; text-decoration: none;
+  transform: translateY(-3px); box-shadow: var(--sh-red);
+}
+.vv-btn-dark {
+  background: var(--dark); color: #fff;
+}
+.vv-btn-dark:hover {
+  background: var(--dark2); color: #fff; text-decoration: none;
+  transform: translateY(-3px); box-shadow: var(--sh-md);
+}
+.vv-btn-warn {
+  background: var(--amber-l); color: var(--amber);
+  border: 1.5px solid rgba(217,119,6,.2);
+}
+.vv-btn-warn:hover {
+  background: #f59e0b; color: #fff; text-decoration: none;
+  transform: translateY(-3px);
+}
+
+/* ── Avatar circle ─────────────────────────────────────────── */
+.vv-avatar {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--dark2);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; font-weight: 700; color: rgba(255,255,255,.85);
+  flex-shrink: 0;
+}
+
+/* ── Stars ─────────────────────────────────────────────────── */
+.vv-stars { color: #f59e0b; letter-spacing: 1px; }
+
+/* ── Empty state ───────────────────────────────────────────── */
+.vv-empty {
+  text-align: center; padding: 80px 32px;
+  color: var(--muted);
+}
+.vv-empty-icon  { font-size: 52px; margin-bottom: 18px; display: block; animation: floatY 3s ease-in-out infinite; }
+.vv-empty-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px; letter-spacing: 2px; color: var(--dark);
+  margin-bottom: 8px;
+}
+.vv-empty-sub   { font-size: 13px; color: var(--muted); }
+
+/* ── Section label ─────────────────────────────────────────── */
+.vv-sec {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.vv-sec::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--border),transparent); }
+.vv-dot { width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0; animation:pulse 2.2s ease-in-out infinite; }
+
+/* ── Back link ─────────────────────────────────────────────── */
+.vv-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+  transition: color .2s, gap .2s;
+}
+.vv-back:hover { color: var(--red); gap: 10px; text-decoration: none; }
+
+/* ── Form ──────────────────────────────────────────────────── */
+.vv-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.vv-label {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 7px;
+}
+.vv-field {
+  width: 100%; padding: 13px 16px;
+  background: #f8fafd; border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--dark);
+  outline: none;
+  transition: border-color .25s, box-shadow .25s, background .25s;
+}
+.vv-field:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(230,57,70,.1);
+  background: #fff;
+}
+.vv-check-row {
+  display: flex; align-items: center; gap: 10px; padding: 4px 0;
+}
+.vv-check-row input[type="checkbox"] {
+  width:18px; height:18px; accent-color:var(--red); cursor:pointer; flex-shrink:0;
+}
+.vv-check-row label {
+  font-size: 14px; color: var(--text); cursor: pointer; font-weight: 500;
+}
+.vv-img-box {
+  width:100%; height:200px; border-radius:var(--r-sm);
+  border:1.5px solid var(--border);
+  object-fit:cover; box-shadow:var(--sh-sm);
+  transition:transform .4s cubic-bezier(.22,1,.36,1);
+}
+.vv-img-box:hover { transform:scale(1.03); }
+.vv-img-placeholder {
+  width:100%; height:200px; border-radius:var(--r-sm);
+  border:2px dashed var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:44px; color:var(--muted); background:var(--bg);
+}
+.vv-form-actions {
+  display:flex; justify-content:flex-end; gap:12px; margin-top:32px;
+  padding-top:24px; border-top:1px solid var(--border);
+}
+.vv-divider { height:1px; background:var(--border); margin:28px 0; }
+
+/* ── Cars-viewed grid ──────────────────────────────────────── */
+.vv-cars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+  gap: 22px;
+}
+.vv-car-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  box-shadow: var(--sh-sm);
+  position: relative;
+  animation: cardIn .6s cubic-bezier(.22,1,.36,1) both;
+  transition: transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s, border-color .3s;
+}
+.vv-car-card:nth-child(1)  { animation-delay:.05s }
+.vv-car-card:nth-child(2)  { animation-delay:.12s }
+.vv-car-card:nth-child(3)  { animation-delay:.19s }
+.vv-car-card:nth-child(4)  { animation-delay:.26s }
+.vv-car-card:nth-child(5)  { animation-delay:.33s }
+.vv-car-card:nth-child(6)  { animation-delay:.40s }
+.vv-car-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,var(--red),var(--orange));
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .4s cubic-bezier(.22,1,.36,1);
+}
+.vv-car-card:hover { transform:translateY(-10px); box-shadow:var(--sh-lg); border-color:rgba(230,57,70,.18); }
+.vv-car-card:hover::before { transform:scaleX(1); }
+
+.vv-car-img-wrap { position:relative; height:185px; overflow:hidden; background:var(--bg); }
+.vv-car-img {
+  width:100%; height:100%; object-fit:cover;
+  transition:transform .55s cubic-bezier(.22,1,.36,1), filter .4s;
+  filter:saturate(.85) brightness(.95);
+}
+.vv-car-card:hover .vv-car-img { transform:scale(1.08); filter:saturate(1.1) brightness(1.02); }
+.vv-car-img-wrap::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(to bottom, transparent 55%, rgba(255,255,255,.85) 100%);
+}
+.vv-car-ftype {
+  position:absolute; top:12px; left:12px; z-index:2;
+  background:var(--dark); color:#fff;
+  font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  padding:5px 12px; border-radius:20px;
+}
+
+.vv-car-body { padding:18px 20px 22px; }
+.vv-car-name {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:26px; letter-spacing:1.5px; color:var(--dark);
+  line-height:1; margin-bottom:4px;
+}
+.vv-car-brand {
+  font-family:'Space Mono',monospace;
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--muted); margin-bottom:12px;
+}
+.vv-car-price {
+  font-family:'Space Mono',monospace;
+  font-size:13px; color:var(--orange);
+  font-weight:700; letter-spacing:1px;
+  margin-bottom:14px;
+}
+.vv-car-chips { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:14px; }
+.vv-chip {
+  font-size:11px; font-family:'Space Mono',monospace;
+  padding:4px 10px; border-radius:20px;
+}
+.chip-fuel  { background:#fff4ea; color:#c2410c; }
+.chip-trans { background:var(--blue-l);  color:#1d4ed8; }
+.chip-yr    { background:var(--teal-l);  color:#0f766e; }
+
+/* ── Compare table ─────────────────────────────────────────── */
+.vv-cmp-tbl {
+  width: 100%; border-collapse: collapse;
+  animation: fadeIn .7s ease .1s both;
+}
+.vv-cmp-tbl thead { background: var(--dark); }
+.vv-cmp-tbl thead th {
+  padding: 24px 20px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 2px; color: #fff; font-weight: 400;
+  text-align: center;
+}
+.vv-cmp-tbl thead th:first-child {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(255,255,255,.45); font-weight: 400; text-align: left;
+}
+.vv-cmp-tbl tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background .2s;
+  animation: rowIn .4s ease both;
+}
+.vv-cmp-tbl tbody tr:nth-child(odd)  { background: #fafbff; }
+.vv-cmp-tbl tbody tr:nth-child(even) { background: var(--card); }
+.vv-cmp-tbl tbody tr:last-child { border-bottom: none; }
+.vv-cmp-tbl tbody tr:hover { background: var(--red-l); }
+.vv-cmp-tbl td, .vv-cmp-tbl th {
+  padding: 18px 22px; vertical-align: middle; text-align: center;
+}
+.vv-cmp-tbl td:first-child { text-align: left; }
+.vv-row-lbl {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+}
+.vv-row-val { font-size: 14px; font-weight: 600; color: var(--dark); }
+
+.vv-cmp-img {
+  width: 160px; height: 110px; object-fit: cover;
+  border-radius: 12px; border: 1.5px solid var(--border);
+  box-shadow: var(--sh-sm);
+  transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s;
+}
+.vv-cmp-img:hover { transform: scale(1.07); box-shadow: var(--sh-md); }
+.vv-no-img {
+  width:160px; height:110px; border-radius:12px;
+  background:var(--bg); border:2px dashed var(--border);
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:28px; color:var(--muted);
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width:900px) {
+  .vv-page { padding:32px 20px 80px; }
+  .vv-form-grid { grid-template-columns:1fr; }
+  .vv-cars-grid { grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); }
+  .vv-cmp-img { width:120px; height:82px; }
+}
+@media (max-width:640px) {
+  .vv-title { font-size:32px; }
+  .vv-ph { flex-direction:column; align-items:flex-start; }
+  .vv-cmp-img { width:90px; height:62px; }
+}

@@ -1,4 +1,137 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+  {% include 'compare/admin/admin_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+{% include 'compare/admin/admin_sidebar.html' %}
+
+<link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
+
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div>
+  <div class="vv-ring vv-ring-b"></div>
+
+  <div class="vv-page">
+
+    <!-- ── Page Header ── -->
+    <div class="vv-ph">
+      <div class="vv-ph-left">
+        <div class="vv-eyebrow">Admin Panel</div>
+        <div class="vv-title">User <em>Management</em></div>
+        <div class="vv-sub">View, monitor and toggle status of all registered users</div>
+      </div>
+      <div class="vv-pill">
+        <span class="live"></span>
+        {{ users|length }} User{% if users|length != 1 %}s{% endif %}
+      </div>
+    </div>
+
+    <!-- ── Table Card ── -->
+    <div class="vv-card">
+      <div class="vv-card-bar"></div>
+
+      <div class="vv-tbl-wrap">
+        <table class="vv-tbl">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>User</th>
+              <th>Role</th>
+              <th>Reviews</th>
+              <th>Comparisons</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+
+              <!-- Index -->
+              <td>
+                <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">
+                  {{ forloop.counter }}
+                </span>
+              </td>
+
+              <!-- User -->
+              <td>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div class="vv-avatar">{{ user.email|first|upper }}</div>
+                  <div>
+                    <strong>{{ user.first_name }} {{ user.last_name }}</strong>
+                    <div style="font-size:11px;color:var(--muted);">{{ user.email }}</div>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Role -->
+              <td>
+                {% if user.role == 'admin' %}
+                  <span class="vv-badge b-red">{{ user.role }}</span>
+                {% else %}
+                  <span class="vv-badge b-blue">{{ user.role }}</span>
+                {% endif %}
+              </td>
+
+              <!-- Reviews -->
+              <td>
+                <div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--dark);">
+                  {{ user.total_reviews }}
+                </div>
+              </td>
+
+              <!-- Comparisons -->
+              <td>
+                <div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--dark);">
+                  {{ user.total_comparisons }}
+                </div>
+              </td>
+
+              <!-- Status -->
+              <td>
+                {% if user.is_active %}
+                  <span class="vv-badge b-green">● Active</span>
+                {% else %}
+                  <span class="vv-badge b-red">● Inactive</span>
+                {% endif %}
+              </td>
+
+              <!-- Action -->
+              <td>
+                <a href="{% url 'toggle_user_status' user.id %}"
+                   class="vv-btn vv-btn-warn"
+                   onclick="return confirm('Toggle status for {{ user.email }}?')">
+                  ⇄ Toggle
+                </a>
+              </td>
+
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7">
+                <div class="vv-empty">
+                  <span class="vv-empty-icon">👤</span>
+                  <div class="vv-empty-title">No Users Found</div>
+                  <div class="vv-empty-sub">Registered users will appear here.</div>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+
+{% comment %} {% extends 'base.html' %}
 {% block navbar %}
     {% include 'compare/admin/admin_navbar.html' %}
 {% endblock %}
@@ -46,4 +179,4 @@
     </table>
 
 </div>
-{% endblock %}
+{% endblock %} {% endcomment %}

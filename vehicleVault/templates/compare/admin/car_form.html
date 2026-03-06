@@ -1,4 +1,185 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
+
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div>
+  <div class="vv-ring vv-ring-b"></div>
+
+  <div class="vv-page">
+
+    <!-- ── Page Header ── -->
+    <div class="vv-ph">
+      <div class="vv-ph-left">
+        <div class="vv-eyebrow">Admin Panel</div>
+        <div class="vv-title">
+          {% if form.instance.pk %}
+            Edit <em>Car</em>
+          {% else %}
+            Add <em>Car</em>
+          {% endif %}
+        </div>
+        <div class="vv-sub">
+          {% if form.instance.pk %}
+            Update the details for {{ form.instance.carName }}
+          {% else %}
+            Fill in the details to list a new vehicle
+          {% endif %}
+        </div>
+      </div>
+      <a href="{% url 'car_list' %}" class="vv-back">← Back to Cars</a>
+    </div>
+
+    <!-- ── Form Card ── -->
+    <div class="vv-card">
+      <div class="vv-card-bar"></div>
+
+      <div style="padding:36px 40px 40px;">
+
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <!-- ── Top: fields + image side by side ── -->
+          <div style="display:grid;grid-template-columns:1fr 320px;gap:40px;align-items:start;">
+
+            <!-- Fields -->
+            <div>
+              <div class="vv-sec"><span class="vv-dot"></span>Vehicle Details</div>
+
+              <div class="vv-form-grid">
+
+                <div>
+                  <label class="vv-label">Car Name</label>
+                  {{ form.carName }}
+                </div>
+
+                <div>
+                  <label class="vv-label">Brand</label>
+                  {{ form.brand }}
+                </div>
+
+                <div>
+                  <label class="vv-label">Price (₹)</label>
+                  {{ form.price }}
+                </div>
+
+                <div>
+                  <label class="vv-label">Fuel Type</label>
+                  {{ form.fuelType }}
+                </div>
+
+                <div>
+                  <label class="vv-label">Transmission</label>
+                  {{ form.transmission }}
+                </div>
+
+                <div>
+                  <label class="vv-label">Mileage (km/l)</label>
+                  {{ form.mileage }}
+                </div>
+
+                <div>
+                  <label class="vv-label">Launch Year</label>
+                  {{ form.launchYear }}
+                </div>
+
+                <div style="display:flex;flex-direction:column;justify-content:flex-end;">
+                  <label class="vv-label">Availability</label>
+                  <div class="vv-check-row">
+                    {{ form.status }}
+                    <label for="{{ form.status.id_for_label }}">Mark as Active</label>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Image panel -->
+            <div>
+              <div class="vv-sec"><span class="vv-dot"></span>Car Image</div>
+
+              <div id="img-preview-wrap">
+                {% if form.instance.carImage %}
+                  <img id="img-preview"
+                       src="{{ form.instance.carImage.url }}"
+                       class="vv-img-box" alt="Car image">
+                {% else %}
+                  <div class="vv-img-placeholder" id="img-placeholder">🚗</div>
+                  <img id="img-preview" class="vv-img-box"
+                       style="display:none;" alt="Preview">
+                {% endif %}
+              </div>
+
+              <div style="margin-top:14px;">
+                <label class="vv-label">Upload Image</label>
+                {{ form.carImage }}
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ── Form Actions ── -->
+          <div class="vv-form-actions">
+            <button type="button" class="vv-btn vv-btn-ghost" onclick="clearForm()">
+              🗑 Clear All
+            </button>
+            <button type="submit" class="vv-btn vv-btn-red">
+              {% if form.instance.pk %}💾 Save Changes{% else %}➕ Add Car{% endif %}
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── Style Django form widgets to match vv-pages.css ── */
+document.querySelectorAll(
+  '.vv-page input[type=text], .vv-page input[type=number], .vv-page select, .vv-page textarea'
+).forEach(el => {
+  el.classList.add('vv-field');
+});
+
+/* ── Live image preview ── */
+const fileInput = document.querySelector('input[type="file"]');
+if (fileInput) {
+  fileInput.addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const preview = document.getElementById('img-preview');
+      const placeholder = document.getElementById('img-placeholder');
+      if (placeholder) placeholder.style.display = 'none';
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ── Clear form ── */
+function clearForm() {
+  document.querySelector('form').reset();
+  const preview = document.getElementById('img-preview');
+  const placeholder = document.getElementById('img-placeholder');
+  if (preview) { preview.src = ''; preview.style.display = 'none'; }
+  if (placeholder) placeholder.style.display = 'flex';
+}
+</script>
+
+{% endblock %}
+
+
+
+{% comment %} {% extends 'base.html' %}
 {% block content %}
 
 <div class="container mt-5 mb-5 pb-5">
@@ -138,4 +319,4 @@ function clearForm() {
 }
 </script>
 
-{% endblock %}
+{% endblock %} {% endcomment %}

@@ -1,4 +1,100 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
+
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div>
+  <div class="vv-ring vv-ring-b"></div>
+
+  <div class="vv-page">
+
+    <!-- ── Page Header ── -->
+    <div class="vv-ph">
+      <div class="vv-ph-left">
+        <div class="vv-eyebrow">My Activity</div>
+        <div class="vv-title">Cars <em>Viewed</em></div>
+        <div class="vv-sub">Every vehicle you've explored on VehicleVault</div>
+      </div>
+      <div class="vv-pill">
+        <span class="live"></span>
+        {{ interactions|length }} Car{% if interactions|length != 1 %}s{% endif %}
+      </div>
+    </div>
+
+    <!-- ── Cars Grid ── -->
+    {% if interactions %}
+    <div class="vv-cars-grid">
+      {% for i in interactions %}
+      <div class="vv-car-card">
+
+        <!-- Image -->
+        <div class="vv-car-img-wrap">
+          <span class="vv-car-ftype">{{ i.car.fuelType }}</span>
+          {% if i.car.carImage %}
+            <img src="{{ i.car.carImage.url }}"
+                 alt="{{ i.car.carName }}"
+                 class="vv-car-img">
+          {% else %}
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:52px;color:var(--muted);">🚗</div>
+          {% endif %}
+        </div>
+
+        <!-- Info -->
+        <div class="vv-car-body">
+          <div class="vv-car-name">{{ i.car.carName }}</div>
+          <div class="vv-car-brand">{{ i.car.brand }}</div>
+
+          <div class="vv-car-chips">
+            <span class="vv-chip chip-fuel">{{ i.car.fuelType }}</span>
+            <span class="vv-chip chip-trans">{{ i.car.transmission }}</span>
+            <span class="vv-chip chip-yr">{{ i.car.launchYear }}</span>
+          </div>
+
+          <div class="vv-car-price">₹ {{ i.car.price|floatformat:0 }}</div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);">
+              ⛽ {{ i.car.mileage }} km/l
+            </span>
+            <a href="{% url 'car_detail' i.car.pk %}"
+               class="vv-btn vv-btn-ghost"
+               style="padding:7px 14px;font-size:9px;">
+              View Details →
+            </a>
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- ── Empty State ── -->
+    <div class="vv-card" style="margin-top:16px;">
+      <div class="vv-card-bar"></div>
+      <div class="vv-empty">
+        <span class="vv-empty-icon">🚗</span>
+        <div class="vv-empty-title">No Cars Viewed Yet</div>
+        <div class="vv-empty-sub" style="margin-bottom:24px;">
+          Start exploring vehicles and they'll appear here.
+        </div>
+        <a href="{% url 'public_car_list' %}" class="vv-btn vv-btn-red">
+          Browse Cars →
+        </a>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% comment %} {% extends "base.html" %}
 
 {% block content %}
 
@@ -26,4 +122,4 @@
 
 </div>
 
-{% endblock %}
+{% endblock %} {% endcomment %}

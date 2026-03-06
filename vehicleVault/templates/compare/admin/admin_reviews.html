@@ -1,4 +1,135 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+  {% include 'compare/admin/admin_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+{% include 'compare/admin/admin_sidebar.html' %}
+
+<link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
+
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div>
+  <div class="vv-ring vv-ring-b"></div>
+
+  <div class="vv-page">
+
+    <!-- ── Page Header ── -->
+    <div class="vv-ph">
+      <div class="vv-ph-left">
+        <div class="vv-eyebrow">Admin Panel</div>
+        <div class="vv-title">Review <em>Moderation</em></div>
+        <div class="vv-sub">Manage and moderate all user-submitted car reviews</div>
+      </div>
+      <div class="vv-pill">
+        <span class="live"></span>
+        {{ reviews|length }} Review{% if reviews|length != 1 %}s{% endif %}
+      </div>
+    </div>
+
+    <!-- ── Table Card ── -->
+    <div class="vv-card">
+      <div class="vv-card-bar"></div>
+
+      <div class="vv-tbl-wrap">
+        <table class="vv-tbl">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>User</th>
+              <th>Car</th>
+              <th>Rating</th>
+              <th>Comment</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for review in reviews %}
+            <tr>
+              <!-- Index -->
+              <td>
+                <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">
+                  {{ forloop.counter }}
+                </span>
+              </td>
+
+              <!-- User -->
+              <td>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div class="vv-avatar">
+                    {{ review.user.email|first|upper }}
+                  </div>
+                  <span><strong>{{ review.user.email }}</strong></span>
+                </div>
+              </td>
+
+              <!-- Car -->
+              <td>
+                <span class="vv-badge b-dark">{{ review.car.carName }}</span>
+              </td>
+
+              <!-- Rating -->
+              <td>
+                <div class="vv-stars">
+                  {% for i in "12345" %}
+                    {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                  {% endfor %}
+                </div>
+                <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px;">
+                  {{ review.rating }}/5
+                </div>
+              </td>
+
+              <!-- Comment -->
+              <td>
+                <div class="vv-comment" title="{{ review.comment }}">
+                  {{ review.comment }}
+                </div>
+              </td>
+
+              <!-- Date -->
+              <td>
+                <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap;">
+                  {{ review.createdAt|date:"d M Y" }}<br>
+                  <span style="font-size:10px;">{{ review.createdAt|date:"H:i" }}</span>
+                </div>
+              </td>
+
+              <!-- Action -->
+              <td>
+                <a href="{% url 'delete_review' review.id %}"
+                   class="vv-btn vv-btn-ghost"
+                   onclick="return confirm('Delete this review?')">
+                  🗑 Delete
+                </a>
+              </td>
+
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7">
+                <div class="vv-empty">
+                  <span class="vv-empty-icon">⭐</span>
+                  <div class="vv-empty-title">No Reviews Yet</div>
+                  <div class="vv-empty-sub">User reviews will appear here once submitted.</div>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+
+{% comment %} {% extends 'base.html' %}
 {% block navbar %}
     {% include 'compare/admin/admin_navbar.html' %}
 {% endblock %}
@@ -40,4 +171,4 @@
     </table>
 
 </div>
-{% endblock %}
+{% endblock %} {% endcomment %}

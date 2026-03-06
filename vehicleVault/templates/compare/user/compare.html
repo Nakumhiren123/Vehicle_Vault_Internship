@@ -1,4 +1,185 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
+
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div>
+  <div class="vv-ring vv-ring-b"></div>
+
+  <div class="vv-page">
+
+    <!-- ── Page Header ── -->
+    <div class="vv-ph">
+      <div class="vv-ph-left">
+        <div class="vv-eyebrow">Compare</div>
+        <div class="vv-title">Side-by-Side <em>Comparison</em></div>
+        <div class="vv-sub">Compare vehicles across key specs and ratings</div>
+      </div>
+      <a href="{% url 'public_car_list' %}" class="vv-back">← Back to Cars</a>
+    </div>
+
+    {% if comparison_data %}
+
+    <!-- ── Comparison Table Card ── -->
+    <div class="vv-card">
+      <div class="vv-card-bar"></div>
+
+      <div class="vv-tbl-wrap">
+        <table class="vv-cmp-tbl">
+
+          <!-- Head: car names -->
+          <thead>
+            <tr>
+              <th>Specification</th>
+              {% for item in comparison_data %}
+                <th>{{ item.car.carName }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <!-- Image row -->
+            <tr>
+              <td><span class="vv-row-lbl">Image</span></td>
+              {% for item in comparison_data %}
+              <td>
+                {% if item.car.carImage %}
+                  <img src="{{ item.car.carImage.url }}"
+                       alt="{{ item.car.carName }}"
+                       class="vv-cmp-img">
+                {% else %}
+                  <div class="vv-no-img">🚗</div>
+                {% endif %}
+              </td>
+              {% endfor %}
+            </tr>
+
+            <!-- Brand -->
+            <tr>
+              <td><span class="vv-row-lbl">Brand</span></td>
+              {% for item in comparison_data %}
+              <td>
+                <span class="vv-row-val">{{ item.car.brand }}</span>
+              </td>
+              {% endfor %}
+            </tr>
+
+            <!-- Price -->
+            <tr>
+              <td><span class="vv-row-lbl">Price</span></td>
+              {% for item in comparison_data %}
+              <td>
+                <span class="vv-row-val"
+                      style="font-family:'Space Mono',monospace;color:var(--orange);">
+                  ₹ {{ item.car.price|floatformat:0 }}
+                </span>
+              </td>
+              {% endfor %}
+            </tr>
+
+            <!-- Fuel Type -->
+            <tr>
+              <td><span class="vv-row-lbl">Fuel Type</span></td>
+              {% for item in comparison_data %}
+              <td>
+                <span class="vv-badge b-amber">{{ item.car.fuelType }}</span>
+              </td>
+              {% endfor %}
+            </tr>
+
+            <!-- Transmission -->
+            <tr>
+              <td><span class="vv-row-lbl">Transmission</span></td>
+              {% for item in comparison_data %}
+              <td>
+                <span class="vv-badge b-blue">{{ item.car.transmission }}</span>
+              </td>
+              {% endfor %}
+            </tr>
+
+            <!-- Mileage -->
+            <tr>
+              <td><span class="vv-row-lbl">Mileage</span></td>
+              {% for item in comparison_data %}
+              <td>
+                <span class="vv-row-val">{{ item.car.mileage }}</span>
+                <span style="font-size:11px;color:var(--muted);margin-left:3px;">km/l</span>
+              </td>
+              {% endfor %}
+            </tr>
+
+            <!-- Launch Year -->
+            <tr>
+              <td><span class="vv-row-lbl">Launch Year</span></td>
+              {% for item in comparison_data %}
+              <td>
+                <span class="vv-badge b-teal">{{ item.car.launchYear }}</span>
+              </td>
+              {% endfor %}
+            </tr>
+
+            <!-- Rating -->
+            <tr>
+              <td><span class="vv-row-lbl">Avg Rating</span></td>
+              {% for item in comparison_data %}
+              <td>
+                <div class="vv-stars" style="font-size:16px;">
+                  {% for i in "12345" %}
+                    {% if forloop.counter <= item.avg_rating %}★{% else %}☆{% endif %}
+                  {% endfor %}
+                </div>
+                <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-top:4px;">
+                  {{ item.avg_rating }} / 5
+                </div>
+              </td>
+              {% endfor %}
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Action Row ── -->
+    <div style="display:flex;justify-content:center;gap:14px;margin-top:32px;flex-wrap:wrap;">
+      <a href="{% url 'public_car_list' %}" class="vv-btn vv-btn-dark">
+        ← Compare Different Cars
+      </a>
+      <a href="{% url 'user-dashboard' %}" class="vv-btn vv-btn-ghost">
+        Go to Dashboard →
+      </a>
+    </div>
+
+    {% else %}
+
+    <!-- ── Empty state ── -->
+    <div class="vv-card" style="margin-top:16px;">
+      <div class="vv-card-bar"></div>
+      <div class="vv-empty">
+        <span class="vv-empty-icon">⚖️</span>
+        <div class="vv-empty-title">No Cars Selected</div>
+        <div class="vv-empty-sub" style="margin-bottom:24px;">
+          Select at least 2 cars from the car list to compare them.
+        </div>
+        <a href="{% url 'public_car_list' %}" class="vv-btn vv-btn-red">
+          Browse Cars →
+        </a>
+      </div>
+    </div>
+
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% comment %} {% extends 'base.html' %}
 {% block content %}
 
 <div class="container mt-5">
@@ -88,4 +269,4 @@
         </a>
 </div>
 
-{% endblock %}
+{% endblock %} {% endcomment %}

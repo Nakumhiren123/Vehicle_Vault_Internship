@@ -1,722 +1,467 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+  {% include 'compare/user/user_navbar.html' %}
+{% endblock %}
+
 {% block content %}
+{% include 'compare/user/user_sidebar.html' %}
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
 <style>
-  :root {
-    --primary:   #e63946;
-    --primary-l: #fff0f1;
-    --primary-m: #ffdde0;
-    --accent:    #f4a261;
-    --blue:      #2563eb;
-    --blue-l:    #eff6ff;
-    --bg:        #f5f6fa;
-    --card:      #ffffff;
-    --border:    rgba(0,0,0,0.07);
-    --text:      #0f172a;
-    --text2:     #334155;
-    --muted:     #94a3b8;
-    --shadow-sm: 0 2px 12px rgba(15,23,42,0.07);
-    --shadow-md: 0 8px 32px rgba(15,23,42,0.11);
-    --shadow-lg: 0 20px 60px rgba(15,23,42,0.13);
-    --shadow-red:0 12px 40px rgba(230,57,70,0.2);
-  }
+/* ── Filter bar ─────────────────────────────────────────────── */
+.vv-filter-bar {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: var(--sh-sm);
+  padding: 22px 28px;
+  margin-bottom: 28px;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .08s both;
+}
+.vv-filter-row {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+}
+.vv-filter-group {
+  display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 150px;
+}
+.vv-filter-group select {
+  padding: 11px 14px;
+  background: #f8fafd; border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--dark);
+  outline: none; cursor: pointer;
+  transition: border-color .25s, box-shadow .25s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 34px;
+}
+.vv-filter-group select:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(230,57,70,.1);
+  background-color: #fff;
+}
+.vv-search-wrap {
+  display: flex; gap: 0; flex: 2; min-width: 200px;
+  border: 1.5px solid var(--border); border-radius: var(--r-sm); overflow: hidden;
+  transition: border-color .25s, box-shadow .25s;
+}
+.vv-search-wrap:focus-within {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(230,57,70,.1);
+}
+.vv-search-wrap input {
+  flex: 1; padding: 11px 16px; border: none; outline: none;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--dark);
+  background: #f8fafd;
+}
+.vv-search-wrap button {
+  padding: 11px 20px; border: none; cursor: pointer;
+  background: var(--red); color: #fff;
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  letter-spacing: 2px; text-transform: uppercase;
+  transition: background .2s;
+}
+.vv-search-wrap button:hover { background: var(--red-d); }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.vv-filter-actions { display: flex; gap: 10px; align-items: flex-end; }
+.vv-clear-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 11px 18px; border-radius: var(--r-sm);
+  border: 1.5px solid var(--border); background: #fff;
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+  text-decoration: none; cursor: pointer;
+  transition: all .2s;
+}
+.vv-clear-btn:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
 
-  /* Background layers attached to body so they never clip */
-  body {
-    background: var(--bg);
-    min-height: 100vh;
-  }
-  .bg-dots {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background-image: radial-gradient(circle, rgba(0,0,0,0.055) 1px, transparent 1px);
-    background-size: 30px 30px;
-    animation: gridDrift 28s linear infinite;
-  }
-  .bg-blobs {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background:
-      radial-gradient(ellipse 60% 45% at 0%   0%,   rgba(230,57,70,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 100% 100%,  rgba(37,99,235,0.06) 0%, transparent 55%);
-  }
+/* Active filter chips */
+.vv-active-filters {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;
+}
+.vv-fchip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--red-l); border: 1.5px solid rgba(230,57,70,.2);
+  color: var(--red); border-radius: 20px; padding: 4px 12px;
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.vv-fchip a {
+  color: var(--red); text-decoration: none; font-size: 12px; font-weight: 700;
+  line-height: 1;
+}
+.vv-fchip a:hover { color: var(--red-d); }
 
-  .cl-root {
-    min-height: 100vh;
-    background: transparent;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text);
-    padding: 48px 48px 100px;
-    position: relative;
-  }
-  @keyframes gridDrift { 0%{background-position:0 0} 100%{background-position:30px 30px} }
-  @keyframes fadeUp    { to { opacity:1; transform:translateY(0) scale(1); } }
-  @keyframes fadeIn    { to { opacity:1; } }
-  @keyframes shake {
-    0%,100%{ transform:translateX(0) }
-    15%    { transform:translateX(-8px) }
-    30%    { transform:translateX(8px) }
-    45%    { transform:translateX(-6px) }
-    60%    { transform:translateX(6px) }
-    75%    { transform:translateX(-3px) }
-    90%    { transform:translateX(3px) }
-  }
-  @keyframes popIn {
-    0%  { opacity:0; transform:translateY(16px) scale(0.94); }
-    60% { transform:translateY(-4px) scale(1.02); }
-    100%{ opacity:1; transform:translateY(0) scale(1); }
-  }
-  @keyframes slideDown {
-    from { opacity:0; transform:translateY(-14px) scale(0.97); }
-    to   { opacity:1; transform:translateY(0) scale(1); }
-  }
-  @keyframes progressFill {
-    from { width: 0%; }
-  }
+/* ── Car grid ───────────────────────────────────────────────── */
+.vv-cl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 22px;
+}
 
-  .cl-inner { position:relative; z-index:1; max-width:1320px; margin:0 auto; }
+/* ── Compare checkbox on card ───────────────────────────────── */
+.vv-car-card { position: relative; }
+.cmp-checkbox-wrap {
+  position: absolute; top: 12px; right: 12px; z-index: 10;
+}
+.cmp-checkbox-wrap input[type="checkbox"] {
+  width: 20px; height: 20px; accent-color: var(--red); cursor: pointer;
+  border-radius: 5px;
+}
 
-  /* ── Page Header ── */
-  .page-header {
-    text-align: center;
-    margin-bottom: 48px;
-    opacity: 0; transform: translateY(24px);
-    animation: fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.05s forwards;
-  }
-  .page-eyebrow {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
-    color: var(--primary); margin-bottom: 10px;
-    display: flex; align-items: center; justify-content: center; gap: 12px;
-  }
-  .page-eyebrow::before, .page-eyebrow::after {
-    content: ''; display: inline-block; width: 36px; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--primary));
-    border-radius: 2px;
-  }
-  .page-eyebrow::after { background: linear-gradient(90deg, var(--primary), transparent); }
+/* ── Compare bar (sticky bottom) ────────────────────────────── */
+.vv-cmp-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
+  background: var(--dark);
+  border-top: 3px solid var(--red);
+  padding: 14px 40px;
+  display: none;
+  align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  animation: fadeUp .4s ease both;
+  box-shadow: 0 -8px 40px rgba(0,0,0,.3);
+}
+.vv-cmp-bar.show { display: flex; }
+.vv-cmp-bar-left {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.vv-cmp-bar-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+}
+.vv-cmp-selected {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.vv-cmp-pill {
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+  border-radius: 20px; padding: 5px 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: #fff;
+  font-weight: 500;
+}
+.vv-cmp-count {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px; color: var(--red); letter-spacing: 2px; line-height: 1;
+}
+.vv-cmp-bar-right { display: flex; gap: 10px; align-items: center; }
 
-  .page-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(46px, 6vw, 82px);
-    letter-spacing: 3px; line-height: 0.95;
-    color: var(--text);
-  }
-  .page-title span { color: var(--primary); }
-  .page-sub {
-    font-size: 14px; color: var(--muted); margin-top: 12px;
-    font-weight: 300; font-style: italic;
-  }
+/* ── Results info ───────────────────────────────────────────── */
+.vv-results-info {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px; margin-bottom: 20px;
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+}
+.vv-results-count strong { color: var(--dark); font-size: 14px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; }
 
-  /* ── Toast Alert ── */
-  .toast-wrap {
-    position: fixed; top: 28px; left: 50%; transform: translateX(-50%);
-    z-index: 9999; pointer-events: none;
-    width: 100%; max-width: 480px; padding: 0 16px;
-  }
-  .toast {
-    display: none;
-    background: #fff;
-    border-radius: 16px;
-    padding: 18px 22px;
-    box-shadow: 0 8px 40px rgba(230,57,70,0.22), var(--shadow-md);
-    border: 1.5px solid rgba(230,57,70,0.2);
-    pointer-events: all;
-    animation: slideDown 0.4s cubic-bezier(0.22,1,0.36,1) forwards;
-  }
-  .toast.show { display: flex; align-items: flex-start; gap: 14px; }
-  .toast-icon {
-    font-size: 28px; flex-shrink: 0;
-    animation: shake 0.55s cubic-bezier(0.22,1,0.36,1) 0.15s;
-  }
-  .toast-body {}
-  .toast-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px; letter-spacing: 1px; color: var(--primary); line-height: 1;
-  }
-  .toast-msg {
-    font-size: 13px; color: var(--text2); margin-top: 4px; line-height: 1.5;
-  }
-  .toast-close {
-    margin-left: auto; background: none; border: none; cursor: pointer;
-    font-size: 18px; color: var(--muted); padding: 0 0 0 8px; flex-shrink: 0;
-    transition: color 0.2s;
-  }
-  .toast-close:hover { color: var(--primary); }
-
-  /* ── Search Bar ── */
-  .search-bar-wrap {
-    margin-bottom: 24px;
-    opacity: 0; transform: translateY(20px);
-    animation: fadeUp 0.65s ease 0.15s forwards;
-  }
-  .search-bar {
-    display: flex;
-    background: var(--card);
-    border: 1.5px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
-  .search-bar:focus-within {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(230,57,70,0.1), var(--shadow-sm);
-  }
-  .search-bar-icon {
-    display: flex; align-items: center; justify-content: center;
-    padding: 0 18px; font-size: 18px; color: var(--muted);
-    flex-shrink: 0;
-  }
-  .search-bar input {
-    flex: 1; background: transparent; border: none; outline: none;
-    padding: 16px 0; font-family: 'DM Sans', sans-serif;
-    font-size: 15px; color: var(--text);
-  }
-  .search-bar input::placeholder { color: var(--muted); }
-  .search-bar button {
-    background: var(--primary); border: none; cursor: pointer;
-    padding: 0 32px; color: #fff;
-    font-family: 'Space Mono', monospace; font-size: 11px;
-    letter-spacing: 2px; text-transform: uppercase;
-    transition: background 0.2s;
-    flex-shrink: 0;
-  }
-  .search-bar button:hover { background: #cf2533; }
-
-  /* Search result info */
-  .search-result-info {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-top: 10px; padding: 0 4px;
-    font-size: 13px; color: var(--muted);
-  }
-  .search-result-info strong { color: var(--primary); }
-  .search-clear {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--primary-l); border: 1.5px solid rgba(230,57,70,0.2);
-    color: var(--primary); border-radius: 8px; padding: 5px 12px;
-    font-size: 12px; font-weight: 600; cursor: pointer;
-    text-decoration: none; transition: all 0.2s;
-  }
-  .search-clear:hover { background: var(--primary); color: #fff; }
-
-  /* ── Counter Bar ── */
-  .counter-bar {
-    position: sticky; top: 16px; z-index: 100;
-    background: var(--card);
-    border: 1.5px solid var(--border);
-    border-radius: 16px;
-    padding: 14px 24px;
-    margin-bottom: 32px;
-    display: flex; align-items: center; gap: 16px;
-    box-shadow: var(--shadow-sm);
-    opacity: 0; transform: translateY(20px);
-    animation: fadeUp 0.6s ease 0.2s forwards;
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
-  .counter-bar.ready {
-    border-color: rgba(13,148,136,0.35);
-    box-shadow: 0 4px 20px rgba(13,148,136,0.1);
-  }
-  .counter-bar.error {
-    border-color: rgba(230,57,70,0.4);
-    box-shadow: 0 4px 20px rgba(230,57,70,0.12);
-    animation: shake 0.5s ease;
-  }
-
-  .counter-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-    color: var(--muted); white-space: nowrap;
-  }
-  .counter-dots { display: flex; gap: 8px; }
-  .c-dot {
-    width: 30px; height: 30px; border-radius: 50%;
-    background: var(--bg); border: 2px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
-  }
-  .c-dot.filled {
-    background: var(--primary); border-color: var(--primary);
-    box-shadow: 0 0 12px rgba(230,57,70,0.35);
-    transform: scale(1.12);
-  }
-  .c-dot.filled::after { content: '✓'; font-size: 13px; color: #fff; font-weight: 700; }
-
-  .counter-progress-wrap {
-    flex: 1; height: 6px; background: var(--bg);
-    border-radius: 6px; overflow: hidden;
-  }
-  .counter-progress {
-    height: 100%; border-radius: 6px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    width: 0%; transition: width 0.4s cubic-bezier(0.22,1,0.36,1);
-  }
-  .counter-count {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px; letter-spacing: 1px;
-    color: var(--text); transition: color 0.3s;
-    white-space: nowrap;
-  }
-  .counter-count.ready { color: #0d9488; }
-
-  .compare-btn-main {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: var(--primary); color: #fff; border: none; cursor: pointer;
-    font-family: 'Space Mono', monospace; font-size: 11px;
-    letter-spacing: 2px; text-transform: uppercase;
-    padding: 12px 28px; border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(230,57,70,0.3);
-    transition: all 0.28s cubic-bezier(0.22,1,0.36,1);
-    white-space: nowrap;
-  }
-  .compare-btn-main::after { content: '→'; transition: transform 0.28s; }
-  .compare-btn-main:hover { background: #cf2533; box-shadow: var(--shadow-red); transform: translateY(-2px); }
-  .compare-btn-main:hover::after { transform: translateX(5px); }
-  .compare-btn-main:disabled {
-    background: var(--muted); box-shadow: none; cursor: not-allowed; opacity: 0.6;
-    transform: none;
-  }
-
-  /* ── Car Grid ── */
-  .car-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 22px;
-  }
-
-  .car-card {
-    background: var(--card);
-    border: 1.5px solid var(--border);
-    border-radius: 22px; overflow: hidden;
-    position: relative;
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s, border-color 0.3s;
-    opacity: 0; transform: translateY(32px) scale(0.97);
-    cursor: pointer;
-  }
-
-  .car-card:nth-child(1) { animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.10s forwards; }
-  .car-card:nth-child(2) { animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.18s forwards; }
-  .car-card:nth-child(3) { animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.26s forwards; }
-  .car-card:nth-child(4) { animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.34s forwards; }
-  .car-card:nth-child(5) { animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.42s forwards; }
-  .car-card:nth-child(6) { animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.50s forwards; }
-  .car-card:nth-child(7) { animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.58s forwards; }
-  .car-card:nth-child(8) { animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.66s forwards; }
-  .car-card:nth-child(9) { animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.74s forwards; }
-  .car-card:nth-child(n+10) { animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.80s forwards; }
-
-  .car-card:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-lg);
-    border-color: rgba(230,57,70,0.15);
-  }
-
-  /* Selected state */
-  .car-card.selected {
-    border-color: var(--primary) !important;
-    box-shadow: 0 0 0 3px rgba(230,57,70,0.15), var(--shadow-lg) !important;
-  }
-  .car-card.selected .select-ring {
-    opacity: 1; transform: scale(1);
-  }
-
-  /* Top bar on hover */
-  .car-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    transform: scaleX(0); transform-origin: left;
-    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
-    z-index: 2;
-  }
-  .car-card:hover::before, .car-card.selected::before { transform: scaleX(1); }
-
-  .car-img-wrap {
-    position: relative; height: 210px; overflow: hidden;
-    background: var(--bg);
-  }
-  .car-img-wrap img {
-    width: 100%; height: 100%; object-fit: cover;
-    transition: transform 0.65s cubic-bezier(0.22,1,0.36,1), filter 0.4s;
-    filter: saturate(0.9) brightness(0.95);
-  }
-  .car-card:hover .car-img-wrap img {
-    transform: scale(1.09); filter: saturate(1.1) brightness(1);
-  }
-  .car-img-wrap::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(to bottom, transparent 50%, rgba(255,255,255,0.92) 100%);
-  }
-
-  /* Checkbox overlay */
-  .card-check-wrap {
-    position: absolute; top: 14px; right: 14px; z-index: 3;
-  }
-  .card-check-wrap input[type="checkbox"] { display: none; }
-  .check-label {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: rgba(255,255,255,0.9);
-    border: 2px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; backdrop-filter: blur(6px);
-    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  }
-  .check-label::after {
-    content: ''; width: 10px; height: 10px; border-radius: 50%;
-    background: var(--primary); opacity: 0;
-    transform: scale(0); transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
-  }
-  input[type="checkbox"]:checked + .check-label {
-    background: var(--primary); border-color: var(--primary);
-    box-shadow: 0 0 14px rgba(230,57,70,0.4);
-    transform: scale(1.1);
-  }
-  input[type="checkbox"]:checked + .check-label::after {
-    content: '✓'; color: #fff; font-size: 14px; font-weight: 700;
-    background: none; opacity: 1; transform: scale(1);
-  }
-
-  /* Selected badge */
-  .select-ring {
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    pointer-events: none; z-index: 1;
-    opacity: 0; transform: scale(0.97);
-    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
-  }
-
-  .car-info { padding: 20px 22px 24px; }
-
-  .car-brand-tag {
-    font-family: 'Space Mono', monospace; font-size: 9px;
-    letter-spacing: 3px; text-transform: uppercase; color: var(--muted);
-    margin-bottom: 6px;
-  }
-  .car-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px; letter-spacing: 1.5px;
-    color: var(--text); line-height: 1; margin-bottom: 12px;
-  }
-
-  .car-specs {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-    margin-bottom: 18px;
-  }
-  .spec-item {
-    background: var(--bg);
-    border-radius: 8px; padding: 8px 12px;
-    display: flex; flex-direction: column; gap: 2px;
-  }
-  .spec-key {
-    font-size: 9px; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--muted);
-  }
-  .spec-val {
-    font-size: 13px; font-weight: 600; color: var(--text);
-  }
-  .spec-val.price { color: var(--accent); font-family: 'Space Mono', monospace; font-size: 12px; }
-
-  .card-actions { display: flex; gap: 10px; }
-
-  .btn-detail {
-    flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    background: var(--primary-l);
-    border: 1.5px solid rgba(230,57,70,0.22);
-    color: var(--primary);
-    font-family: 'Space Mono', monospace; font-size: 10px;
-    letter-spacing: 2px; text-transform: uppercase;
-    padding: 10px 16px; border-radius: 10px;
-    text-decoration: none;
-    transition: all 0.28s cubic-bezier(0.22,1,0.36,1);
-  }
-  .btn-detail::after { content: '→'; transition: transform 0.28s; }
-  .btn-detail:hover {
-    background: var(--primary); color: #fff;
-    border-color: var(--primary);
-    box-shadow: var(--shadow-red);
-  }
-  .btn-detail:hover::after { transform: translateX(4px); }
-
-  .btn-select {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 42px; height: 42px; border-radius: 10px;
-    background: var(--bg); border: 1.5px solid var(--border);
-    cursor: pointer; font-size: 18px;
-    transition: all 0.28s cubic-bezier(0.22,1,0.36,1);
-    flex-shrink: 0;
-  }
-  .car-card.selected .btn-select {
-    background: var(--primary-m); border-color: var(--primary);
-  }
-  .btn-select:hover { background: var(--primary-l); border-color: var(--primary); }
-
-  /* ── Empty ── */
-  .empty-state {
-    grid-column: 1/-1; text-align: center; padding: 80px 40px;
-    background: var(--card); border: 2px dashed var(--border);
-    border-radius: 20px;
-  }
-  .empty-state .e-icon { font-size: 52px; margin-bottom: 16px; }
-  .empty-state p { color: var(--muted); font-size: 15px; }
-
-  /* ── Responsive ── */
-  @media(max-width:1100px){ .car-grid{grid-template-columns:repeat(2,1fr)} }
-  @media(max-width:640px){
-    .cl-root{padding:24px 18px 80px}
-    .car-grid{grid-template-columns:1fr}
-    .counter-bar{flex-wrap:wrap; gap:10px}
-    .compare-btn-main{width:100%; justify-content:center}
-  }
+@media (max-width: 700px) {
+  .vv-filter-row { flex-direction: column; }
+  .vv-cl-grid { grid-template-columns: 1fr; }
+  .vv-cmp-bar { padding: 14px 20px; }
+}
 </style>
 
-<!-- Toast Alert -->
-<div class="toast-wrap">
-  <div class="toast" id="carToast">
-    <div class="toast-icon">🚗</div>
-    <div class="toast-body">
-      <div class="toast-title">Select More Cars!</div>
-      <div class="toast-msg" id="toastMsg">Please select at least <strong>2 cars</strong> to compare them side by side.</div>
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div>
+  <div class="vv-ring vv-ring-b"></div>
+
+  <div class="vv-page">
+
+    <!-- ── Page Header ── -->
+    <div class="vv-ph">
+      <div class="vv-ph-left">
+        <div class="vv-eyebrow">Explore</div>
+        <div class="vv-title">Browse <em>Cars</em></div>
+        <div class="vv-sub">Filter, search and select vehicles to compare</div>
+      </div>
+      <div class="vv-pill">
+        <span class="live"></span>
+        {{ cars|length }} Result{% if cars|length != 1 %}s{% endif %}
+      </div>
     </div>
-    <button class="toast-close" onclick="hideToast()">✕</button>
+
+    <!-- ── Filter Bar ── -->
+    <form method="GET" id="filterForm">
+    <div class="vv-filter-bar">
+      <div class="vv-filter-row">
+
+        <!-- Search -->
+        <div class="vv-filter-group" style="flex:2;min-width:200px;">
+          <label class="vv-label">Search</label>
+          <div class="vv-search-wrap">
+            <input type="text" name="search" placeholder="Car name, brand…"
+                   value="{{ search }}">
+            <button type="submit">Search</button>
+          </div>
+        </div>
+
+        <!-- Fuel Type -->
+        <div class="vv-filter-group">
+          <label class="vv-label">Fuel Type</label>
+          <select name="fuel" onchange="this.form.submit()">
+            <option value="">All Fuels</option>
+            {% for ft in fuel_types %}
+              <option value="{{ ft }}" {% if sel_fuel == ft %}selected{% endif %}>
+                {{ ft }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Transmission -->
+        <div class="vv-filter-group">
+          <label class="vv-label">Transmission</label>
+          <select name="transmission" onchange="this.form.submit()">
+            <option value="">All Types</option>
+            {% for t in transmissions %}
+              <option value="{{ t }}" {% if sel_trans == t %}selected{% endif %}>
+                {{ t }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Brand -->
+        <div class="vv-filter-group">
+          <label class="vv-label">Brand</label>
+          <select name="brand" onchange="this.form.submit()">
+            <option value="">All Brands</option>
+            {% for b in brands %}
+              <option value="{{ b }}" {% if sel_brand == b %}selected{% endif %}>
+                {{ b }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Sort -->
+        <div class="vv-filter-group">
+          <label class="vv-label">Sort By</label>
+          <select name="sort" onchange="this.form.submit()">
+            <option value="">Default</option>
+            <option value="price_asc"  {% if sel_sort == 'price_asc'  %}selected{% endif %}>Price: Low → High</option>
+            <option value="price_desc" {% if sel_sort == 'price_desc' %}selected{% endif %}>Price: High → Low</option>
+            <option value="mileage"    {% if sel_sort == 'mileage'    %}selected{% endif %}>Best Mileage</option>
+            <option value="newest"     {% if sel_sort == 'newest'     %}selected{% endif %}>Newest First</option>
+            <option value="oldest"     {% if sel_sort == 'oldest'     %}selected{% endif %}>Oldest First</option>
+          </select>
+        </div>
+
+        <!-- Clear -->
+        <div class="vv-filter-actions">
+          <a href="{% url 'public_car_list' %}" class="vv-clear-btn">✕ Clear</a>
+        </div>
+
+      </div>
+
+      <!-- Active filter chips -->
+      {% if sel_fuel or sel_trans or sel_brand or sel_sort or search %}
+      <div class="vv-active-filters">
+        {% if search %}
+          <span class="vv-fchip">
+            Search: {{ search }}
+            <a href="?{% if sel_fuel %}fuel={{ sel_fuel }}&{% endif %}{% if sel_trans %}transmission={{ sel_trans }}&{% endif %}{% if sel_brand %}brand={{ sel_brand }}&{% endif %}{% if sel_sort %}sort={{ sel_sort }}{% endif %}">✕</a>
+          </span>
+        {% endif %}
+        {% if sel_fuel %}
+          <span class="vv-fchip">
+            ⛽ {{ sel_fuel }}
+            <a href="?{% if search %}search={{ search }}&{% endif %}{% if sel_trans %}transmission={{ sel_trans }}&{% endif %}{% if sel_brand %}brand={{ sel_brand }}&{% endif %}{% if sel_sort %}sort={{ sel_sort }}{% endif %}">✕</a>
+          </span>
+        {% endif %}
+        {% if sel_trans %}
+          <span class="vv-fchip">
+            ⚙️ {{ sel_trans }}
+            <a href="?{% if search %}search={{ search }}&{% endif %}{% if sel_fuel %}fuel={{ sel_fuel }}&{% endif %}{% if sel_brand %}brand={{ sel_brand }}&{% endif %}{% if sel_sort %}sort={{ sel_sort }}{% endif %}">✕</a>
+          </span>
+        {% endif %}
+        {% if sel_brand %}
+          <span class="vv-fchip">
+            🏷 {{ sel_brand }}
+            <a href="?{% if search %}search={{ search }}&{% endif %}{% if sel_fuel %}fuel={{ sel_fuel }}&{% endif %}{% if sel_trans %}transmission={{ sel_trans }}&{% endif %}{% if sel_sort %}sort={{ sel_sort }}{% endif %}">✕</a>
+          </span>
+        {% endif %}
+        {% if sel_sort %}
+          <span class="vv-fchip">
+            ↕ {{ sel_sort }}
+            <a href="?{% if search %}search={{ search }}&{% endif %}{% if sel_fuel %}fuel={{ sel_fuel }}&{% endif %}{% if sel_trans %}transmission={{ sel_trans }}&{% endif %}{% if sel_brand %}brand={{ sel_brand }}{% endif %}">✕</a>
+          </span>
+        {% endif %}
+      </div>
+      {% endif %}
+
+    </div>
+    </form>
+
+    <!-- ── Results info ── -->
+    <div class="vv-results-info">
+      <div class="vv-results-count">
+        <strong>{{ cars|length }}</strong> car{% if cars|length != 1 %}s{% endif %} found
+      </div>
+      <div>Tick up to 2 cars then click Compare</div>
+    </div>
+
+    <!-- ── Car Grid ── -->
+    {% if cars %}
+    <div class="vv-cl-grid" id="carGrid">
+      {% for car in cars %}
+      <div class="vv-car-card" id="card-{{ car.pk }}">
+
+        <!-- Compare checkbox -->
+        <div class="cmp-checkbox-wrap">
+          <input type="checkbox"
+                 class="cmp-check"
+                 value="{{ car.pk }}"
+                 data-name="{{ car.carName }}"
+                 title="Select to compare">
+        </div>
+
+        <!-- Image -->
+        <div class="vv-car-img-wrap">
+          <span class="vv-car-ftype">{{ car.fuelType }}</span>
+          {% if car.carImage %}
+            <img src="{{ car.carImage.url }}" alt="{{ car.carName }}" class="vv-car-img">
+          {% else %}
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:52px;color:var(--muted);">🚗</div>
+          {% endif %}
+        </div>
+
+        <!-- Info -->
+        <div class="vv-car-body">
+          <div class="vv-car-name">{{ car.carName }}</div>
+          <div class="vv-car-brand">{{ car.brand }}</div>
+          <div class="vv-car-chips">
+            <span class="vv-chip chip-fuel">{{ car.fuelType }}</span>
+            <span class="vv-chip chip-trans">{{ car.transmission }}</span>
+            <span class="vv-chip chip-yr">{{ car.launchYear }}</span>
+          </div>
+          <div class="vv-car-price">₹ {{ car.price|floatformat:0 }}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:4px;">
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);">
+              ⛽ {{ car.mileage }} km/l
+            </span>
+            <a href="{% url 'car_detail' car.pk %}" class="vv-btn vv-btn-ghost" style="padding:7px 14px;font-size:9px;">
+              Details →
+            </a>
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="vv-card">
+      <div class="vv-card-bar"></div>
+      <div class="vv-empty">
+        <span class="vv-empty-icon">🔍</span>
+        <div class="vv-empty-title">No Cars Found</div>
+        <div class="vv-empty-sub" style="margin-bottom:24px;">
+          Try adjusting your filters or clearing the search.
+        </div>
+        <a href="{% url 'public_car_list' %}" class="vv-btn vv-btn-red">Clear Filters</a>
+      </div>
+    </div>
+    {% endif %}
+
   </div>
 </div>
 
-<div class="bg-dots"></div>
-<div class="bg-blobs"></div>
-<div class="cl-root">
-  <div class="cl-inner">
-
-    <!-- Header -->
-    <div class="page-header">
-      <div class="page-eyebrow">Catalogue</div>
-      <div class="page-title">Explore <span>Cars</span></div>
-      <p class="page-sub">Select 2 or more cars to compare them side by side.</p>
+<!-- ── Sticky Compare Bar ── -->
+<div class="vv-cmp-bar" id="cmpBar">
+  <div class="vv-cmp-bar-left">
+    <div>
+      <div class="vv-cmp-bar-title">Selected for Compare</div>
+      <div class="vv-cmp-count" id="cmpCount">0</div>
     </div>
-
-    <!-- Search Bar -->
-    <div class="search-bar-wrap">
-      <form method="GET" action="" id="searchForm">
-        <div class="search-bar">
-          <span class="search-bar-icon">🔎</span>
-          <input type="text" name="search"
-                 value="{{ search }}"
-                 placeholder="Search by car name, brand, fuel type…"
-                 autocomplete="off">
-          <button type="submit">Search</button>
-        </div>
-      </form>
-      {% if search %}
-      <div class="search-result-info">
-        <span>Showing results for <strong>"{{ search }}"</strong> — {{ cars|length }} car{{ cars|length|pluralize }} found</span>
-        <a href="{% url 'public_car_list' %}" class="search-clear">✕ Clear</a>
-      </div>
-      {% endif %}
-    </div>
-
-    <!-- Counter Bar -->
-    <div class="counter-bar" id="counterBar">
-      <span class="counter-label">Selected</span>
-      <div class="counter-dots" id="counterDots">
-        <div class="c-dot" id="dot1"></div>
-        <div class="c-dot" id="dot2"></div>
-        <div class="c-dot" id="dot3"></div>
-        <div class="c-dot" id="dot4"></div>
-      </div>
-      <div class="counter-progress-wrap">
-        <div class="counter-progress" id="progressBar"></div>
-      </div>
-      <span class="counter-count" id="counterCount">0 / 4</span>
-      <button type="button" class="compare-btn-main" id="compareBtn" onclick="handleCompare()">
-        Compare
-      </button>
-    </div>
-
-    <!-- Car Form -->
-    <form method="GET" action="{% url 'compare_cars' %}" id="compareForm">
-      <div class="car-grid">
-
-        {% for car in cars %}
-        <div class="car-card" id="card-{{ car.id }}" onclick="toggleCard({{ car.id }}, event)">
-
-          <div class="car-img-wrap">
-            <div class="card-check-wrap">
-              <input class="form-check-input" type="checkbox"
-                     name="cars" value="{{ car.id }}"
-                     id="chk-{{ car.id }}"
-                     onchange="updateCounter()">
-              <label class="check-label" for="chk-{{ car.id }}"></label>
-            </div>
-
-            {% if car.carImage %}
-              <img src="{{ car.carImage.url }}" alt="{{ car.carName }}">
-            {% else %}
-              <img src="https://via.placeholder.com/500x300?text={{ car.carName }}" alt="{{ car.carName }}">
-            {% endif %}
-          </div>
-
-          <div class="car-info">
-            <div class="car-brand-tag">{{ car.brand }}</div>
-            <div class="car-name">{{ car.carName }}</div>
-
-            <div class="car-specs">
-              <div class="spec-item">
-                <span class="spec-key">Price</span>
-                <span class="spec-val price">₹ {{ car.price }}</span>
-              </div>
-              <div class="spec-item">
-                <span class="spec-key">Fuel</span>
-                <span class="spec-val">{{ car.fuelType }}</span>
-              </div>
-              <div class="spec-item">
-                <span class="spec-key">Mileage</span>
-                <span class="spec-val">{{ car.mileage }} km/l</span>
-              </div>
-              <div class="spec-item">
-                <span class="spec-key">Brand</span>
-                <span class="spec-val">{{ car.brand }}</span>
-              </div>
-            </div>
-
-            <div class="card-actions">
-              <a href="{% url 'car_detail' car.id %}" class="btn-detail" onclick="event.stopPropagation()">
-                View Details
-              </a>
-              <button type="button" class="btn-select" title="Select for compare" onclick="selectCard({{ car.id }}, event)">⚖️</button>
-            </div>
-          </div>
-        </div>
-        {% empty %}
-        <div class="empty-state">
-          <div class="e-icon">🔎</div>
-          {% if search %}
-          <p>No cars found for <strong>"{{ search }}"</strong>. Try a different search.</p>
-          <a href="{% url 'public_car_list' %}" class="search-clear" style="margin-top:16px;display:inline-flex">✕ Clear Search</a>
-          {% else %}
-          <p>No cars available right now. Please check back later.</p>
-          {% endif %}
-        </div>
-        {% endfor %}
-
-      </div>
-    </form>
-
+    <div class="vv-cmp-selected" id="cmpSelected"></div>
+  </div>
+  <div class="vv-cmp-bar-right">
+    <button class="vv-btn vv-btn-ghost"
+            style="border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.7);background:transparent;"
+            onclick="clearSelection()">
+      ✕ Clear
+    </button>
+    <button class="vv-btn vv-btn-red" id="cmpBtn" onclick="goCompare()">
+      ⚖️ Compare Now →
+    </button>
   </div>
 </div>
 
 <script>
-  let selectedCount = 0;
-  const MAX = 4;
+/* ── Compare selection logic ─────────────────────────────── */
+const MAX = 2;
+const checkboxes = document.querySelectorAll('.cmp-check');
+const bar        = document.getElementById('cmpBar');
+const countEl    = document.getElementById('cmpCount');
+const selectedEl = document.getElementById('cmpSelected');
+const cmpBtn     = document.getElementById('cmpBtn');
 
-  function updateCounter() {
-    const checkboxes = document.querySelectorAll('input[name="cars"]:checked');
-    selectedCount = checkboxes.length;
+function updateBar() {
+  const checked = [...checkboxes].filter(c => c.checked);
+  const n = checked.length;
 
-    // Update count label
-    const countEl = document.getElementById('counterCount');
-    countEl.textContent = selectedCount + ' / ' + MAX;
-    countEl.className = 'counter-count' + (selectedCount >= 2 ? ' ready' : '');
+  countEl.textContent = n;
 
-    // Dots
-    for (let i = 1; i <= MAX; i++) {
-      const dot = document.getElementById('dot' + i);
-      if (dot) dot.className = 'c-dot' + (i <= selectedCount ? ' filled' : '');
-    }
+  // Pills
+  selectedEl.innerHTML = checked.map(c =>
+    `<div class="vv-cmp-pill">${c.dataset.name}</div>`
+  ).join('');
 
-    // Progress bar
-    document.getElementById('progressBar').style.width = Math.min((selectedCount / MAX) * 100, 100) + '%';
+  // Show/hide bar
+  bar.classList.toggle('show', n > 0);
 
-    // Counter bar state
-    const bar = document.getElementById('counterBar');
-    bar.classList.toggle('ready', selectedCount >= 2);
-    bar.classList.remove('error');
+  // Disable unchecked when 2 selected
+  checkboxes.forEach(c => {
+    if (!c.checked) c.disabled = n >= MAX;
+  });
 
-    // Sync card selected state
-    document.querySelectorAll('input[name="cars"]').forEach(cb => {
-      const card = document.getElementById('card-' + cb.value);
-      if (card) card.classList.toggle('selected', cb.checked);
-    });
-  }
+  // Disable compare button if < 2
+  cmpBtn.disabled = n < 2;
+  cmpBtn.style.opacity = n < 2 ? '0.5' : '1';
+}
 
-  function toggleCard(id, event) {
-    // Don't toggle if clicking the detail link or select button
-    if (event.target.closest('a') || event.target.closest('.btn-select')) return;
-    const cb = document.getElementById('chk-' + id);
-    if (!cb) return;
-
-    if (!cb.checked && selectedCount >= MAX) {
-      showToast('max');
-      shakeBar();
-      return;
-    }
-    cb.checked = !cb.checked;
-    updateCounter();
-  }
-
-  function selectCard(id, event) {
-    event.stopPropagation();
-    const cb = document.getElementById('chk-' + id);
-    if (!cb) return;
-    if (!cb.checked && selectedCount >= MAX) {
-      showToast('max');
-      shakeBar();
-      return;
-    }
-    cb.checked = !cb.checked;
-    updateCounter();
-  }
-
-  function handleCompare() {
-    if (selectedCount < 2) {
-      showToast('min');
-      shakeBar();
-      return;
-    }
-    document.getElementById('compareForm').submit();
-  }
-
-  function shakeBar() {
-    const bar = document.getElementById('counterBar');
-    bar.classList.remove('error');
-    void bar.offsetWidth; // reflow to restart animation
-    bar.classList.add('error');
-    setTimeout(() => bar.classList.remove('error'), 600);
-  }
-
-  let toastTimer;
-  function showToast(type) {
-    const toast = document.getElementById('carToast');
-    const msg   = document.getElementById('toastMsg');
-
-    if (type === 'min') {
-      msg.innerHTML = 'Please select at least <strong>2 cars</strong> to compare them side by side.';
+checkboxes.forEach(cb => {
+  cb.addEventListener('change', () => {
+    // Highlight selected card
+    const card = document.getElementById('card-' + cb.value);
+    if (cb.checked) {
+      card.style.borderColor = 'var(--red)';
+      card.style.boxShadow   = '0 0 0 3px rgba(230,57,70,.18), var(--sh-lg)';
     } else {
-      msg.innerHTML = 'You can compare a maximum of <strong>4 cars</strong> at once.';
+      card.style.borderColor = '';
+      card.style.boxShadow   = '';
     }
+    updateBar();
+  });
+});
 
-    toast.classList.remove('show');
-    void toast.offsetWidth;
-    toast.classList.add('show');
+function clearSelection() {
+  checkboxes.forEach(c => {
+    c.checked  = false;
+    c.disabled = false;
+    const card = document.getElementById('card-' + c.value);
+    if (card) { card.style.borderColor = ''; card.style.boxShadow = ''; }
+  });
+  updateBar();
+}
 
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(hideToast, 4000);
-  }
+function goCompare() {
+  const ids = [...checkboxes]
+    .filter(c => c.checked)
+    .map(c => 'cars=' + c.value);
+  if (ids.length < 2) return;
+  window.location.href = "{% url 'compare_cars' %}?" + ids.join('&');
+}
 
-  function hideToast() {
-    document.getElementById('carToast').classList.remove('show');
-  }
-
-  // Init
-  updateCounter();
+// Init
+updateBar();
 </script>
 
 {% endblock %}
-
 
 {% comment %} {% extends 'base.html' %}
 {% block content %}

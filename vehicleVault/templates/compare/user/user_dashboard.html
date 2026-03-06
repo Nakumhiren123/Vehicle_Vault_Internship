@@ -409,7 +409,7 @@
         <div class="panel-box">
           <div class="panel-head">
             <div class="panel-title">My Preferences</div>
-            <span class="pbadge pbadge-red">Profile</span>
+            <span class="pbadge pbadge-red">Preferences</span>
           </div>
           {% if user_preference %}
           <div class="pref-row">
@@ -425,7 +425,7 @@
             <div><div class="pref-key">Preferred Brand</div><div class="pref-val">{{ user_preference.preferredBrand }}</div></div>
           </div>
           {% else %}
-          <div class="empty-msg">No preferences set yet.<br><a href="{% url 'user_profile' %}" style="color:var(--red);">Set up your profile →</a></div>
+          <div class="empty-msg">⚙️ No preferences set yet.<br><span style="color:var(--muted);font-size:11px;">Contact admin to set your fuel, budget &amp; brand preferences.</span></div>
           {% endif %}
         </div>
 
@@ -439,8 +439,14 @@
           <div class="comp-item">
             <div class="comp-badge">VS</div>
             <div class="comp-info">
-              <div class="comp-c1">{{ comp.car1.carName }}</div>
-              <div class="comp-c2">vs {{ comp.car2.carName }}</div>
+              <div class="comp-c1">
+                {{ comp.car1.carName }}
+                <span style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-left:4px;">{{ comp.car1.brand }}</span>
+              </div>
+              <div class="comp-c2">
+                vs &nbsp;<strong>{{ comp.car2.carName }}</strong>
+                <span style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-left:4px;">{{ comp.car2.brand }}</span>
+              </div>
             </div>
             <div class="comp-ago">{{ comp.comparedAt|timesince }} ago</div>
           </div>
@@ -868,4 +874,4 @@ new Chart(document.getElementById('priceChart'), {
 });
 </script>
 
-{% endblock %} {% endcomment %} 
+{% endblock %} {% endcomment %}
