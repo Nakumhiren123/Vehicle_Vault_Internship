@@ -31,4 +31,14 @@
     </table>
 
 </div>
+  <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;">
+    <a href="{% url 'export_comparisons_csv' %}"
+       style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:#0d9488;color:#fff;border-radius:10px;text-decoration:none;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;">
+      ⬇ Export CSV
+    </a>
+    <a href="{% url 'export_comparisons_pdf' %}"
+       style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:#e63946;color:#fff;border-radius:10px;text-decoration:none;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;">
+      ⬇ Export PDF
+    </a>
+  </div>
 {% endblock %}

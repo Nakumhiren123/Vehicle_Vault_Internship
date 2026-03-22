@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
-
+ 
 {% block content %}
-
+ 
 <link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
-
+ 
 <div class="vv-wrap">
   <div class="vv-ring vv-ring-a"></div>
   <div class="vv-ring vv-ring-b"></div>
-
+ 
   <div class="vv-page">
-
+ 
     <!-- ── Page Header ── -->
     <div class="vv-ph">
       <div class="vv-ph-left">
@@ -20,16 +20,16 @@
       </div>
       <a href="{% url 'public_car_list' %}" class="vv-back">← Back to Cars</a>
     </div>
-
+ 
     {% if comparison_data %}
-
+ 
     <!-- ── Comparison Table Card ── -->
     <div class="vv-card">
       <div class="vv-card-bar"></div>
-
+ 
       <div class="vv-tbl-wrap">
         <table class="vv-cmp-tbl">
-
+ 
           <!-- Head: car names -->
           <thead>
             <tr>
@@ -39,9 +39,9 @@
               {% endfor %}
             </tr>
           </thead>
-
+ 
           <tbody>
-
+ 
             <!-- Image row -->
             <tr>
               <td><span class="vv-row-lbl">Image</span></td>
@@ -57,7 +57,7 @@
               </td>
               {% endfor %}
             </tr>
-
+ 
             <!-- Brand -->
             <tr>
               <td><span class="vv-row-lbl">Brand</span></td>
@@ -67,7 +67,7 @@
               </td>
               {% endfor %}
             </tr>
-
+ 
             <!-- Price -->
             <tr>
               <td><span class="vv-row-lbl">Price</span></td>
@@ -80,7 +80,7 @@
               </td>
               {% endfor %}
             </tr>
-
+ 
             <!-- Fuel Type -->
             <tr>
               <td><span class="vv-row-lbl">Fuel Type</span></td>
@@ -90,7 +90,7 @@
               </td>
               {% endfor %}
             </tr>
-
+ 
             <!-- Transmission -->
             <tr>
               <td><span class="vv-row-lbl">Transmission</span></td>
@@ -100,7 +100,7 @@
               </td>
               {% endfor %}
             </tr>
-
+ 
             <!-- Mileage -->
             <tr>
               <td><span class="vv-row-lbl">Mileage</span></td>
@@ -111,7 +111,7 @@
               </td>
               {% endfor %}
             </tr>
-
+ 
             <!-- Launch Year -->
             <tr>
               <td><span class="vv-row-lbl">Launch Year</span></td>
@@ -121,7 +121,7 @@
               </td>
               {% endfor %}
             </tr>
-
+ 
             <!-- Rating -->
             <tr>
               <td><span class="vv-row-lbl">Avg Rating</span></td>
@@ -138,24 +138,52 @@
               </td>
               {% endfor %}
             </tr>
-
+ 
           </tbody>
         </table>
       </div>
     </div>
-
+ 
     <!-- ── Action Row ── -->
-    <div style="display:flex;justify-content:center;gap:14px;margin-top:32px;flex-wrap:wrap;">
+    <div style="display:flex;justify-content:center;gap:14px;margin-top:32px;flex-wrap:wrap;align-items:center;">
+ 
       <a href="{% url 'public_car_list' %}" class="vv-btn vv-btn-dark">
         ← Compare Different Cars
       </a>
+ 
+      <!-- Download CSV -->
+      <a href="{% url 'export_comparison_csv_user' %}?{{ request.GET.urlencode }}"
+         style="display:inline-flex;align-items:center;gap:8px;
+                background:#0d9488;color:#fff;text-decoration:none;
+                padding:12px 22px;border-radius:12px;
+                font-family:'Space Mono',monospace;font-size:11px;
+                letter-spacing:2px;text-transform:uppercase;
+                box-shadow:0 4px 16px rgba(13,148,136,0.3);
+                transition:all 0.25s;"
+         title="Download this comparison as Excel/CSV">
+        ⬇ CSV
+      </a>
+ 
+      <!-- Download PDF -->
+      <a href="{% url 'export_comparison_pdf_user' %}?{{ request.GET.urlencode }}"
+         style="display:inline-flex;align-items:center;gap:8px;
+                background:#e63946;color:#fff;text-decoration:none;
+                padding:12px 22px;border-radius:12px;
+                font-family:'Space Mono',monospace;font-size:11px;
+                letter-spacing:2px;text-transform:uppercase;
+                box-shadow:0 4px 16px rgba(230,57,70,0.3);
+                transition:all 0.25s;"
+         title="Download this comparison as PDF">
+        ⬇ PDF
+      </a>
+ 
       <a href="{% url 'user-dashboard' %}" class="vv-btn vv-btn-ghost">
         Go to Dashboard →
       </a>
     </div>
-
+ 
     {% else %}
-
+ 
     <!-- ── Empty state ── -->
     <div class="vv-card" style="margin-top:16px;">
       <div class="vv-card-bar"></div>
@@ -170,12 +198,12 @@
         </a>
       </div>
     </div>
-
+ 
     {% endif %}
-
+ 
   </div>
 </div>
-
+ 
 {% endblock %}
 
 

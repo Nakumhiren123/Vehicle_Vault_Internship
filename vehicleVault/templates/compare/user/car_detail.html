@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
-
+ 
 {% block navbar %}
 {% include 'compare/user/user_navbar.html' %}
 {% endblock %}
-
+ 
 {% block content %}
 {% include 'compare/user/user_sidebar.html' %}
-
+ 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
+ 
 <style>
   :root {
     --primary:   #e63946;
@@ -36,11 +36,11 @@
     --shadow-lg: 0 20px 60px rgba(15,23,42,0.13);
     --shadow-red:0 12px 40px rgba(230,57,70,0.18);
   }
-
+ 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
   body { background: var(--bg); }
-
+ 
   .bg-dots {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background-image: radial-gradient(circle, rgba(0,0,0,0.055) 1px, transparent 1px);
@@ -57,7 +57,7 @@
   @keyframes gridDrift { 0%{background-position:0 0} 100%{background-position:32px 32px} }
   @keyframes fadeUp    { to { opacity:1; transform:translateY(0) scale(1); } }
   @keyframes spin      { to { transform:rotate(360deg); } }
-
+ 
   .deco-c1 {
     position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
     width: 500px; height: 500px;
@@ -72,7 +72,7 @@
     top: -80px; right: -60px;
     animation: spin 40s linear infinite reverse;
   }
-
+ 
   .cd-root {
     min-height: 100vh;
     font-family: 'DM Sans', sans-serif;
@@ -82,7 +82,7 @@
     z-index: 1;
   }
   .cd-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
-
+ 
   /* ── Breadcrumb ── */
   .breadcrumb-bar {
     display: flex; align-items: center; gap: 8px;
@@ -96,7 +96,7 @@
   .breadcrumb-bar a:hover { color: var(--primary); }
   .breadcrumb-bar .sep { color: var(--border); }
   .breadcrumb-bar .current { color: var(--primary); }
-
+ 
   /* ── Hero Card ── */
   .hero-card {
     background: var(--card);
@@ -117,7 +117,7 @@
     position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
     background: linear-gradient(180deg, var(--primary), var(--accent));
   }
-
+ 
   /* Image side */
   .hero-img-wrap {
     position: relative; overflow: hidden;
@@ -144,7 +144,7 @@
     padding: 6px 14px; border-radius: 30px;
     box-shadow: 0 4px 14px rgba(230,57,70,0.35);
   }
-
+ 
   /* Details side */
   .hero-details {
     padding: 40px 44px;
@@ -167,7 +167,7 @@
     color: var(--text); margin-bottom: 24px;
   }
   .car-title span { color: var(--primary); }
-
+ 
   /* Spec grid */
   .spec-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
@@ -195,7 +195,7 @@
     font-family: 'Space Mono', monospace; font-size: 14px;
     color: var(--accent); font-weight: 700;
   }
-
+ 
   .detail-actions { display: flex; gap: 12px; }
   .btn-compare {
     flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -212,7 +212,7 @@
     background: #cf2533; color: #fff;
     box-shadow: var(--shadow-red); transform: translateY(-3px);
   }
-
+ 
   /* ── Section label ── */
   .sec-label {
     font-family: 'Space Mono', monospace; font-size: 10px;
@@ -229,7 +229,7 @@
     0%,100%{ box-shadow:0 0 0 0 rgba(230,57,70,0.4); }
     50%    { box-shadow:0 0 0 6px rgba(230,57,70,0); }
   }
-
+ 
   /* ── Review Form ── */
   .review-form-card {
     background: var(--card);
@@ -251,14 +251,14 @@
     margin-bottom: 6px;
   }
   .form-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; font-style: italic; }
-
+ 
   .form-group { margin-bottom: 18px; }
   .form-label-custom {
     font-family: 'Space Mono', monospace; font-size: 10px;
     letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
     margin-bottom: 8px; display: block;
   }
-
+ 
   /* Style Django form widgets */
   .review-form-card select,
   .review-form-card textarea,
@@ -288,7 +288,7 @@
   .btn-submit::after { content: '→'; transition: transform 0.28s; }
   .btn-submit:hover { background:#cf2533; transform:translateY(-2px); box-shadow:var(--shadow-red); }
   .btn-submit:hover::after { transform: translateX(4px); }
-
+ 
   .login-nudge {
     background: var(--primary-l); border: 1.5px solid var(--primary-m);
     border-radius: 14px; padding: 18px 24px;
@@ -300,10 +300,10 @@
   .login-nudge .nudge-icon { font-size: 24px; flex-shrink: 0; }
   .login-nudge a { color: var(--primary); font-weight: 600; text-decoration: none; }
   .login-nudge a:hover { text-decoration: underline; }
-
+ 
   /* ── Review Cards ── */
   .reviews-list { display: flex; flex-direction: column; gap: 16px; margin-top: 4px; }
-
+ 
   .review-card {
     background: var(--card);
     border: 1.5px solid var(--border);
@@ -318,7 +318,7 @@
   .review-card:nth-child(3){ animation: fadeUp 0.6s ease 0.55s forwards; }
   .review-card:nth-child(4){ animation: fadeUp 0.6s ease 0.65s forwards; }
   .review-card:nth-child(n+5){ animation: fadeUp 0.6s ease 0.7s  forwards; }
-
+ 
   .review-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-md);
@@ -332,7 +332,7 @@
     transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
   }
   .review-card:hover::before { transform: scaleX(1); }
-
+ 
   .review-header {
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 10px; flex-wrap: wrap; gap: 8px;
@@ -353,7 +353,7 @@
     font-family: 'Space Mono', monospace; font-size: 10px;
     color: var(--muted); letter-spacing: 1px;
   }
-
+ 
   .star-row { display: flex; align-items: center; gap: 4px; }
   .star { font-size: 14px; }
   .star.filled { filter: drop-shadow(0 0 3px rgba(244,162,97,0.5)); }
@@ -361,19 +361,19 @@
     font-family: 'Space Mono', monospace; font-size: 11px;
     color: var(--accent); font-weight: 700; margin-left: 4px;
   }
-
+ 
   .review-comment {
     font-size: 14px; color: var(--text2); line-height: 1.65;
     margin-top: 4px;
   }
-
+ 
   .no-reviews {
     background: var(--card); border: 2px dashed var(--border);
     border-radius: 18px; padding: 56px; text-align: center;
     color: var(--muted); font-size: 15px;
   }
   .no-reviews .icon { display: block; font-size: 40px; margin-bottom: 12px; }
-
+ 
   /* ── Avg Rating Banner ── */
   .rating-banner {
     background: var(--card);
@@ -392,7 +392,7 @@
   .rating-stars-large { display: flex; gap: 5px; margin-bottom: 4px; }
   .rating-stars-large .star { font-size: 22px; }
   .rating-sub { font-size: 12px; color: var(--muted); font-style: italic; }
-
+ 
   /* ── Responsive ── */
   @media(max-width:900px){
     .hero-card{ grid-template-columns:1fr; }
@@ -405,37 +405,40 @@
     .rating-banner{ flex-direction:column; align-items:flex-start; gap:12px; }
   }
 </style>
-
+ 
 <div class="bg-dots"></div>
 <div class="bg-blobs"></div>
 <div class="deco-c1"></div>
 <div class="deco-c2"></div>
-
+ 
 <div class="cd-root">
   <div class="cd-inner">
-
+ 
     <!-- Breadcrumb -->
     <div class="breadcrumb-bar">
       <a href="{% url 'public_car_list' %}">Cars</a>
       <span class="sep">›</span>
       <span class="current">{{ car.carName }}</span>
     </div>
-
+ 
     <!-- Hero Card -->
     <div class="hero-card">
-      <div class="hero-img-wrap">
-        <span class="img-badge">Detail View</span>
-        {% if car.carImage %}
+      <div class="hero-img-wrap" id="hero-img-wrap">
+        <span class="img-badge">{% if car.model_3d %}360° View{% else %}Detail View{% endif %}</span>
+        {% if car.model_3d %}
+          <!-- 3D Viewer -->
+          <div id="car-3d-viewer" style="width:100%;height:100%;min-height:420px;"></div>
+        {% elif car.carImage %}
           <img src="{{ car.carImage.url }}" alt="{{ car.carName }}">
         {% else %}
           <img src="https://via.placeholder.com/600x420?text={{ car.carName }}" alt="{{ car.carName }}">
         {% endif %}
       </div>
-
+ 
       <div class="hero-details">
         <div class="car-eyebrow">{{ car.brand }}</div>
         <div class="car-title">{{ car.carName }}</div>
-
+ 
         <div class="spec-grid">
           <div class="spec-item">
             <div class="spec-key">Price</div>
@@ -462,13 +465,81 @@
             <div class="spec-val">{{ car.brand }}</div>
           </div>
         </div>
-
+ 
         <div class="detail-actions">
-          <a href="#" class="btn-compare">Compare This Car</a>
+          <a href="{% url 'public_car_list' %}?preselect={{ car.pk }}" class="btn-compare">Compare This Car</a>
         </div>
       </div>
     </div>
-
+ 
+    <!-- Variants Section -->
+    {% with variants=car.variants.filter %}
+    {% endwith %}
+    {% if car.variants.exists %}
+    <div class="sec-label" style="margin-top:0;margin-bottom:16px;">
+      <span class="dot"></span> Available Variants
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:28px;">
+      {% for v in car.variants.all %}
+      <div style="background:var(--card);border:1.5px solid var(--border);border-radius:16px;
+                  padding:18px 20px;position:relative;transition:all 0.3s;
+                  {% if v.variantTier == 'Top' %}border-top:3px solid var(--primary);{% endif %}
+                  {% if v.variantTier == 'Special' %}border-top:3px solid #7c3aed;{% endif %}">
+ 
+        {% if v.variantTier == 'Top' %}
+        <div style="position:absolute;top:-1px;right:16px;background:var(--primary);
+                    color:#fff;font-size:9px;letter-spacing:2px;padding:3px 10px;
+                    border-radius:0 0 8px 8px;font-family:'Space Mono',monospace;text-transform:uppercase;">
+          Top
+        </div>
+        {% elif v.variantTier == 'Special' %}
+        <div style="position:absolute;top:-1px;right:16px;background:#7c3aed;
+                    color:#fff;font-size:9px;letter-spacing:2px;padding:3px 10px;
+                    border-radius:0 0 8px 8px;font-family:'Space Mono',monospace;text-transform:uppercase;">
+          Special
+        </div>
+        {% endif %}
+ 
+        <div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:4px;">
+          {{ v.variantName }}
+        </div>
+        <div style="font-family:'Space Mono',monospace;font-size:16px;color:var(--accent);
+                    font-weight:700;margin-bottom:10px;">
+          ₹ {{ v.price|floatformat:0 }}
+        </div>
+ 
+        {% if v.mileage %}
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">
+          ⛽ {{ v.mileage }} km/l
+          {% if v.transmission %} &nbsp;·&nbsp; {{ v.transmission }}{% endif %}
+        </div>
+        {% endif %}
+ 
+        {% if v.features_list %}
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;">
+          {% for feat in v.features_list|slice:":4" %}
+          <span style="background:var(--bg);border:1px solid var(--border);border-radius:5px;
+                       padding:2px 8px;font-size:11px;color:var(--text2);">
+            {{ feat }}
+          </span>
+          {% endfor %}
+          {% if v.features_list|length > 4 %}
+          <span style="font-size:11px;color:var(--muted);padding:2px 4px;">
+            +{{ v.features_list|length|add:"-4" }} more
+          </span>
+          {% endif %}
+        </div>
+        {% endif %}
+ 
+        {% if not v.isAvailable %}
+        <div style="margin-top:8px;font-size:11px;color:var(--muted);">● Currently unavailable</div>
+        {% endif %}
+ 
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+ 
     <!-- Average Rating Banner -->
     {% if reviews %}
     <div class="rating-banner">
@@ -489,10 +560,10 @@
       </div>
     </div>
     {% endif %}
-
+ 
     <!-- Reviews Section -->
     <div class="sec-label"><span class="dot"></span> Customer Reviews</div>
-
+ 
     <!-- Review Form -->
     {% if user.is_authenticated %}
     <div class="review-form-card">
@@ -517,7 +588,7 @@
       <span>Please <a href="{% url 'login' %}">log in</a> to write a review and share your experience.</span>
     </div>
     {% endif %}
-
+ 
     <!-- Reviews List -->
     <div class="sec-label" style="margin-top:32px"><span class="dot"></span> All Reviews</div>
     <div class="reviews-list">
@@ -551,14 +622,35 @@
       </div>
       {% endfor %}
     </div>
-
+ 
   </div>
 </div>
-
+ 
+{% if car.model_3d %}
+<script type="importmap">
+  { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160/examples/jsm/"
+  }}
+</script>
+<script type="module">
+  import { initCarViewer } from "{% static 'js/car_viewer.js' %}";
+  // Ensure the viewer fills the hero card height
+  const wrap = document.getElementById('hero-img-wrap');
+  const viewerEl = document.getElementById('car-3d-viewer');
+  if (viewerEl) {
+    viewerEl.style.height = wrap.offsetHeight + 'px';
+  }
+  initCarViewer('car-3d-viewer', '{{ car.model_3d.url }}', {
+    bgColor: 0x0f1117,
+    autoRotate: true,
+    rotateSpeed: 1.6
+  });
+</script>
+{% endif %}
+ 
 {% endblock %}
-
-
-{% comment %} {% extends 'base.html' %}
+{% comment %}  {% extends 'base.html' %}
 {% block content %}
 
 <div class="container mt-5">

@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+  {% include 'compare/user/user_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+{% include 'compare/user/user_sidebar.html' %}
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+
+:root{
+  --red:#e63946;--red-d:#c1121f;--red-l:#fff0f1;
+  --orange:#f4a261;--dark:#0f172a;--dark2:#1e293b;
+  --card:#fff;--bg:#f4f6fb;--border:rgba(15,23,42,.08);
+  --text:#0f172a;--text2:#475569;--muted:#94a3b8;
+  --teal:#0d9488;--teal-l:#f0fdfa;
+  --blue:#2563eb;--blue-l:#eff6ff;
+  --green:#16a34a;--green-l:#f0fdf4;
+  --amber:#d97706;--amber-l:#fffbeb;
+  --sh-sm:0 2px 12px rgba(15,23,42,.06);
+  --sh-md:0 8px 32px rgba(15,23,42,.10);
+  --sh-lg:0 24px 64px rgba(15,23,42,.14);
+  --sh-red:0 12px 40px rgba(230,57,70,.22);
+  --r:18px;--r-sm:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+@keyframes fadeUp {from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}
+@keyframes spin   {to{transform:rotate(360deg)}}
+@keyframes pulse  {0%,100%{box-shadow:0 0 0 0 rgba(230,57,70,.4)}50%{box-shadow:0 0 0 8px rgba(230,57,70,0)}}
+@keyframes shimmer{0%{background-position:-500px 0}100%{background-position:500px 0}}
+@keyframes pop    {0%{transform:scale(.5);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes bellRing{0%,100%{transform:rotate(0)}15%{transform:rotate(18deg)}30%{transform:rotate(-16deg)}45%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}75%{transform:rotate(4deg)}}
+
+.vv-wrap{min-height:100vh;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);position:relative;overflow-x:hidden;}
+.vv-wrap::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(0,0,0,.04) 1px,transparent 1px);background-size:28px 28px;}
+.vv-wrap::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 0% 0%,rgba(230,57,70,.05),transparent 55%),radial-gradient(ellipse 50% 35% at 100% 100%,rgba(230,57,70,.04),transparent 55%);}
+.vv-ring{position:fixed;border-radius:50%;pointer-events:none;z-index:0;border:1.5px solid rgba(230,57,70,.04);}
+.vv-ring-a{width:580px;height:580px;top:-220px;right:-180px;animation:spin 75s linear infinite;}
+.vv-ring-b{width:340px;height:340px;bottom:-130px;left:-130px;animation:spin 52s linear infinite reverse;}
+.vv-page{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:44px 36px 100px;}
+
+/* ── Header ── */
+.vv-ph{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) both;}
+.vv-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;}
+.vv-eyebrow::before,.vv-eyebrow::after{content:'';display:inline-block;width:22px;height:2px;background:linear-gradient(90deg,var(--red),var(--orange));border-radius:2px;}
+.vv-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,58px);letter-spacing:2px;line-height:.9;color:var(--dark);}
+.vv-title em{color:var(--red);font-style:normal;}
+.vv-sub{font-size:13px;color:var(--muted);margin-top:6px;font-weight:300;}
+
+/* Bell icon */
+.vv-bell{font-size:44px;animation:bellRing 2.2s ease-in-out 0.5s;}
+
+/* Unread badge */
+.vv-unread-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:28px;height:28px;border-radius:14px;padding:0 8px;
+  background:var(--red);color:#fff;
+  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+  animation:pop .5s cubic-bezier(.22,1,.36,1) .4s both;
+  box-shadow:var(--sh-red);
+}
+
+/* Mark all read btn */
+.vv-btn{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;border-radius:11px;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;text-decoration:none;transition:all .25s cubic-bezier(.22,1,.36,1);}
+.vv-btn-red{background:var(--red);color:#fff;box-shadow:var(--sh-red);}
+.vv-btn-red:hover{background:var(--red-d);color:#fff;text-decoration:none;transform:translateY(-2px);}
+.vv-btn-ghost{background:#fff;color:var(--red);border:1.5px solid rgba(230,57,70,.22);}
+.vv-btn-ghost:hover{background:var(--red);color:#fff;text-decoration:none;transform:translateY(-2px);}
+
+/* ── Filter tabs ── */
+.vv-tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;animation:fadeUp .5s ease .1s both;}
+.vv-tab{
+  padding:8px 18px;border-radius:20px;border:1.5px solid var(--border);
+  background:#fff;color:var(--muted);cursor:pointer;
+  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  transition:all .2s;text-decoration:none;
+}
+.vv-tab:hover{border-color:var(--red);color:var(--red);text-decoration:none;}
+.vv-tab.active{background:var(--red);border-color:var(--red);color:#fff;}
+
+/* ── Notification list ── */
+.vv-notif-list{display:flex;flex-direction:column;gap:12px;}
+
+.vv-notif{
+  background:var(--card);border:1.5px solid var(--border);border-radius:14px;
+  display:flex;align-items:flex-start;gap:16px;
+  padding:18px 20px;box-shadow:var(--sh-sm);
+  transition:transform .28s cubic-bezier(.22,1,.36,1),box-shadow .28s,border-color .25s;
+  position:relative;overflow:hidden;
+  animation:slideIn .4s cubic-bezier(.22,1,.36,1) both;
+}
+.vv-notif:hover{transform:translateY(-3px);box-shadow:var(--sh-md);}
+
+/* Unread indicator */
+.vv-notif.unread{border-left:4px solid var(--red);background:linear-gradient(135deg,#fff8f8,#fff);}
+.vv-notif.unread .vv-notif-title{color:var(--dark);}
+
+/* Type icon bubble */
+.vv-notif-ico{
+  width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.ico-review    {background:var(--amber-l);}
+.ico-comparison{background:var(--blue-l);}
+.ico-welcome   {background:var(--green-l);}
+.ico-car_added {background:var(--teal-l);}
+.ico-system    {background:var(--red-l);}
+
+.vv-notif-body{flex:1;min-width:0;}
+.vv-notif-top{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap;}
+.vv-notif-title{font-size:14px;font-weight:600;color:var(--dark);}
+.vv-notif-type-badge{
+  font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:3px 9px;border-radius:20px;font-weight:700;
+}
+.badge-review    {background:var(--amber-l);color:var(--amber);}
+.badge-comparison{background:var(--blue-l); color:var(--blue);}
+.badge-welcome   {background:var(--green-l);color:var(--green);}
+.badge-car_added {background:var(--teal-l); color:var(--teal);}
+.badge-system    {background:var(--red-l);  color:var(--red);}
+
+.vv-notif-msg{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:8px;}
+.vv-notif-time{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;}
+
+/* Unread dot */
+.vv-unread-dot{
+  width:9px;height:9px;border-radius:50%;background:var(--red);
+  position:absolute;top:14px;right:14px;
+  animation:pulse 2s ease-in-out infinite;flex-shrink:0;
+}
+
+/* Actions */
+.vv-notif-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.vv-nact{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 12px;border-radius:7px;border:none;cursor:pointer;
+  font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;
+  text-decoration:none;transition:all .2s;
+}
+.nact-view{background:var(--blue-l);color:var(--blue);}
+.nact-view:hover{background:var(--blue);color:#fff;text-decoration:none;}
+.nact-del{background:var(--red-l);color:var(--red);}
+.nact-del:hover{background:var(--red);color:#fff;text-decoration:none;}
+
+/* Empty state */
+.vv-empty{text-align:center;padding:80px 24px;color:var(--muted);animation:fadeUp .5s ease both;}
+.vv-empty-icon{font-size:64px;display:block;margin-bottom:16px;animation:bellRing 2s ease 1s;}
+.vv-empty-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--dark);margin-bottom:8px;}
+.vv-empty-sub{font-size:14px;color:var(--muted);}
+
+@media(max-width:640px){.vv-page{padding:28px 16px 80px;}.vv-ph{flex-direction:column;align-items:flex-start;}}
+</style>
+
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div>
+  <div class="vv-ring vv-ring-b"></div>
+
+  <div class="vv-page">
+
+    <!-- ── Page Header ── -->
+    <div class="vv-ph">
+      <div>
+        <div class="vv-eyebrow">Activity</div>
+        <div class="vv-title">My <em>Notifications</em></div>
+        <div class="vv-sub">Reviews, comparisons and system updates</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:14px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="vv-bell">🔔</span>
+          {% if unread_count > 0 %}
+            <span class="vv-unread-badge">{{ unread_count }}</span>
+          {% endif %}
+        </div>
+        {% if notifications %}
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="{% url 'mark_all_read' %}" class="vv-btn vv-btn-ghost">✓ Mark All Read</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ── Filter Tabs ── -->
+    {% if notifications %}
+    <div class="vv-tabs">
+      <a href="?filter=all"        class="vv-tab {% if not request.GET.filter or request.GET.filter == 'all'  %}active{% endif %}">All</a>
+      <a href="?filter=unread"     class="vv-tab {% if request.GET.filter == 'unread'     %}active{% endif %}">Unread {% if unread_count %}<span style="margin-left:4px;background:rgba(230,57,70,.15);border-radius:10px;padding:1px 6px;">{{ unread_count }}</span>{% endif %}</a>
+      <a href="?filter=review"     class="vv-tab {% if request.GET.filter == 'review'     %}active{% endif %}">⭐ Reviews</a>
+      <a href="?filter=comparison" class="vv-tab {% if request.GET.filter == 'comparison' %}active{% endif %}">⚖️ Comparisons</a>
+      <a href="?filter=system"     class="vv-tab {% if request.GET.filter == 'system'     %}active{% endif %}">🔧 System</a>
+    </div>
+    {% endif %}
+
+    <!-- ── Notification list ── -->
+    {% if notifications %}
+    <div class="vv-notif-list">
+
+      {% for notif in notifications %}
+
+        {% comment %}Client-side filter via data attr{% endcomment %}
+        <div class="vv-notif {% if not notif.isRead %}unread{% endif %}"
+             data-type="{{ notif.notifType }}"
+             style="animation-delay:{{ forloop.counter0 }}0ms;">
+
+          {% if not notif.isRead %}
+            <div class="vv-unread-dot"></div>
+          {% endif %}
+
+          <!-- Icon -->
+          <div class="vv-notif-ico ico-{{ notif.notifType }}">
+            {% if notif.notifType == 'review'     %}⭐
+            {% elif notif.notifType == 'comparison'%}⚖️
+            {% elif notif.notifType == 'welcome'   %}🎉
+            {% elif notif.notifType == 'car_added' %}🚗
+            {% else %}🔔{% endif %}
+          </div>
+
+          <!-- Body -->
+          <div class="vv-notif-body">
+            <div class="vv-notif-top">
+              <span class="vv-notif-title">{{ notif.title }}</span>
+              <span class="vv-notif-type-badge badge-{{ notif.notifType }}">{{ notif.notifType }}</span>
+              {% if not notif.isRead %}
+                <span style="font-family:'Space Mono',monospace;font-size:8px;color:var(--red);letter-spacing:1px;text-transform:uppercase;">● NEW</span>
+              {% endif %}
+            </div>
+            <div class="vv-notif-msg">{{ notif.message }}</div>
+            <div class="vv-notif-time">{{ notif.createdAt|timesince }} ago</div>
+
+            <div class="vv-notif-actions">
+              {% if notif.link %}
+                <a href="{% url 'mark_notification_read' notif.pk %}" class="vv-nact nact-view">→ View</a>
+              {% endif %}
+              <a href="{% url 'delete_notification' notif.pk %}"
+                 class="vv-nact nact-del"
+                 onclick="return confirm('Delete this notification?')">🗑 Delete</a>
+            </div>
+          </div>
+
+        </div>
+
+      {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <!-- Empty state -->
+    <div class="vv-empty">
+      <span class="vv-empty-icon">🔔</span>
+      <div class="vv-empty-title">All Caught Up!</div>
+      <div class="vv-empty-sub">No notifications yet. Compare cars or write a review to get started.</div>
+    </div>
+
+    {% endif %}
+
+  </div>
+</div>
+
+<!-- Filter tab JS -->
+<script>
+(function(){
+  const filter = new URLSearchParams(window.location.search).get('filter') || 'all';
+  if (filter === 'all') return;
+
+  document.querySelectorAll('.vv-notif').forEach(el => {
+    const type = el.dataset.type;
+    if (filter === 'unread') {
+      if (!el.classList.contains('unread')) el.style.display = 'none';
+    } else {
+      if (type !== filter) el.style.display = 'none';
+    }
+  });
+})();
+</script>
+
+{% endblock %}

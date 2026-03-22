@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
-
+ 
 {% block navbar %}
   {% include 'compare/user/user_navbar.html' %}
 {% endblock %}
-
+ 
 {% block content %}
 {% include 'compare/user/user_sidebar.html' %}
-
+ 
 <link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
 <style>
 /* ── Filter bar ─────────────────────────────────────────────── */
@@ -66,7 +66,7 @@
   transition: background .2s;
 }
 .vv-search-wrap button:hover { background: var(--red-d); }
-
+ 
 .vv-filter-actions { display: flex; gap: 10px; align-items: flex-end; }
 .vv-clear-btn {
   display: inline-flex; align-items: center; gap: 6px;
@@ -78,7 +78,7 @@
   transition: all .2s;
 }
 .vv-clear-btn:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
-
+ 
 /* Active filter chips */
 .vv-active-filters {
   display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;
@@ -95,14 +95,14 @@
   line-height: 1;
 }
 .vv-fchip a:hover { color: var(--red-d); }
-
+ 
 /* ── Car grid ───────────────────────────────────────────────── */
 .vv-cl-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
   gap: 22px;
 }
-
+ 
 /* ── Compare checkbox on card ───────────────────────────────── */
 .vv-car-card { position: relative; }
 .cmp-checkbox-wrap {
@@ -112,7 +112,7 @@
   width: 20px; height: 20px; accent-color: var(--red); cursor: pointer;
   border-radius: 5px;
 }
-
+ 
 /* ── Compare bar (sticky bottom) ────────────────────────────── */
 .vv-cmp-bar {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
@@ -147,7 +147,7 @@
   font-size: 28px; color: var(--red); letter-spacing: 2px; line-height: 1;
 }
 .vv-cmp-bar-right { display: flex; gap: 10px; align-items: center; }
-
+ 
 /* ── Results info ───────────────────────────────────────────── */
 .vv-results-info {
   display: flex; align-items: center; justify-content: space-between;
@@ -156,20 +156,20 @@
   letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
 }
 .vv-results-count strong { color: var(--dark); font-size: 14px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; }
-
+ 
 @media (max-width: 700px) {
   .vv-filter-row { flex-direction: column; }
   .vv-cl-grid { grid-template-columns: 1fr; }
   .vv-cmp-bar { padding: 14px 20px; }
 }
 </style>
-
+ 
 <div class="vv-wrap">
   <div class="vv-ring vv-ring-a"></div>
   <div class="vv-ring vv-ring-b"></div>
-
+ 
   <div class="vv-page">
-
+ 
     <!-- ── Page Header ── -->
     <div class="vv-ph">
       <div class="vv-ph-left">
@@ -182,12 +182,27 @@
         {{ cars|length }} Result{% if cars|length != 1 %}s{% endif %}
       </div>
     </div>
-
+ 
+    <!-- ── Preselect Banner (shown when coming from car detail) ── -->
+    <div id="preselect-banner" style="display:none;background:linear-gradient(135deg,#fff0f1,#fff8f0);
+         border:1.5px solid rgba(230,57,70,0.25);border-radius:14px;padding:14px 20px;
+         margin-bottom:20px;display:none;align-items:center;gap:14px;">
+      <span style="font-size:22px;">⚖️</span>
+      <div>
+        <div style="font-weight:600;font-size:14px;color:#0f172a;" id="banner-title">
+          1 car pre-selected
+        </div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:2px;">
+          Now pick one more car from the list below and click <strong style="color:#e63946;">Compare Now</strong>
+        </div>
+      </div>
+    </div>
+ 
     <!-- ── Filter Bar ── -->
-    <form method="GET" id="filterForm">
+    <form method="GET" action="{% url 'public_car_list' %}" id="filterForm">
     <div class="vv-filter-bar">
       <div class="vv-filter-row">
-
+ 
         <!-- Search -->
         <div class="vv-filter-group" style="flex:2;min-width:200px;">
           <label class="vv-label">Search</label>
@@ -197,7 +212,7 @@
             <button type="submit">Search</button>
           </div>
         </div>
-
+ 
         <!-- Fuel Type -->
         <div class="vv-filter-group">
           <label class="vv-label">Fuel Type</label>
@@ -210,7 +225,7 @@
             {% endfor %}
           </select>
         </div>
-
+ 
         <!-- Transmission -->
         <div class="vv-filter-group">
           <label class="vv-label">Transmission</label>
@@ -223,7 +238,7 @@
             {% endfor %}
           </select>
         </div>
-
+ 
         <!-- Brand -->
         <div class="vv-filter-group">
           <label class="vv-label">Brand</label>
@@ -236,7 +251,7 @@
             {% endfor %}
           </select>
         </div>
-
+ 
         <!-- Sort -->
         <div class="vv-filter-group">
           <label class="vv-label">Sort By</label>
@@ -249,14 +264,14 @@
             <option value="oldest"     {% if sel_sort == 'oldest'     %}selected{% endif %}>Oldest First</option>
           </select>
         </div>
-
+ 
         <!-- Clear -->
         <div class="vv-filter-actions">
           <a href="{% url 'public_car_list' %}" class="vv-clear-btn">✕ Clear</a>
         </div>
-
+ 
       </div>
-
+ 
       <!-- Active filter chips -->
       {% if sel_fuel or sel_trans or sel_brand or sel_sort or search %}
       <div class="vv-active-filters">
@@ -292,10 +307,10 @@
         {% endif %}
       </div>
       {% endif %}
-
+ 
     </div>
     </form>
-
+ 
     <!-- ── Results info ── -->
     <div class="vv-results-info">
       <div class="vv-results-count">
@@ -303,13 +318,13 @@
       </div>
       <div>Tick up to 2 cars then click Compare</div>
     </div>
-
+ 
     <!-- ── Car Grid ── -->
     {% if cars %}
     <div class="vv-cl-grid" id="carGrid">
       {% for car in cars %}
       <div class="vv-car-card" id="card-{{ car.pk }}">
-
+ 
         <!-- Compare checkbox -->
         <div class="cmp-checkbox-wrap">
           <input type="checkbox"
@@ -318,7 +333,7 @@
                  data-name="{{ car.carName }}"
                  title="Select to compare">
         </div>
-
+ 
         <!-- Image -->
         <div class="vv-car-img-wrap">
           <span class="vv-car-ftype">{{ car.fuelType }}</span>
@@ -328,7 +343,7 @@
             <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:52px;color:var(--muted);">🚗</div>
           {% endif %}
         </div>
-
+ 
         <!-- Info -->
         <div class="vv-car-body">
           <div class="vv-car-name">{{ car.carName }}</div>
@@ -348,11 +363,11 @@
             </a>
           </div>
         </div>
-
+ 
       </div>
       {% endfor %}
     </div>
-
+ 
     {% else %}
     <div class="vv-card">
       <div class="vv-card-bar"></div>
@@ -366,10 +381,10 @@
       </div>
     </div>
     {% endif %}
-
+ 
   </div>
 </div>
-
+ 
 <!-- ── Sticky Compare Bar ── -->
 <div class="vv-cmp-bar" id="cmpBar">
   <div class="vv-cmp-bar-left">
@@ -390,7 +405,7 @@
     </button>
   </div>
 </div>
-
+ 
 <script>
 /* ── Compare selection logic ─────────────────────────────── */
 const MAX = 2;
@@ -399,31 +414,31 @@ const bar        = document.getElementById('cmpBar');
 const countEl    = document.getElementById('cmpCount');
 const selectedEl = document.getElementById('cmpSelected');
 const cmpBtn     = document.getElementById('cmpBtn');
-
+ 
 function updateBar() {
   const checked = [...checkboxes].filter(c => c.checked);
   const n = checked.length;
-
+ 
   countEl.textContent = n;
-
+ 
   // Pills
   selectedEl.innerHTML = checked.map(c =>
     `<div class="vv-cmp-pill">${c.dataset.name}</div>`
   ).join('');
-
+ 
   // Show/hide bar
   bar.classList.toggle('show', n > 0);
-
+ 
   // Disable unchecked when 2 selected
   checkboxes.forEach(c => {
     if (!c.checked) c.disabled = n >= MAX;
   });
-
+ 
   // Disable compare button if < 2
   cmpBtn.disabled = n < 2;
   cmpBtn.style.opacity = n < 2 ? '0.5' : '1';
 }
-
+ 
 checkboxes.forEach(cb => {
   cb.addEventListener('change', () => {
     // Highlight selected card
@@ -438,7 +453,7 @@ checkboxes.forEach(cb => {
     updateBar();
   });
 });
-
+ 
 function clearSelection() {
   checkboxes.forEach(c => {
     c.checked  = false;
@@ -448,7 +463,7 @@ function clearSelection() {
   });
   updateBar();
 }
-
+ 
 function goCompare() {
   const ids = [...checkboxes]
     .filter(c => c.checked)
@@ -456,11 +471,38 @@ function goCompare() {
   if (ids.length < 2) return;
   window.location.href = "{% url 'compare_cars' %}?" + ids.join('&');
 }
-
+ 
+// ── Pre-select car coming from car detail page ───────────────
+const urlParams  = new URLSearchParams(window.location.search);
+const preselect  = urlParams.get('preselect');
+ 
+if (preselect) {
+  // Show the helper banner
+  const banner = document.getElementById('preselect-banner');
+  if (banner) banner.style.display = 'flex';
+ 
+  const targetCb = [...checkboxes].find(c => c.value === preselect);
+  if (targetCb) {
+    targetCb.checked = true;
+ 
+    // Highlight the card
+    const card = document.getElementById('card-' + preselect);
+    if (card) {
+      card.style.borderColor = 'var(--red)';
+      card.style.boxShadow   = '0 0 0 3px rgba(230,57,70,.18), var(--sh-lg)';
+ 
+      // Smooth scroll to the preselected car
+      setTimeout(() => {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    }
+  }
+}
+ 
 // Init
 updateBar();
 </script>
-
+ 
 {% endblock %}
 
 {% comment %} {% extends 'base.html' %}

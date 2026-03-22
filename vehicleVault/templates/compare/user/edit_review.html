@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
+
+{% block content %}
+{% include 'compare/user/user_sidebar.html' %}
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --red:#e63946;--red-l:#fff0f1;--amber:#f59e0b;--amber-l:#fffbeb;
+  --bg:#f5f6fa;--card:#fff;--border:rgba(0,0,0,.07);
+  --text:#0f172a;--muted:#94a3b8;
+  --sh-sm:0 2px 12px rgba(15,23,42,.07);--sh-md:0 8px 32px rgba(15,23,42,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+.er-root{min-height:100vh;padding:40px 48px 80px;position:relative;z-index:1;}
+.er-inner{max-width:600px;margin:0 auto;}
+
+.breadcrumb-bar{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:28px;}
+.breadcrumb-bar a{color:var(--muted);text-decoration:none;}
+.breadcrumb-bar a:hover{color:var(--red);}
+.breadcrumb-bar .sep{color:var(--border);}
+.breadcrumb-bar .current{color:var(--red);}
+
+.page-header{margin-bottom:32px;opacity:0;transform:translateY(20px);animation:fadeUp .6s ease .05s forwards;}
+.page-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;
+  text-transform:uppercase;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:12px;}
+.page-eyebrow::before{content:'';display:inline-block;width:28px;height:2px;
+  background:linear-gradient(90deg,var(--red),var(--amber));border-radius:2px;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,60px);
+  letter-spacing:2px;line-height:.95;color:var(--text);}
+.page-title span{color:var(--red);}
+
+/* Form card */
+.form-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;
+  overflow:hidden;box-shadow:var(--sh-md);
+  opacity:0;transform:translateY(20px);animation:fadeUp .65s ease .1s forwards;}
+.form-bar{height:4px;background:linear-gradient(90deg,var(--red),var(--amber),var(--red));
+  background-size:200%;animation:shimmer 3s linear infinite;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.form-body{padding:30px 32px;}
+
+/* Car info */
+.car-info-row{display:flex;align-items:center;gap:14px;
+  background:var(--red-l);border:1.5px solid rgba(230,57,70,.15);
+  border-radius:12px;padding:14px 18px;margin-bottom:28px;}
+.car-info-icon{font-size:28px;}
+.car-info-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--text);}
+.car-info-brand{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);}
+
+/* Star picker */
+.field-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:block;}
+.star-picker{display:flex;flex-direction:row-reverse;justify-content:flex-end;gap:6px;margin-bottom:24px;}
+.star-picker input[type="radio"]{display:none;}
+.star-picker label{font-size:32px;cursor:pointer;color:var(--border);transition:color .15s,transform .15s;}
+.star-picker label:hover,
+.star-picker label:hover ~ label,
+.star-picker input:checked ~ label{color:#f59e0b !important;}
+.star-picker input:checked + label{color:#f59e0b !important;}
+
+/* Textarea */
+.vv-field{width:100%;background:#f8fafc;border:1.5px solid var(--border);
+  border-radius:10px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;
+  color:var(--text);resize:vertical;transition:border-color .2s,box-shadow .2s;outline:none;}
+.vv-field:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,70,.1);}
+
+/* Buttons */
+.btn-row{display:flex;gap:12px;margin-top:24px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:12px 24px;
+  border-radius:11px;border:none;cursor:pointer;font-family:'Space Mono',monospace;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  text-decoration:none;transition:all .25s;flex:1;justify-content:center;}
+.btn-primary{background:var(--red);color:#fff;box-shadow:0 4px 20px rgba(230,57,70,.28);}
+.btn-primary:hover{background:#cf2533;transform:translateY(-2px);}
+.btn-ghost{background:#f1f5f9;color:var(--muted);border:1.5px solid var(--border);}
+.btn-ghost:hover{background:#e2e8f0;color:var(--text);text-decoration:none;}
+
+@media(max-width:640px){
+  .er-root{padding:24px 18px 60px;}
+  .btn-row{flex-direction:column;}
+}
+</style>
+
+<div class="er-root">
+  <div class="er-inner">
+
+    <div class="breadcrumb-bar">
+      <a href="{% url 'user-dashboard' %}">Dashboard</a>
+      <span class="sep">›</span>
+      <a href="{% url 'user_reviews' %}">My Reviews</a>
+      <span class="sep">›</span>
+      <span class="current">Edit Review</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-eyebrow">Reviews</div>
+      <div class="page-title">Edit <span>Review</span></div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-bar"></div>
+      <div class="form-body">
+
+        <!-- Car info -->
+        <div class="car-info-row">
+          <div class="car-info-icon">🚗</div>
+          <div>
+            <div class="car-info-name">{{ car.carName }}</div>
+            <div class="car-info-brand">{{ car.brand }}</div>
+          </div>
+        </div>
+
+        <form method="POST">
+          {% csrf_token %}
+
+          <!-- Star rating -->
+          <label class="field-label">Your Rating</label>
+          <div class="star-picker">
+                {% for i in "54321" %}
+                <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}"
+                        {% if review.rating|stringformat:"s" == i %}checked{% endif %}>
+                <label for="star{{ i }}" title="{{ i }} star">★</label>
+                {% endfor %}
+            
+            </div>
+
+          <!-- Comment -->
+          <label class="field-label" for="id_comment">Your Comment</label>
+          <textarea name="comment" class="vv-field" rows="5"
+                    placeholder="Update your experience…">{{ review.comment }}</textarea>
+
+          {% if form.errors %}
+          <div style="color:var(--red);font-size:12px;margin-top:8px;">
+            Please fix the errors above and try again.
+          </div>
+          {% endif %}
+
+          <div class="btn-row">
+            <a href="{% url 'car_detail' car.id %}" class="btn btn-ghost">← Cancel</a>
+            <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

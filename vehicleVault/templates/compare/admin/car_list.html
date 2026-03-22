@@ -321,6 +321,10 @@
       </div>
       <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
         <div class="vv-pill"><span class="live"></span>{{ total_filtered }} Car{% if total_filtered != 1 %}s{% endif %}</div>
+        <div style="display:flex;gap:10px;">
+        <a href="{% url 'export_cars_csv' %}" class="vv-btn-add" style="background:#0d9488;color:#fff !important;box-shadow:0 8px 24px rgba(13,148,136,.3);">⬇ CSV</a>
+        <a href="{% url 'export_cars_pdf' %}" class="vv-btn-add" style="background:#e63946;color:#fff !important;box-shadow:0 8px 24px rgba(230,57,70,.3);">⬇ PDF</a>
+      </div>
         <a href="{% url 'car_create' %}" class="vv-btn-add">＋ Add Car</a>
       </div>
     </div>
@@ -538,6 +542,7 @@
 
               <td>
                 <div class="vv-act">
+                  <a href="{% url 'variant_list' car.id %}" class="vv-btn-sm" style="background:rgba(13,148,136,0.1);color:#0d9488;border:1px solid rgba(13,148,136,0.3);padding:5px 10px;border-radius:6px;font-size:11px;text-decoration:none;">⚙ Variants</a>
                   <a href="{% url 'car_update' car.id %}" class="vv-btn-sm btn-edit">✏ Edit</a>
                   <a href="{% url 'car_delete' car.id %}"
                      class="vv-btn-sm btn-del"

@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+  {% include 'compare/admin/admin_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+{% include 'compare/admin/admin_sidebar.html' %}
+
+<link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
+
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div>
+  <div class="vv-ring vv-ring-b"></div>
+
+  <div class="vv-page">
+
+    <!-- ── Page Header ── -->
+    <div class="vv-ph">
+      <div class="vv-ph-left">
+        <div class="vv-eyebrow">Admin Panel</div>
+        <div class="vv-title">Edit <em>User</em></div>
+        <div class="vv-sub">Update the details for {{ edit_user.email }}</div>
+      </div>
+      <a href="{% url 'admin_users' %}" class="vv-back">← Back to Users</a>
+    </div>
+
+    <!-- ── Form Card ── -->
+    <div class="vv-card">
+      <div class="vv-card-bar"></div>
+
+      <div style="padding:36px 40px 40px;">
+
+        <form method="POST">
+          {% csrf_token %}
+
+          <!-- ── Top: fields + avatar side by side ── -->
+          <div style="display:grid;grid-template-columns:1fr 300px;gap:40px;align-items:start;">
+
+            <!-- ── Left: Fields ── -->
+            <div>
+              <div class="vv-sec"><span class="vv-dot"></span>Personal Details</div>
+
+              <div class="vv-form-grid">
+
+                <div>
+                  <label class="vv-label">First Name</label>
+                  <input type="text" name="first_name" value="{{ edit_user.first_name }}"
+                         placeholder="First name" class="vv-field">
+                </div>
+
+                <div>
+                  <label class="vv-label">Last Name</label>
+                  <input type="text" name="last_name" value="{{ edit_user.last_name }}"
+                         placeholder="Last name" class="vv-field">
+                </div>
+
+                <div>
+                  <label class="vv-label">Email</label>
+                  <input type="email" name="email" value="{{ edit_user.email }}"
+                         placeholder="Email address" class="vv-field">
+                </div>
+
+                <div>
+                  <label class="vv-label">Gender</label>
+                  <select name="gender" class="vv-field">
+                    <option value="">-- Select Gender --</option>
+                    <option value="male"   {% if edit_user.gender == 'male' %}selected{% endif %}>Male</option>
+                    <option value="female" {% if edit_user.gender == 'female' %}selected{% endif %}>Female</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="vv-label">Role</label>
+                  <select name="role" class="vv-field">
+                    <option value="user"  {% if edit_user.role == 'user' %}selected{% endif %}>User</option>
+                    <option value="admin" {% if edit_user.role == 'admin' %}selected{% endif %}>Admin</option>
+                  </select>
+                </div>
+
+                <div style="display:flex;flex-direction:column;justify-content:flex-end;">
+                  <label class="vv-label">Availability</label>
+                  <div class="vv-check-row">
+                    <input type="checkbox" name="is_active" id="is_active"
+                           {% if edit_user.is_active %}checked{% endif %}>
+                    <label for="is_active">Mark as Active</label>
+                  </div>
+                </div>
+
+              </div>
+<p>DEBUG: {{ edit_user.email }} | active: {{ edit_user.is_active }} | online: {{ edit_user.is_online }}</p>
+              <!-- ── Password Section ── -->
+              <div class="vv-sec" style="margin-top:28px;"><span class="vv-dot"></span>Change Password <span style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1px;">(leave blank to keep current)</span></div>
+
+              <div class="vv-form-grid">
+                <div>
+                  <label class="vv-label">New Password</label>
+                  <input type="password" name="new_password"
+                         placeholder="Enter new password" class="vv-field">
+                </div>
+                <div>
+                  <label class="vv-label">Confirm Password</label>
+                  <input type="password" name="confirm_password"
+                         placeholder="Confirm new password" class="vv-field">
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ── Right: Avatar + Info ── -->
+            <div>
+              <div class="vv-sec"><span class="vv-dot"></span>User Info</div>
+
+              <!-- Avatar -->
+              <div style="display:flex;flex-direction:column;align-items:center;gap:16px;
+                          background:var(--bg);border:1.5px solid var(--border);
+                          border-radius:18px;padding:28px 20px;text-align:center;">
+
+                <div style="width:90px;height:90px;border-radius:20px;
+                            background:var(--dark2);display:flex;align-items:center;
+                            justify-content:center;font-family:'Space Mono',monospace;
+                            font-size:36px;font-weight:700;color:rgba(255,255,255,.8);
+                            box-shadow:0 8px 24px rgba(15,23,42,.18);">
+                  {{ edit_user.email|first|upper }}
+                </div>
+
+                <div>
+                  <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;
+                              letter-spacing:1px;color:var(--dark);line-height:1;">
+                    {{ edit_user.first_name }} {{ edit_user.last_name }}
+                  </div>
+                  <div style="font-size:12px;color:var(--muted);margin-top:4px;">
+                    {{ edit_user.email }}
+                  </div>
+                </div>
+
+                <!-- Role badge -->
+                <div>
+                  {% if edit_user.role == 'admin' %}
+                    <span class="vv-badge b-red">{{ edit_user.role }}</span>
+                  {% else %}
+                    <span class="vv-badge b-blue">{{ edit_user.role }}</span>
+                  {% endif %}
+                </div>
+
+                <!-- Online status -->
+                <div>
+                  {% if edit_user.is_online %}
+                    <span class="vv-badge b-green">● Online</span>
+                  {% else %}
+                    <span class="vv-badge b-muted">● Offline</span>
+                  {% endif %}
+                </div>
+
+                <!-- Meta info -->
+                <div style="width:100%;border-top:1px solid var(--border);padding-top:14px;
+                            display:flex;flex-direction:column;gap:8px;">
+                  <div style="display:flex;justify-content:space-between;font-size:12px;">
+                    <span style="color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;">Joined</span>
+                    <span style="color:var(--dark);font-weight:600;">{{ edit_user.created_at|date:"d M Y" }}</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;">
+                    <span style="color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;">Status</span>
+                    <span style="color:{% if edit_user.is_active %}var(--green){% else %}var(--red){% endif %};font-weight:600;">
+                      {% if edit_user.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ── Form Actions ── -->
+          <div class="vv-form-actions">
+            <a href="{% url 'admin_users' %}" class="vv-btn vv-btn-ghost">
+              ✕ Cancel
+            </a>
+            <button type="submit" class="vv-btn vv-btn-red">
+              💾 Save Changes
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.vv-badge.b-green {
+  background:#f0fdf4;color:#16a34a;border:1.5px solid rgba(22,163,74,.2);
+  display:inline-flex;align-items:center;gap:5px;padding:5px 13px;
+  border-radius:20px;font-family:'Space Mono',monospace;font-size:9px;
+  letter-spacing:1.5px;text-transform:uppercase;font-weight:700;
+}
+.vv-badge.b-muted {
+  background:#f1f5f9;color:#94a3b8;border:1.5px solid rgba(148,163,184,.2);
+  display:inline-flex;align-items:center;gap:5px;padding:5px 13px;
+  border-radius:20px;font-family:'Space Mono',monospace;font-size:9px;
+  letter-spacing:1.5px;text-transform:uppercase;font-weight:700;
+}
+</style>
+
+<script>
+/* ── Style widgets to match vv-pages ── */
+document.querySelectorAll(
+  '.vv-page input[type=text], .vv-page input[type=email], .vv-page input[type=password], .vv-page select'
+).forEach(el => el.classList.add('vv-field'));
+</script>
+
+{% endblock %}

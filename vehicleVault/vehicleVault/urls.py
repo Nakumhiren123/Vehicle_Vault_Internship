@@ -1,28 +1,44 @@
-"""
-URL configuration for vehicleVault project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/6.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import HttpResponseRedirect
+
+# Customise Django admin panel branding
+admin.site.site_header  = "VehicleVault Admin"
+admin.site.site_title   = "VehicleVault"
+admin.site.index_title  = "Welcome to VehicleVault Admin Panel"
+
+# After Django admin login → redirect to custom admin dashboard
+from django.contrib.admin import AdminSite
+
+def _to_custom_admin(self, request, *args, **kwargs):
+    if request.user.is_authenticated:
+        role = getattr(request.user, 'role', '')
+        if role == 'admin' or request.user.is_staff or request.user.is_superuser:
+            return HttpResponseRedirect('/compare/admin/')
+        return HttpResponseRedirect('/compare/user/')
+    return HttpResponseRedirect('/login/')
+
+AdminSite.index     = _to_custom_admin
+AdminSite.app_index = _to_custom_admin
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('django-admin/', admin.site.urls),
+    path('admin/', lambda r: (
+        HttpResponseRedirect('/compare/admin/')
+        if r.user.is_authenticated and (
+            getattr(r.user, 'role', '') == 'admin' or r.user.is_staff or r.user.is_superuser
+        )
+        else HttpResponseRedirect('/compare/user/')
+        if r.user.is_authenticated
+        else HttpResponseRedirect('/login/')
+    )),
     path('', include('core.urls')),
     path('compare/', include('compare.urls')),
 ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    

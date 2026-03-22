@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',                          # ← must be BEFORE django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,8 +40,110 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
-    'compare'
+    'compare',
 ]
+
+# ── Jazzmin Admin Theme ───────────────────────────────────────────
+JAZZMIN_SETTINGS = {
+    # Title in browser tab and top-left of admin
+    "site_title":        "VehicleVault Admin",
+    "site_header":       "VehicleVault",
+    "site_brand":        "VehicleVault",
+    "welcome_sign":      "Welcome to VehicleVault Admin Panel",
+    "copyright":         "VehicleVault © 2026",
+
+    # Top menu links
+    "topmenu_links": [
+        {"name": "Home",          "url": "admin:index"},
+        {"name": "View Site",     "url": "/",         "new_window": True},
+        {"name": "Car List",      "url": "/compare/cars/",      "new_window": True},
+        {"name": "User Dashboard","url": "/compare/user/",       "new_window": True},
+    ],
+
+    # User menu (top right)
+    "usermenu_links": [
+        {"name": "View Site", "url": "/", "new_window": True},
+    ],
+
+    # Sidebar icons for each model
+    "icons": {
+        "auth":                    "fas fa-users-cog",
+        "auth.Group":              "fas fa-users",
+        "core.User":               "fas fa-user",
+        "compare.Car":             "fas fa-car",
+        "compare.CarVariant":      "fas fa-layer-group",
+        "compare.Accessory":       "fas fa-wrench",
+        "compare.CarAccessoryMapping": "fas fa-link",
+        "compare.Review":          "fas fa-star",
+        "compare.Comparison":      "fas fa-balance-scale",
+        "compare.SearchHistory":   "fas fa-search",
+        "compare.UserInteraction": "fas fa-mouse-pointer",
+        "compare.UserPreference":  "fas fa-sliders-h",
+    },
+    "default_icon_parents": "fas fa-folder",
+    "default_icon_children": "fas fa-circle",
+
+    # Side menu order
+    "order_with_respect_to": [
+        "core",
+        "core.User",
+        "compare",
+        "compare.Car",
+        "compare.CarVariant",
+        "compare.Accessory",
+        "compare.Review",
+        "compare.Comparison",
+        "compare.SearchHistory",
+        "compare.UserInteraction",
+        "compare.UserPreference",
+        "compare.CarAccessoryMapping",
+    ],
+
+    # Hide these from sidebar
+    "hide_apps": [],
+    "hide_models": [],
+
+    # UI tweaks
+    "show_sidebar":           True,
+    "navigation_expanded":    True,
+    "related_modal_active":   True,
+    "custom_css":             None,
+    "custom_js":              None,
+    "use_google_fonts_cdn":   True,
+    "show_ui_builder":        False,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text":    False,
+    "footer_small_text":    False,
+    "body_small_text":      False,
+    "brand_small_text":     False,
+    "brand_colour":         "navbar-danger",    # red brand bar
+    "accent":               "accent-danger",    # red accent
+    "navbar":               "navbar-dark",
+    "no_navbar_border":     True,
+    "navbar_fixed":         True,
+    "layout_boxed":         False,
+    "footer_fixed":         False,
+    "sidebar_fixed":        True,
+    "sidebar":              "sidebar-dark-danger",  # dark sidebar with red highlights
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme":                "darkly",           # dark theme like your design
+    "dark_mode_theme":      "darkly",
+    "button_classes": {
+        "primary":   "btn-primary",
+        "secondary": "btn-secondary",
+        "info":      "btn-info",
+        "warning":   "btn-warning",
+        "danger":    "btn-danger",
+        "success":   "btn-success",
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -119,11 +223,15 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
-
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 AUTH_USER_MODEL = 'core.User'
+
+# Use email as login credential for both custom views and Django admin
+AUTHENTICATION_BACKENDS = [
+    'core.backends.EmailBackend',
+]
 LOGIN_URL = '/core/login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -131,7 +239,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'hk.nakum2225@gmail.com'
-EMAIL_HOST_PASSWORD = 'wova fvqn fpkn miqo'
+EMAIL_HOST_PASSWORD = 'tayz dzcn whlo mrpx'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

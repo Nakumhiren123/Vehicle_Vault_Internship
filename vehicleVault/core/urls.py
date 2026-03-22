@@ -13,4 +13,8 @@ urlpatterns = [
 
     # ── Password reset (AJAX from profile modal) ──
     path('user/reset-password/', views.reset_password, name='reset_password'),
+      # Forgot password flow (3 steps)
+    path('forgot-password/',          views.forgot_password,     name='forgot_password'),
+    path('forgot-verify-otp/',        views.forgot_verify_otp,   name='forgot_verify_otp'),
+    path('reset-password-form/',      views.reset_password_form, name='reset_password_form'),
 ]

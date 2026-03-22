@@ -1,6 +1,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+ 
 <style>
 /* ── Sidebar shell ── */
 #sidebar.sidebar {
@@ -19,11 +19,11 @@
   overflow-y: auto;
   overflow-x: hidden;
 }
-
+ 
 #sidebar.sidebar.active {
   transform: translateX(0);
 }
-
+ 
 /* ── Logo bar ── */
 .sb-logo {
   display: flex;
@@ -50,7 +50,7 @@
   letter-spacing: 1px; text-transform: uppercase;
   margin-top: 3px;
 }
-
+ 
 /* ── Section heading ── */
 .sb-section {
   padding: 20px 20px 6px;
@@ -58,7 +58,7 @@
   text-transform: uppercase; color: #cbd5e1;
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
-
+ 
 /* ── Nav list ── */
 .sb-nav {
   list-style: none;
@@ -66,9 +66,9 @@
   margin: 0;
   flex: 1;
 }
-
+ 
 .sb-nav .nav-item { margin-bottom: 2px; }
-
+ 
 /* Override any Bootstrap nav-link */
 .sb-nav .nav-link {
   display: flex !important;
@@ -86,18 +86,18 @@
   border: 1px solid transparent !important;
   white-space: nowrap;
 }
-
+ 
 .sb-nav .nav-link .sb-ico {
   font-size: 16px; width: 22px; text-align: center; flex-shrink: 0;
 }
-
+ 
 .sb-nav .nav-link:hover {
   background: #f0f4ff !important;
   color: #3b5bdb !important;
   border-color: #e0e7ff !important;
   padding-left: 18px !important;
 }
-
+ 
 /* Active state — auto set by JS */
 .sb-nav .nav-link.sb-active {
   background: linear-gradient(135deg, #eef2ff, #f5f3ff) !important;
@@ -112,7 +112,7 @@
   background: linear-gradient(180deg, #3b5bdb, #7048e8);
   border-radius: 0 3px 3px 0;
 }
-
+ 
 /* Logout link */
 .sb-nav .nav-link.text-danger,
 .sb-nav .nav-link.sb-logout {
@@ -125,7 +125,7 @@
   color: #dc2626 !important;
   border-color: #fecaca !important;
 }
-
+ 
 /* ── User card at bottom ── */
 .sb-footer {
   padding: 12px 10px 16px;
@@ -150,7 +150,7 @@
   font-size: 10px; font-weight: 600; color: #3b5bdb;
   letter-spacing: 0.5px; text-transform: uppercase;
 }
-
+ 
 /* ── Overlay ── */
 #sidebar-overlay.sidebar-overlay {
   position: fixed; inset: 0; z-index: 1049;
@@ -163,10 +163,10 @@
   opacity: 1; pointer-events: all;
 }
 </style>
-
+ 
 <!-- ORIGINAL HTML — only classes added, no links changed -->
 <div id="sidebar" class="sidebar">
-
+ 
   <!-- Logo -->
   <div class="sb-logo">
     <div class="sb-logo-icon">🚗</div>
@@ -175,33 +175,69 @@
       <div class="sb-logo-tag">Admin Panel</div>
     </div>
   </div>
-
+ 
   <div class="sb-section">Main</div>
-
+ 
   <ul class="nav flex-column sb-nav">
-
+ 
     <li class="nav-item">
       <a href="{% url "admin-dashboard" %}" class="nav-link text-white">
         <span class="sb-ico">🏠</span> Dashboard
       </a>
     </li>
-
+ 
     <li class="nav-item">
       <a href="{% url "public_car_list" %}" class="nav-link text-white">
         <span class="sb-ico">🚗</span> My Vehicles
       </a>
     </li>
-
+ 
+    <li class="nav-item">
+      <a href="{% url 'accessory_list' %}" class="nav-link text-white">
+        <span class="sb-ico">🔧</span> Accessories
+      </a>
+    </li>
+ 
+    <li class="nav-item">
+      <a href="{% url 'car_list' %}" class="nav-link text-white">
+        <span class="sb-ico">🚗</span> Manage Cars
+      </a>
+    </li>
+ 
+    <li class="nav-item">
+      <a href="{% url 'admin_users' %}" class="nav-link text-white">
+        <span class="sb-ico">👥</span> Users
+      </a>
+    </li>
+ 
+    <li class="nav-item">
+      <a href="{% url 'admin_reviews' %}" class="nav-link text-white">
+        <span class="sb-ico">⭐</span> Reviews
+      </a>
+    </li>
+ 
+    <li class="nav-item">
+      <a href="{% url 'admin_comparisons' %}" class="nav-link text-white">
+        <span class="sb-ico">⚖️</span> Comparisons
+      </a>
+    </li>
+ 
+    <li class="nav-item">
+      <a href="{% url 'admin_analytics' %}" class="nav-link text-white">
+        <span class="sb-ico">📊</span> Analytics
+      </a>
+    </li>
+ 
     <li class="nav-item">
       <a href="{% url "admin_profile" %}" class="nav-link text-white">
         <span class="sb-ico">👤</span> Profile
       </a>
     </li>
-
+ 
   </ul>
-
+ 
   <div class="sb-section" style="margin-top:auto;padding-top:8px;">Account</div>
-
+ 
   <ul class="nav flex-column sb-nav" style="flex:0;">
     <li class="nav-item">
       <a href="{% url "logout" %}" class="nav-link text-danger">
@@ -209,7 +245,7 @@
       </a>
     </li>
   </ul>
-
+ 
   <!-- User info footer -->
   <div class="sb-footer">
     <div class="sb-user-card">
@@ -224,17 +260,17 @@
       </div>
     </div>
   </div>
-
+ 
 </div>
-
+ 
 <div id="sidebar-overlay" class="sidebar-overlay"></div>
-
+ 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-
+ 
   const sb  = document.getElementById('sidebar');
   const ov  = document.getElementById('sidebar-overlay');
-
+ 
   /* Toggle via hamburger — delegated so navbar loads after sidebar */
   document.addEventListener('click', function (e) {
     if (e.target.closest('#menu-toggle')) {
@@ -250,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function () {
       ov.classList.remove('active');
     }
   });
-
+ 
   /* Auto-highlight current page */
   const cur = window.location.pathname;
   document.querySelectorAll('.sb-nav .nav-link').forEach(function (link) {
@@ -261,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function () {
       link.classList.add('sb-active');
     }
   });
-
+ 
 });
 </script>
 

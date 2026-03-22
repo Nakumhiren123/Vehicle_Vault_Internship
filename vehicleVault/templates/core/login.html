@@ -1,22 +1,22 @@
 {% comment %} {% extends 'base.html' %} {% endcomment %}
 {% load static %}
-
+ 
 {% block extra_css %}{% endblock %}
-
+ 
 {% block content %}
-
+ 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
+ 
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;}
-
+ 
 .auth-page{
   min-height:100vh;display:grid;grid-template-columns:1fr 1fr;
   font-family:'DM Sans',sans-serif;
 }
-
+ 
 /* ── Left decorative panel ── */
 .auth-left{
   position:relative;
@@ -31,12 +31,12 @@ html,body{height:100%;}
   background-size:26px 26px;animation:meshDrift 22s linear infinite;
 }
 @keyframes meshDrift{to{background-position:26px 26px;}}
-
+ 
 .auth-orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(60px);}
 .orb-1{width:360px;height:360px;background:rgba(230,57,70,0.2); top:-80px;right:-60px;}
 .orb-2{width:260px;height:260px;background:rgba(124,58,237,0.18);bottom:60px;left:-80px;}
 .orb-3{width:180px;height:180px;background:rgba(37,99,235,0.15); top:42%;right:8%;}
-
+ 
 .auth-bg-text{
   position:absolute;bottom:0;right:-10px;
   font-family:'Bebas Neue',sans-serif;font-size:220px;
@@ -51,7 +51,7 @@ html,body{height:100%;}
 }
 @keyframes bdot{0%,100%{box-shadow:0 0 0 0 rgba(230,57,70,0.5);}50%{box-shadow:0 0 0 8px rgba(230,57,70,0);}}
 .auth-brand-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:5px;color:#fff;}
-
+ 
 .auth-left-tag{
   font-family:'Space Mono',monospace;font-size:10px;
   letter-spacing:4px;text-transform:uppercase;
@@ -66,7 +66,7 @@ html,body{height:100%;}
 }
 .auth-left-h1 em{color:#e63946;font-style:normal;}
 .auth-left-p{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.65;max-width:320px;font-weight:300;}
-
+ 
 .auth-features{display:flex;flex-direction:column;gap:12px;margin-top:36px;}
 .auth-feat{display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,0.58);}
 .auth-feat-ico{
@@ -75,7 +75,7 @@ html,body{height:100%;}
   display:flex;align-items:center;justify-content:center;
   font-size:14px;flex-shrink:0;
 }
-
+ 
 /* ── Right panel ── */
 .auth-right{
   background:#f5f6fa;
@@ -88,11 +88,11 @@ html,body{height:100%;}
   background-size:24px 24px;pointer-events:none;
 }
 .auth-form-wrap{width:100%;max-width:400px;position:relative;z-index:1;}
-
+ 
 /* Steps */
 .auth-step{display:none;}
 .auth-step.active{display:block;}
-
+ 
 /* Form header */
 .form-eyebrow{
   font-family:'Space Mono',monospace;font-size:10px;
@@ -104,14 +104,14 @@ html,body{height:100%;}
 .form-title{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:2px;color:#0f172a;line-height:0.92;margin-bottom:8px;}
 .form-sub{font-size:14px;color:#94a3b8;margin-bottom:34px;font-weight:300;line-height:1.5;}
 .form-sub strong{color:#0f172a;font-weight:600;}
-
+ 
 /* Error box */
 .form-err{
   background:#fff0f1;border:1.5px solid rgba(230,57,70,0.25);
   border-radius:11px;padding:11px 15px;
   font-size:13px;color:#e63946;margin-bottom:18px;
 }
-
+ 
 /* Field */
 .fg{margin-bottom:20px;}
 .fg label{display:block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;margin-bottom:8px;}
@@ -126,7 +126,7 @@ html,body{height:100%;}
 .fg input:focus{border-color:#e63946;box-shadow:0 0 0 3px rgba(230,57,70,0.1);}
 .fg-eye{position:absolute;right:13px;top:50%;transform:translateY(-50%);all:unset;cursor:pointer;font-size:16px;color:#94a3b8;transition:color 0.2s;}
 .fg-eye:hover{color:#e63946;}
-
+ 
 /* Primary button */
 .btn-auth{
   all:unset;cursor:pointer;width:100%;
@@ -141,14 +141,14 @@ html,body{height:100%;}
 }
 .btn-auth:hover{background:#cf2533;box-shadow:0 12px 36px rgba(230,57,70,0.4);transform:translateY(-2px);}
 .btn-auth:disabled{opacity:0.5;cursor:default;transform:none;}
-
+ 
 .auth-divider{display:flex;align-items:center;gap:12px;margin:24px 0;font-size:11px;color:#94a3b8;font-family:'Space Mono',monospace;}
 .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:rgba(0,0,0,0.08);}
-
+ 
 .auth-switch{text-align:center;font-size:13px;color:#94a3b8;}
 .auth-switch a{color:#e63946;font-weight:600;text-decoration:none;transition:color 0.2s;}
 .auth-switch a:hover{color:#cf2533;text-decoration:underline;}
-
+ 
 /* ── OTP step ── */
 .otp-icon{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#fff0f1,#fff4ea);border:1.5px solid rgba(230,57,70,0.2);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:24px;}
 .otp-digits{display:flex;gap:10px;justify-content:center;margin-bottom:28px;}
@@ -162,27 +162,27 @@ html,body{height:100%;}
 }
 .otp-d:focus{border-color:#e63946;box-shadow:0 0 0 3px rgba(230,57,70,0.12);transform:scale(1.05);}
 .otp-d.filled{background:#fff0f1;border-color:rgba(230,57,70,0.3);}
-
+ 
 .otp-back{all:unset;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#94a3b8;margin-bottom:28px;transition:color 0.2s;}
 .otp-back:hover{color:#0f172a;}
-
+ 
 .otp-resend{text-align:center;font-size:13px;color:#94a3b8;margin-top:20px;}
 .otp-resend button{all:unset;cursor:pointer;color:#e63946;font-weight:600;transition:color 0.2s;}
 .otp-resend button:hover{color:#cf2533;}
 .otp-resend button:disabled{cursor:default;color:#94a3b8;}
-
+ 
 @media(max-width:860px){.auth-page{grid-template-columns:1fr;}.auth-left{display:none;}.auth-right{min-height:100vh;}}
 </style>
-
+ 
 <div class="auth-page">
-
+ 
   <!-- ── Left panel ── -->
   <div class="auth-left">
     <div class="auth-orb orb-1"></div>
     <div class="auth-orb orb-2"></div>
     <div class="auth-orb orb-3"></div>
     <div class="auth-bg-text">DRIVE</div>
-
+ 
     <div class="auth-left-content">
       <div class="auth-brand">
         <div class="auth-brand-dot"></div>
@@ -198,30 +198,30 @@ html,body{height:100%;}
       </div>
     </div>
   </div>
-
+ 
   <!-- ── Right panel ── -->
   <div class="auth-right">
     <div class="auth-form-wrap">
-
+ 
       <!-- STEP 1 — Credentials -->
       <div class="auth-step active" id="step1">
         <div class="form-eyebrow">Sign In</div>
         <div class="form-title">Log In</div>
         <div class="form-sub">Enter your credentials to continue</div>
-
+ 
         {% if form.errors %}
         <div class="form-err">Invalid email or password. Please try again.</div>
         {% endif %}
-
+ 
         <form method="post" id="loginForm">
           {% csrf_token %}
           <input type="hidden" name="step" value="credentials">
-
+ 
           <div class="fg">
             <label>Email Address</label>
             <div class="fg-wrap">{{ form.email }}</div>
           </div>
-
+ 
           <div class="fg">
             <label>Password</label>
             <div class="fg-wrap">
@@ -229,18 +229,19 @@ html,body{height:100%;}
               <button type="button" class="fg-eye" onclick="togglePw('id_password',this)">👁</button>
             </div>
           </div>
-
+ 
           <button type="submit" class="btn-auth">Continue &nbsp;→</button>
         </form>
-
+ 
         <div class="auth-divider">or</div>
+        <div class="auth-switch" style="margin-bottom:10px;"><a href="{% url 'forgot_password' %}">Forgot your password?</a></div>
         <div class="auth-switch">Don't have an account? <a href="{% url 'signup' %}">Create one →</a></div>
       </div>
-
+ 
       <!-- STEP 2 — OTP -->
       <div class="auth-step" id="step2">
         <button class="otp-back" onclick="goBack()">← Back</button>
-
+ 
         <div class="otp-icon">📧</div>
         <div class="form-eyebrow">Verification</div>
         <div class="form-title">Check Email</div>
@@ -248,14 +249,14 @@ html,body{height:100%;}
           6-digit code sent to<br>
           <strong id="otpEmailLabel"></strong>
         </div>
-
+ 
         {% if otp_error %}<div class="form-err">{{ otp_error }}</div>{% endif %}
-
+ 
         <form method="post" action="{% url 'verify_otp' %}" id="otpForm">
           {% csrf_token %}
           <input type="hidden" name="email" id="otpEmail">
           <input type="hidden" name="otp"   id="otpValue">
-
+ 
           <div class="otp-digits">
             <input class="otp-d" type="text" maxlength="1" inputmode="numeric" autocomplete="off">
             <input class="otp-d" type="text" maxlength="1" inputmode="numeric" autocomplete="off">
@@ -264,10 +265,10 @@ html,body{height:100%;}
             <input class="otp-d" type="text" maxlength="1" inputmode="numeric" autocomplete="off">
             <input class="otp-d" type="text" maxlength="1" inputmode="numeric" autocomplete="off">
           </div>
-
+ 
           <button type="submit" class="btn-auth" id="verifyBtn" disabled>Verify &amp; Login &nbsp;→</button>
         </form>
-
+ 
         <div class="otp-resend">
           Didn't get it?
           <button id="resendBtn" disabled>
@@ -275,30 +276,30 @@ html,body{height:100%;}
           </button>
         </div>
       </div>
-
+ 
     </div>
   </div>
 </div>
-
+ 
 <script>
 /* ── Alert box for digit-only validation ── */
 const otpAlert = document.createElement('div');
 otpAlert.id = 'otpAlert';
 otpAlert.style.cssText = 'display:none;background:#fff0f1;border:1.5px solid rgba(230,57,70,0.3);border-radius:10px;padding:9px 14px;font-size:13px;color:#e63946;margin-bottom:14px;text-align:center;';
 otpAlert.textContent = '⚠ Only digits 0–9 are allowed.';
-
+ 
 /* Insert alert above otp digits container once DOM ready */
 document.addEventListener('DOMContentLoaded', function () {
   const digitsWrap = document.querySelector('.otp-digits');
   if (digitsWrap) digitsWrap.parentNode.insertBefore(otpAlert, digitsWrap);
-
+ 
   /* ── If server re-rendered with OTP step active, wire it up immediately ── */
   {% if show_otp_step %}
     const email = "{{ otp_email|escapejs }}";
     showStep2(email);
   {% endif %}
 });
-
+ 
 /* ── Show/hide OTP step ── */
 function showStep2(email) {
   document.getElementById('step1').classList.remove('active');
@@ -311,13 +312,13 @@ function showStep2(email) {
   const first = document.querySelector('.otp-d');
   if (first) setTimeout(() => first.focus(), 80);
 }
-
+ 
 function goBack() {
   document.getElementById('step2').classList.remove('active');
   document.getElementById('step1').classList.add('active');
   clearOtp();
 }
-
+ 
 /* ── Password eye toggle ── */
 function togglePw(id, btn) {
   const el = document.getElementById(id);
@@ -326,21 +327,21 @@ function togglePw(id, btn) {
   el.type = show ? 'text' : 'password';
   btn.textContent = show ? '🙈' : '👁';
 }
-
+ 
 /* ── OTP digit inputs ── */
 const digits    = Array.from(document.querySelectorAll('.otp-d'));
 const verifyBtn = document.getElementById('verifyBtn');
 const otpValue  = document.getElementById('otpValue');
-
+ 
 let alertTimer;
 function flashAlert() {
   otpAlert.style.display = 'block';
   clearTimeout(alertTimer);
   alertTimer = setTimeout(() => { otpAlert.style.display = 'none'; }, 2000);
 }
-
+ 
 digits.forEach((d, i) => {
-
+ 
   /* Block non-digits BEFORE they appear in the box */
   d.addEventListener('keydown', function (e) {
     /* Always allow: Backspace, Delete, Tab, Arrow keys, Enter */
@@ -372,7 +373,7 @@ digits.forEach((d, i) => {
       syncOtp();
     }
   });
-
+ 
   /* Handle normal input (catches mobile keyboards too) */
   d.addEventListener('input', function () {
     const cleaned = d.value.replace(/\D/g, '');
@@ -387,7 +388,7 @@ digits.forEach((d, i) => {
     if (d.value && i < 5) digits[i+1].focus();
     syncOtp();
   });
-
+ 
   /* Paste support — digits only */
   d.addEventListener('paste', function (e) {
     e.preventDefault();
@@ -402,36 +403,36 @@ digits.forEach((d, i) => {
     syncOtp();
     digits[Math.min(paste.length, 5)].focus();
   });
-
+ 
   /* Click on filled box — select so next key replaces it */
   d.addEventListener('click', function () {
     d.select();
   });
 });
-
+ 
 function syncOtp() {
   const val = digits.map(d => d.value).join('');
   if (otpValue) otpValue.value = val;
   if (verifyBtn) verifyBtn.disabled = val.length < 6;
 }
-
+ 
 function clearOtp() {
   digits.forEach(d => { d.value = ''; d.classList.remove('filled'); });
   if (verifyBtn) verifyBtn.disabled = true;
   if (otpValue)  otpValue.value = '';
   otpAlert.style.display = 'none';
 }
-
+ 
 /* ── Countdown timer ── */
 let timerInt;
 function startTimer() {
   clearInterval(timerInt);
   let s = 60;
-
+ 
   const btn = document.getElementById('resendBtn');
   btn.disabled = true;
   btn.innerHTML = 'Resend in <span id="timerSpan">60s</span>';
-
+ 
   timerInt = setInterval(() => {
     s--;
     const sp = document.getElementById('timerSpan');
@@ -443,14 +444,14 @@ function startTimer() {
     }
   }, 1000);
 }
-
+ 
 /* ── Attach resend click via JS (disabled buttons ignore onclick attr) ── */
 document.addEventListener('click', function (e) {
   if (e.target && e.target.id === 'resendBtn' && !e.target.disabled) {
     resendOtp();
   }
 });
-
+ 
 /* ── Resend OTP ── */
 function resendOtp() {
   const email = document.getElementById('otpEmail').value;
@@ -472,7 +473,7 @@ function resendOtp() {
   });
 }
 </script>
-
+ 
 {% endblock %}
 
 {% comment %} {% extends 'base.html' %} {% endcomment %}

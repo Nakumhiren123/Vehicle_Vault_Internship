@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
+{% block content %}
+{% include 'compare/user/user_sidebar.html' %}
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+:root{
+  --red:#e63946;--red-d:#c1121f;--red-l:#fff0f1;--orange:#f4a261;
+  --dark:#0f172a;--dark2:#1e293b;--card:#fff;--bg:#f4f6fb;
+  --border:rgba(15,23,42,.08);--text:#0f172a;--text2:#475569;--muted:#94a3b8;
+  --teal:#0d9488;--teal-l:#f0fdfa;--blue:#2563eb;--blue-l:#eff6ff;
+  --green:#16a34a;--green-l:#f0fdf4;--amber:#d97706;--amber-l:#fffbeb;
+  --sh-sm:0 2px 12px rgba(15,23,42,.06);--sh-md:0 8px 32px rgba(15,23,42,.10);
+  --sh-lg:0 24px 64px rgba(15,23,42,.14);--sh-red:0 12px 40px rgba(230,57,70,.22);
+  --r:18px;--r-sm:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+@keyframes fadeUp {from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin   {to{transform:rotate(360deg)}}
+@keyframes pulse  {0%,100%{box-shadow:0 0 0 0 rgba(230,57,70,.4)}50%{box-shadow:0 0 0 8px rgba(230,57,70,0)}}
+@keyframes shimmer{0%{background-position:-500px 0}100%{background-position:500px 0}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+
+.vv-wrap{min-height:100vh;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);position:relative;overflow-x:hidden;}
+.vv-wrap::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(0,0,0,.04) 1px,transparent 1px);background-size:28px 28px;}
+.vv-wrap::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 0% 0%,rgba(230,57,70,.05),transparent 55%),radial-gradient(ellipse 50% 35% at 100% 100%,rgba(230,57,70,.04),transparent 55%);}
+.vv-ring{position:fixed;border-radius:50%;pointer-events:none;z-index:0;border:1.5px solid rgba(230,57,70,.04);}
+.vv-ring-a{width:580px;height:580px;top:-220px;right:-180px;animation:spin 75s linear infinite;}
+.vv-ring-b{width:340px;height:340px;bottom:-130px;left:-130px;animation:spin 52s linear infinite reverse;}
+.vv-page{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:44px 36px 100px;}
+
+/* Header */
+.vv-ph{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) both;}
+.vv-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;}
+.vv-eyebrow::before,.vv-eyebrow::after{content:'';display:inline-block;width:22px;height:2px;background:linear-gradient(90deg,var(--red),var(--orange));border-radius:2px;}
+.vv-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,56px);letter-spacing:2px;line-height:.9;color:var(--dark);}
+.vv-title em{color:var(--red);font-style:normal;}
+.vv-sub{font-size:13px;color:var(--muted);margin-top:6px;}
+
+/* Current pref summary cards */
+.vv-pref-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
+.vv-pref-card{
+  background:var(--card);border:1.5px solid var(--border);border-radius:14px;
+  padding:20px 18px;box-shadow:var(--sh-sm);position:relative;overflow:hidden;
+  animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both;
+  transition:transform .3s,box-shadow .3s;
+}
+.vv-pref-card:nth-child(1){animation-delay:.06s;}.vv-pref-card:nth-child(2){animation-delay:.12s;}.vv-pref-card:nth-child(3){animation-delay:.18s;}
+.vv-pref-card:hover{transform:translateY(-4px);box-shadow:var(--sh-md);}
+.vv-pref-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transform:scaleX(0);transform-origin:left;transition:transform .35s;}
+.vv-pref-card:nth-child(1)::before{background:linear-gradient(90deg,var(--amber),#fcd34d);}
+.vv-pref-card:nth-child(2)::before{background:linear-gradient(90deg,var(--blue),#60a5fa);}
+.vv-pref-card:nth-child(3)::before{background:linear-gradient(90deg,var(--red),var(--orange));}
+.vv-pref-card:hover::before{transform:scaleX(1);}
+.vv-pref-ico{font-size:24px;margin-bottom:8px;display:block;}
+.vv-pref-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.vv-pref-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--dark);line-height:1;}
+.vv-pref-val.empty{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--muted);font-style:italic;}
+
+/* Form card */
+.vv-form-card{
+  background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);
+  box-shadow:var(--sh-md);overflow:hidden;
+  animation:fadeUp .65s cubic-bezier(.22,1,.36,1) .12s both;
+}
+.vv-form-bar{height:4px;background:linear-gradient(90deg,var(--red),var(--orange),var(--red));background-size:200%;animation:shimmer 3s linear infinite;}
+.vv-form-body{padding:32px 36px;}
+
+/* Section head */
+.vv-form-sec{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.vv-form-sec-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--dark);}
+.vv-form-sec-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+/* Field groups */
+.vv-fields{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px;}
+.vv-fg{display:flex;flex-direction:column;gap:7px;}
+.vv-fg.full{grid-column:1/-1;}
+.vv-flabel{display:block;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);}
+.vv-flabel span{color:var(--red);margin-left:2px;}
+
+/* Inputs */
+.vv-field{
+  width:100%;padding:13px 16px;
+  background:#f8fafd;border:1.5px solid var(--border);border-radius:var(--r-sm);
+  font-family:'DM Sans',sans-serif;font-size:14px;color:var(--dark);
+  outline:none;transition:border-color .25s,box-shadow .25s,background .25s;
+  appearance:none;-webkit-appearance:none;
+}
+.vv-field:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,70,.1);background:#fff;}
+
+/* Select arrow */
+select.vv-field{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%2394a3b8' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+  background-color:#f8fafd;padding-right:36px;cursor:pointer;
+}
+
+/* Quick select buttons for brand */
+.vv-quick-btns{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
+.vv-qbtn{
+  padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);
+  background:#fff;font-family:'Space Mono',monospace;font-size:9px;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);
+  cursor:pointer;transition:all .18s;
+}
+.vv-qbtn:hover{border-color:var(--red);color:var(--red);background:var(--red-l);}
+.vv-qbtn.selected{background:var(--red);border-color:var(--red);color:#fff;}
+
+/* Budget slider */
+.vv-budget-row{display:flex;align-items:center;gap:14px;}
+.vv-budget-display{
+  font-family:'Space Mono',monospace;font-size:13px;color:var(--orange);
+  font-weight:700;white-space:nowrap;min-width:110px;
+  background:var(--amber-l);border:1.5px solid rgba(217,119,6,.2);
+  border-radius:8px;padding:6px 12px;text-align:center;
+}
+input[type="range"].vv-range{
+  flex:1;height:6px;appearance:none;-webkit-appearance:none;
+  background:linear-gradient(90deg,var(--red) var(--pct,50%),var(--border) var(--pct,50%));
+  border-radius:6px;outline:none;cursor:pointer;
+}
+input[type="range"].vv-range::-webkit-slider-thumb{
+  appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--red);box-shadow:var(--sh-red);border:2px solid #fff;
+  cursor:grab;transition:transform .15s;
+}
+input[type="range"].vv-range::-webkit-slider-thumb:active{transform:scale(1.2);cursor:grabbing;}
+
+/* Hint text */
+.vv-hint{font-size:11px;color:var(--muted);margin-top:5px;font-style:italic;}
+
+/* Submit button */
+.vv-submit{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:15px 36px;background:var(--red);color:#fff;
+  border:none;border-radius:13px;cursor:pointer;
+  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;
+  box-shadow:var(--sh-red);transition:all .28s cubic-bezier(.22,1,.36,1);
+  width:100%;justify-content:center;
+}
+.vv-submit:hover{background:var(--red-d);transform:translateY(-3px);box-shadow:0 16px 40px rgba(230,57,70,.38);}
+.vv-submit:active{transform:translateY(0);}
+
+/* Success toast */
+.vv-toast{
+  position:fixed;bottom:28px;right:28px;z-index:9999;
+  background:var(--green);color:#fff;border-radius:12px;
+  padding:14px 22px;display:flex;align-items:center;gap:10px;
+  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1.5px;
+  box-shadow:0 12px 40px rgba(22,163,74,.35);
+  animation:fadeUp .4s ease both;
+  display:none;
+}
+
+@media(max-width:700px){.vv-page{padding:28px 16px 80px;}.vv-pref-summary{grid-template-columns:1fr;}.vv-fields{grid-template-columns:1fr;}}
+</style>
+
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div>
+  <div class="vv-ring vv-ring-b"></div>
+  <div class="vv-page">
+
+    <!-- Header -->
+    <div class="vv-ph">
+      <div>
+        <div class="vv-eyebrow">Personalise</div>
+        <div class="vv-title">My <em>Preferences</em></div>
+        <div class="vv-sub">Set your preferred fuel, budget and brand to get better recommendations</div>
+      </div>
+      <a href="{% url 'user-dashboard' %}" style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'">← Dashboard</a>
+    </div>
+
+    <!-- Current Preferences Summary -->
+    <div class="vv-pref-summary">
+      <div class="vv-pref-card">
+        <span class="vv-pref-ico">⛽</span>
+        <div class="vv-pref-lbl">Preferred Fuel</div>
+        <div class="vv-pref-val {% if not pref.preferredFuel %}empty{% endif %}">
+          {{ pref.preferredFuel|default:"Not set" }}
+        </div>
+      </div>
+      <div class="vv-pref-card">
+        <span class="vv-pref-ico">💰</span>
+        <div class="vv-pref-lbl">Max Budget</div>
+        <div class="vv-pref-val {% if not pref.maxBudget %}empty{% endif %}">
+          {% if pref.maxBudget %}₹ {{ pref.maxBudget|floatformat:0 }}{% else %}Not set{% endif %}
+        </div>
+      </div>
+      <div class="vv-pref-card">
+        <span class="vv-pref-ico">🏷</span>
+        <div class="vv-pref-lbl">Preferred Brand</div>
+        <div class="vv-pref-val {% if not pref.preferredBrand %}empty{% endif %}">
+          {{ pref.preferredBrand|default:"Not set" }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="vv-form-card">
+      <div class="vv-form-bar"></div>
+      <div class="vv-form-body">
+
+        <div class="vv-form-sec">
+          <div class="vv-form-sec-title">Update Preferences</div>
+          <div class="vv-form-sec-line"></div>
+        </div>
+
+        <form method="POST" id="prefForm">
+          {% csrf_token %}
+
+          <div class="vv-fields">
+
+            <!-- Fuel Type -->
+            <div class="vv-fg">
+              <label class="vv-flabel" for="id_preferredFuel">Fuel Type <span>*</span></label>
+              <select name="preferredFuel" id="id_preferredFuel" class="vv-field">
+                <option value="">Select fuel type</option>
+                {% for ft in fuel_options %}
+                  <option value="{{ ft }}" {% if pref.preferredFuel == ft %}selected{% endif %}>{{ ft }}</option>
+                {% endfor %}
+              </select>
+              <div class="vv-hint">What type of fuel do you prefer?</div>
+            </div>
+
+            <!-- Max Budget -->
+            <div class="vv-fg">
+              <label class="vv-flabel" for="id_maxBudget">Maximum Budget <span>*</span></label>
+              <div class="vv-budget-row">
+                <input type="range" name="maxBudget" id="budgetRange" class="vv-range"
+                       min="100000" max="5000000" step="50000"
+                       value="{{ pref.maxBudget|default:1000000 }}"
+                       oninput="updateBudget(this.value)">
+                <div class="vv-budget-display" id="budgetDisplay">
+                  ₹ {{ pref.maxBudget|default:1000000|floatformat:0 }}
+                </div>
+              </div>
+              <!-- Hidden input carries the real value -->
+              <input type="hidden" name="maxBudget" id="budgetHidden" value="{{ pref.maxBudget|default:1000000 }}">
+              <div class="vv-hint">Drag to set your maximum car budget</div>
+            </div>
+
+            <!-- Preferred Brand -->
+            <div class="vv-fg full">
+              <label class="vv-flabel" for="id_preferredBrand">Preferred Brand</label>
+              <input type="text" name="preferredBrand" id="id_preferredBrand" class="vv-field"
+                     placeholder="e.g. Maruti, Hyundai, Tata…"
+                     value="{{ pref.preferredBrand }}">
+              <!-- Quick select buttons from DB -->
+              {% if brand_options %}
+              <div class="vv-quick-btns" id="brandBtns">
+                {% for b in brand_options %}
+                <button type="button" class="vv-qbtn {% if pref.preferredBrand == b %}selected{% endif %}"
+                        onclick="selectBrand('{{ b }}')">{{ b }}</button>
+                {% endfor %}
+              </div>
+              {% endif %}
+              <div class="vv-hint">Pick from existing brands or type your own</div>
+            </div>
+
+          </div>
+
+          <button type="submit" class="vv-submit" id="submitBtn">
+            💾 Save Preferences
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Success toast -->
+<div class="vv-toast" id="successToast">✅ Preferences saved successfully!</div>
+
+<script>
+/* Budget slider */
+function updateBudget(val) {
+  const n = parseInt(val);
+  document.getElementById('budgetDisplay').textContent = '₹ ' + n.toLocaleString('en-IN');
+  document.getElementById('budgetHidden').value = n;
+  // Update range gradient
+  const min = 100000, max = 5000000;
+  const pct  = ((n - min) / (max - min) * 100).toFixed(1);
+  document.getElementById('budgetRange').style.setProperty('--pct', pct + '%');
+}
+// Init on load
+updateBudget(document.getElementById('budgetRange').value);
+
+/* Brand quick select */
+function selectBrand(brand) {
+  document.getElementById('id_preferredBrand').value = brand;
+  document.querySelectorAll('.vv-qbtn').forEach(b => {
+    b.classList.toggle('selected', b.textContent.trim() === brand);
+  });
+}
+
+/* Sync typing in brand input with buttons */
+document.getElementById('id_preferredBrand').addEventListener('input', function() {
+  const val = this.value.trim();
+  document.querySelectorAll('.vv-qbtn').forEach(b => {
+    b.classList.toggle('selected', b.textContent.trim() === val);
+  });
+});
+
+/* Show toast after save */
+{% if request.method == 'GET' and not created %}
+// show toast if page just reloaded after POST (use URL param)
+const params = new URLSearchParams(window.location.search);
+if (params.get('saved') === '1') {
+  const t = document.getElementById('successToast');
+  t.style.display = 'flex';
+  setTimeout(() => t.style.display = 'none', 3500);
+}
+{% endif %}
+
+/* Fix form: remove duplicate maxBudget — keep only hidden input */
+document.getElementById('prefForm').addEventListener('submit', function() {
+  document.getElementById('budgetRange').disabled = true;
+});
+</script>
+
+{% endblock %}

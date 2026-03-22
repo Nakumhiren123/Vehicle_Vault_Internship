@@ -10,19 +10,20 @@ def role_required(allowed_roles=[]):
             if not request.user.is_authenticated:
                 return redirect('login')
 
-            # Check role attribute exists and matches
             user_role = getattr(request.user, 'role', None)
+
+            # is_staff / is_superuser users always get admin access
+            if request.user.is_staff or request.user.is_superuser:
+                user_role = 'admin'
+
             if user_role in allowed_roles:
                 return view_func(request, *args, **kwargs)
 
             # Wrong role → redirect to their own dashboard
             if user_role == 'admin':
                 return redirect('admin-dashboard')
-            elif user_role == 'user':
+            else:
                 return redirect('user-dashboard')
-
-            # Fallback: 403
-            return HttpResponseForbidden("You are not authorized to view this page.")
 
         return wrapper
     return decorator

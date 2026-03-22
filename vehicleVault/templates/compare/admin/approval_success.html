@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="text-align:center;padding:80px 20px;">
+  <div style="font-size:56px;">✅</div>
+  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:40px;margin:16px 0;">
+    User Approved!
+  </h2>
+  <p style="color:#64748b;">
+    {{ user.email }} has been approved as Admin and notified via email.
+  </p>
+  <a href="{% url 'admin_users' %}" style="display:inline-block;margin-top:24px;
+     background:#e63946;color:#fff;padding:12px 28px;border-radius:10px;
+     text-decoration:none;font-family:'Space Mono',monospace;font-size:11px;
+     letter-spacing:2px;text-transform:uppercase;">
+    ← Back to Users
+  </a>
+</div>
+{% endblock %}

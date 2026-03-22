@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}{% include 'compare/admin/admin_navbar.html' %}{% endblock %}
+
+{% block content %}
+{% include 'compare/admin/admin_sidebar.html' %}
+
+<link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
+<style>
+.acc-type-badge {
+  display:inline-block; padding:3px 10px; border-radius:20px;
+  font-family:'Space Mono',monospace; font-size:10px; letter-spacing:1px;
+  text-transform:uppercase; font-weight:700;
+  background:rgba(230,57,70,0.1); color:var(--red);
+  border:1px solid rgba(230,57,70,0.2);
+}
+.acc-price {
+  font-family:'Space Mono',monospace; font-size:13px;
+  font-weight:700; color:var(--orange);
+}
+.acc-desc {
+  font-size:12px; color:var(--muted); line-height:1.5;
+  max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+</style>
+
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div>
+  <div class="vv-ring vv-ring-b"></div>
+
+  <div class="vv-page">
+
+    <!-- Page Header -->
+    <div class="vv-ph">
+      <div class="vv-ph-left">
+        <div class="vv-eyebrow">Admin Panel</div>
+        <div class="vv-title">Accessory <em>Management</em></div>
+        <div class="vv-sub">{{ total }} accessor{{ total|pluralize:"y,ies" }} in the system</div>
+      </div>
+      <a href="{% url 'accessory_create' %}" class="vv-btn-add">+ Add Accessory</a>
+    </div>
+
+    <!-- Filter Bar -->
+    <form method="GET" action="{% url 'accessory_list' %}">
+    <div class="vv-filter-bar" style="background:#fff;border:1.5px solid rgba(15,23,42,.08);border-radius:18px;box-shadow:0 2px 12px rgba(15,23,42,.06);padding:22px 28px;margin-bottom:28px;">
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+
+        <!-- Search -->
+        <div style="display:flex;flex-direction:column;gap:5px;flex:2;min-width:200px;">
+          <label class="vv-label">Search</label>
+          <div class="vv-search-wrap" style="display:flex;border:1.5px solid rgba(15,23,42,.08);border-radius:10px;overflow:hidden;">
+            <input type="text" name="search" placeholder="Name, type, description…"
+                   value="{{ search }}"
+                   style="flex:1;padding:11px 16px;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:13px;background:#f8fafd;">
+            <button type="submit"
+                    style="padding:11px 20px;border:none;cursor:pointer;background:var(--red);color:#fff;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;">
+              Search
+            </button>
+          </div>
+        </div>
+
+        <!-- Type Filter -->
+        <div style="display:flex;flex-direction:column;gap:5px;min-width:160px;">
+          <label class="vv-label">Type</label>
+          <select name="type" onchange="this.form.submit()"
+                  style="padding:11px 34px 11px 14px;background:#f8fafd;border:1.5px solid rgba(15,23,42,.08);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;cursor:pointer;appearance:none;">
+            <option value="">All Types</option>
+            {% for t in all_types %}
+              <option value="{{ t }}" {% if sel_type == t %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Clear -->
+        <div style="display:flex;align-items:flex-end;">
+          <a href="{% url 'accessory_list' %}"
+             style="display:inline-flex;align-items:center;gap:6px;padding:11px 18px;border-radius:10px;border:1.5px solid rgba(15,23,42,.08);background:#fff;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;">
+            ✕ Clear
+          </a>
+        </div>
+
+      </div>
+    </div>
+    </form>
+
+    <!-- Table Card -->
+    <div class="vv-card">
+      <div class="vv-card-bar"></div>
+      <div class="vv-tbl-wrap">
+        <table class="vv-tbl">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Price</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for acc in accessories %}
+            <tr>
+              <td style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">
+                {{ forloop.counter }}
+              </td>
+              <td>
+                <span style="font-weight:600;color:var(--dark);font-size:14px;">
+                  {{ acc.accessoryName }}
+                </span>
+              </td>
+              <td>
+                <span class="acc-type-badge">{{ acc.accessoryType }}</span>
+              </td>
+              <td>
+                <span class="acc-price">₹ {{ acc.price }}</span>
+              </td>
+              <td>
+                <span class="acc-desc" title="{{ acc.description }}">
+                  {{ acc.description }}
+                </span>
+              </td>
+              <td>
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <a href="{% url 'accessory_update' acc.pk %}" class="vv-btn-sm vv-btn-edit">
+                    ✏ Edit
+                  </a>
+                  <a href="{% url 'accessory_delete' acc.pk %}"
+                     class="vv-btn-sm vv-btn-del"
+                     onclick="return confirm('Delete {{ acc.accessoryName }}? This cannot be undone.')">
+                    🗑 Delete
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6">
+                <div class="vv-empty">
+                  <span class="vv-empty-icon">🔧</span>
+                  <div class="vv-empty-title">No Accessories Found</div>
+                  <div class="vv-empty-sub">
+                    {% if search or sel_type %}
+                      Try clearing your filters.
+                    {% else %}
+                      Start by adding your first accessory.
+                    {% endif %}
+                  </div>
+                  <a href="{% url 'accessory_create' %}" class="vv-btn vv-btn-red" style="margin-top:16px;">
+                    + Add Accessory
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

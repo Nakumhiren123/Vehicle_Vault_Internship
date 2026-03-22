@@ -108,6 +108,9 @@ update();
 });
 
 </script>
+{% if request.user.is_authenticated %}
+  {% include 'compare/partials/ai_assistant.html' %}
+{% endif %}
 
 {% include "compare/footer.html" %}
 

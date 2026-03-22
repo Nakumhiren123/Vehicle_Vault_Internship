@@ -48,6 +48,10 @@ class Car(models.Model):
     launchYear = models.IntegerField()
     status = models.BooleanField(default=True)
     carImage = models.ImageField(upload_to='cars/', null=True, blank=True)
+    # models.py
+    model_3d = models.FileField(upload_to='car_models/', null=True, blank=True)
+    car3DModel = models.FileField(upload_to='car_models/', blank=True, null=True)
+    sketchfabId = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
         db_table = "car"
@@ -55,8 +59,47 @@ class Car(models.Model):
     def __str__(self):
         return self.carName
 
+class CarImage(models.Model):
+    car     = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='gallery_images')
+    image   = models.ImageField(upload_to='cars/gallery/')
+    caption = models.CharField(max_length=100, blank=True)
+    order   = models.PositiveIntegerField(default=0)   # for sorting
 
+    class Meta:
+        db_table = "car_image"
+        ordering = ['order', 'id']
 
+    def __str__(self):
+        return f"{self.car.carName} — image {self.id}"
+    
+VARIANT_CHOICES = [
+    ('Base',    'Base'),
+    ('Mid',     'Mid'),
+    ('Top',     'Top'),
+    ('Special', 'Special Edition'),
+]
+ 
+class CarVariant(models.Model):
+    car          = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='variants')
+    variantName  = models.CharField(max_length=100)          # e.g. "LXi", "VXi", "ZXi+"
+    variantTier  = models.CharField(max_length=20, choices=VARIANT_CHOICES, default='Base')
+    price        = models.IntegerField()
+    mileage      = models.FloatField(null=True, blank=True)  # variant-specific mileage
+    transmission = models.CharField(max_length=30, blank=True)
+    features     = models.TextField(blank=True,
+                       help_text="Comma-separated list of features, e.g. Sunroof, Cruise Control")
+    isAvailable  = models.BooleanField(default=True)
+ 
+    class Meta:
+        db_table = 'car_variant'
+        ordering = ['price']
+ 
+    def __str__(self):
+        return f"{self.car.carName} — {self.variantName}"
+ 
+    def features_list(self):
+        return [f.strip() for f in self.features.split(',') if f.strip()]
+    
 # 4️ Accessory Table
 
 class Accessory(models.Model):
@@ -153,3 +196,46 @@ class UserInteraction(models.Model):
 
     class Meta:
         db_table = "user_interaction"
+
+
+
+# 11 Notification (FK User)
+
+class Notification(models.Model):
+    NOTIF_TYPES = [
+        ('review',     'New Review'),
+        ('comparison', 'Comparison Done'),
+        ('welcome',    'Welcome'),
+        ('car_added',  'New Car Added'),
+        ('system',     'System Message'),
+    ]
+    user      = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name='notifications')
+    notifType = models.CharField(max_length=30, choices=NOTIF_TYPES, default='system')
+    title     = models.CharField(max_length=150)
+    message   = models.TextField()
+    isRead    = models.BooleanField(default=False)
+    link      = models.CharField(max_length=255, blank=True)   # optional URL to redirect to
+    createdAt = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "notification"
+        ordering = ['-createdAt']
+
+    def __str__(self):
+        return f"[{self.notifType}] {self.title} → {self.user.email}"
+
+# 12 Wishlist / Saved Cars (FK User + FK Car)
+
+class Wishlist(models.Model):
+    user      = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name='wishlist')
+    car       = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='wishlisted_by')
+    savedAt   = models.DateTimeField(auto_now_add=True)
+    note      = models.CharField(max_length=200, blank=True)   # optional personal note
+
+    class Meta:
+        db_table       = "wishlist"
+        unique_together = [('user', 'car')]   # prevent duplicate saves
+        ordering        = ['-savedAt']
+
+    def __str__(self):
+        return f"{self.user.email} saved {self.car.carName}"

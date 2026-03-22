@@ -117,6 +117,26 @@
                 <label class="vv-label">Upload Image</label>
                 {{ form.carImage }}
               </div>
+
+              <!-- 3D Model Upload -->
+              <div style="margin-top:22px;">
+                <div class="vv-sec"><span class="vv-dot"></span>3D Model</div>
+                <label class="vv-label">Upload .glb / .gltf File</label>
+                {{ form.model_3d }}
+                {% if form.instance.model_3d %}
+                  <div style="margin-top:8px;padding:8px 12px;background:rgba(230,57,70,0.1);
+                       border:1px solid rgba(230,57,70,0.3);border-radius:8px;font-size:13px;color:#e63946;">
+                    ✅ Current: {{ form.instance.model_3d.name|cut:"car_models/" }}
+                  </div>
+                {% else %}
+                  <div style="margin-top:8px;padding:8px 12px;background:rgba(255,255,255,0.04);
+                       border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:12px;color:#888;">
+                    💡 No 3D model uploaded. Get free .glb car models from
+                    <a href="https://sketchfab.com" target="_blank" style="color:#e63946;">Sketchfab.com</a>
+                  </div>
+                {% endif %}
+              </div>
+
             </div>
 
           </div>

@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
-
+ 
 {% block navbar %}
   {% include 'compare/admin/admin_navbar.html' %}
 {% endblock %}
-
+ 
 {% block content %}
 {% include 'compare/admin/admin_sidebar.html' %}
-
+ 
 <link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
-
+ 
 <div class="vv-wrap">
   <div class="vv-ring vv-ring-a"></div>
   <div class="vv-ring vv-ring-b"></div>
-
+ 
   <div class="vv-page">
-
+ 
     <!-- ── Page Header ── -->
     <div class="vv-ph">
       <div class="vv-ph-left">
@@ -23,16 +23,19 @@
         <div class="vv-title">User <em>Management</em></div>
         <div class="vv-sub">View, monitor and toggle status of all registered users</div>
       </div>
-      <div class="vv-pill">
-        <span class="live"></span>
-        {{ users|length }} User{% if users|length != 1 %}s{% endif %}
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <div class="vv-pill"><span class="live"></span>{{ users|length }} User{% if users|length != 1 %}s{% endif %}</div>
+        <div style="display:flex;gap:10px;">
+          <a href="{% url 'export_users_csv' %}" class="vv-btn-add" style="background:#0d9488;color:#fff !important;box-shadow:0 8px 24px rgba(13,148,136,.3);">⬇ CSV</a>
+          <a href="{% url 'export_users_pdf' %}" class="vv-btn-add" style="background:#e63946;color:#fff !important;box-shadow:0 8px 24px rgba(230,57,70,.3);">⬇ PDF</a>
+        </div>
       </div>
     </div>
-
+ 
     <!-- ── Table Card ── -->
     <div class="vv-card">
       <div class="vv-card-bar"></div>
-
+ 
       <div class="vv-tbl-wrap">
         <table class="vv-tbl">
           <thead>
@@ -49,14 +52,14 @@
           <tbody>
             {% for user in users %}
             <tr>
-
+ 
               <!-- Index -->
               <td>
                 <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">
                   {{ forloop.counter }}
                 </span>
               </td>
-
+ 
               <!-- User -->
               <td>
                 <div style="display:flex;align-items:center;gap:10px;">
@@ -67,7 +70,7 @@
                   </div>
                 </div>
               </td>
-
+ 
               <!-- Role -->
               <td>
                 {% if user.role == 'admin' %}
@@ -76,21 +79,21 @@
                   <span class="vv-badge b-blue">{{ user.role }}</span>
                 {% endif %}
               </td>
-
+ 
               <!-- Reviews -->
               <td>
                 <div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--dark);">
                   {{ user.total_reviews }}
                 </div>
               </td>
-
+ 
               <!-- Comparisons -->
               <td>
                 <div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--dark);">
                   {{ user.total_comparisons }}
                 </div>
               </td>
-
+ 
               <!-- Status -->
               <td>
                 {% if user.is_active %}
@@ -99,7 +102,7 @@
                   <span class="vv-badge b-red">● Inactive</span>
                 {% endif %}
               </td>
-
+ 
               <!-- Action -->
               <td>
                 <a href="{% url 'toggle_user_status' user.id %}"
@@ -108,7 +111,7 @@
                   ⇄ Toggle
                 </a>
               </td>
-
+ 
             </tr>
             {% empty %}
             <tr>
@@ -125,7 +128,7 @@
         </table>
       </div>
     </div>
-
+ 
   </div>
 </div>
 {% endblock %}

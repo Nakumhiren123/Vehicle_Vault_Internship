@@ -36,6 +36,33 @@ urlpatterns = [
     path('help/', views.help_page, name='help_page'),
     path('support/', views.support_page, name='support_page'),
     
+    # Export CSV
+    path('admin/export/cars/csv/',        views.export_cars_csv,        name='export_cars_csv'),
+    path('admin/export/users/csv/',       views.export_users_csv,       name='export_users_csv'),
+    path('admin/export/reviews/csv/',     views.export_reviews_csv,     name='export_reviews_csv'),
+    path('admin/export/comparisons/csv/', views.export_comparisons_csv, name='export_comparisons_csv'),
+
+    # User Comparison Export
+    path('user/comparison/export/csv/', views.export_comparison_csv_user, name='export_comparison_csv_user'),
+    path('user/comparison/export/pdf/', views.export_comparison_pdf_user, name='export_comparison_pdf_user'),
+ 
+    # Export PDF
+    path('admin/export/cars/pdf/',        views.export_cars_pdf,        name='export_cars_pdf'),
+    path('admin/export/users/pdf/',       views.export_users_pdf,       name='export_users_pdf'),
+    path('admin/export/reviews/pdf/',     views.export_reviews_pdf,     name='export_reviews_pdf'),
+    path('admin/export/comparisons/pdf/', views.export_comparisons_pdf, name='export_comparisons_pdf'),
+
+    # Car Variant Management
+    path('admin/cars/<int:car_pk>/variants/',                 views.variant_list,   name='variant_list'),
+    path('admin/cars/<int:car_pk>/variants/add/',             views.variant_create, name='variant_create'),
+    path('admin/cars/<int:car_pk>/variants/edit/<int:pk>/',   views.variant_update, name='variant_update'),
+    path('admin/cars/<int:car_pk>/variants/delete/<int:pk>/', views.variant_delete, name='variant_delete'),
+
+    # Accessory Management
+    path('admin/accessories/',                views.accessory_list,   name='accessory_list'),
+    path('admin/accessories/add/',            views.accessory_create, name='accessory_create'),
+    path('admin/accessories/edit/<int:pk>/',  views.accessory_update, name='accessory_update'),
+    path('admin/accessories/delete/<int:pk>/',views.accessory_delete, name='accessory_delete'),
     # path('admin/cars/', views.car_list, name='car_list'),
     # path('admin/cars/add/', views.car_create, name='car_create'),
     # path('admin/cars/edit/<int:pk>/', views.car_update, name='car_update'),

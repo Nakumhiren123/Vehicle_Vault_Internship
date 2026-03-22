@@ -1,0 +1,335 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
+{% block content %}
+{% include 'compare/user/user_sidebar.html' %}
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+:root{
+  --red:#e63946;--red-d:#c1121f;--red-l:#fff0f1;--orange:#f4a261;
+  --dark:#0f172a;--dark2:#1e293b;--card:#fff;--bg:#f4f6fb;
+  --border:rgba(15,23,42,.08);--text:#0f172a;--text2:#475569;--muted:#94a3b8;
+  --teal:#0d9488;--teal-l:#f0fdfa;--blue:#2563eb;--blue-l:#eff6ff;
+  --green:#16a34a;--green-l:#f0fdf4;--amber:#d97706;--amber-l:#fffbeb;
+  --sh-sm:0 2px 12px rgba(15,23,42,.06);--sh-md:0 8px 32px rgba(15,23,42,.10);
+  --sh-lg:0 24px 64px rgba(15,23,42,.14);--sh-red:0 12px 40px rgba(230,57,70,.22);
+  --r:18px;--r-sm:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+@keyframes fadeUp  {from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cardIn  {from{opacity:0;transform:translateY(28px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes spin    {to{transform:rotate(360deg)}}
+@keyframes pulse   {0%,100%{box-shadow:0 0 0 0 rgba(230,57,70,.4)}50%{box-shadow:0 0 0 8px rgba(230,57,70,0)}}
+@keyframes shimmer {0%{background-position:-500px 0}100%{background-position:500px 0}}
+@keyframes heartBeat{0%,100%{transform:scale(1)}15%{transform:scale(1.3)}30%{transform:scale(1)}}
+
+/* ── Scaffold ── */
+.vv-wrap{min-height:100vh;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);position:relative;overflow-x:hidden;}
+.vv-wrap::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(0,0,0,.04) 1px,transparent 1px);background-size:28px 28px;}
+.vv-wrap::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 0% 0%,rgba(230,57,70,.05),transparent 55%),radial-gradient(ellipse 50% 35% at 100% 100%,rgba(230,57,70,.04),transparent 55%);}
+.vv-ring{position:fixed;border-radius:50%;pointer-events:none;z-index:0;border:1.5px solid rgba(230,57,70,.04);}
+.vv-ring-a{width:580px;height:580px;top:-220px;right:-180px;animation:spin 75s linear infinite;}
+.vv-ring-b{width:340px;height:340px;bottom:-130px;left:-130px;animation:spin 52s linear infinite reverse;}
+.vv-page{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:36px 36px 100px;}
+
+/* ── Breadcrumb nav ── */
+.vv-breadcrumb{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  margin-bottom:24px;
+  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);
+  animation:fadeUp .5s ease both;
+}
+.vv-breadcrumb a{color:var(--muted);text-decoration:none;transition:color .2s;}
+.vv-breadcrumb a:hover{color:var(--red);}
+.vv-breadcrumb .sep{color:var(--border);}
+.vv-breadcrumb .curr{color:var(--red);}
+
+/* ── Page header ── */
+.vv-ph{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:28px;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .05s both;}
+.vv-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;}
+.vv-eyebrow::before,.vv-eyebrow::after{content:'';display:inline-block;width:22px;height:2px;background:linear-gradient(90deg,var(--red),var(--orange));border-radius:2px;}
+.vv-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,58px);letter-spacing:2px;line-height:.9;color:var(--dark);}
+.vv-title em{color:var(--red);font-style:normal;}
+.vv-sub{font-size:13px;color:var(--muted);margin-top:6px;}
+.vv-pill{display:inline-flex;align-items:center;gap:8px;background:var(--dark);color:#fff;border-radius:30px;padding:9px 20px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1.5px;}
+.vv-pill .live{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 2s ease-in-out infinite;}
+
+/* ── Nav action buttons ── */
+.vv-nav-bar{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  background:var(--card);border:1.5px solid var(--border);border-radius:14px;
+  padding:14px 20px;margin-bottom:28px;box-shadow:var(--sh-sm);
+  animation:fadeUp .5s ease .1s both;
+}
+.vv-nav-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-right:4px;}
+
+/* ── Buttons ── */
+.vv-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:10px;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;text-decoration:none;transition:all .22s cubic-bezier(.22,1,.36,1);}
+.vv-btn-red{background:var(--red);color:#fff;box-shadow:var(--sh-red);}
+.vv-btn-red:hover{background:var(--red-d);color:#fff;text-decoration:none;transform:translateY(-2px);}
+.vv-btn-dark{background:var(--dark);color:#fff;}
+.vv-btn-dark:hover{background:var(--dark2);color:#fff;text-decoration:none;transform:translateY(-2px);}
+.vv-btn-ghost{background:var(--red-l);color:var(--red);border:1.5px solid rgba(230,57,70,.2);}
+.vv-btn-ghost:hover{background:var(--red);color:#fff;text-decoration:none;transform:translateY(-2px);}
+.vv-btn-outline{background:#fff;color:var(--text2);border:1.5px solid var(--border);}
+.vv-btn-outline:hover{border-color:var(--red);color:var(--red);text-decoration:none;}
+
+/* ── Grid ── */
+.vv-wl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px;}
+
+/* ── Card ── */
+.vv-wl-card{
+  background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);
+  overflow:hidden;box-shadow:var(--sh-sm);position:relative;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s,border-color .3s;
+  animation:cardIn .5s cubic-bezier(.22,1,.36,1) both;
+}
+.vv-wl-card:nth-child(1){animation-delay:.04s}.vv-wl-card:nth-child(2){animation-delay:.08s}
+.vv-wl-card:nth-child(3){animation-delay:.12s}.vv-wl-card:nth-child(4){animation-delay:.16s}
+.vv-wl-card:nth-child(5){animation-delay:.20s}.vv-wl-card:nth-child(6){animation-delay:.24s}
+.vv-wl-card:nth-child(7){animation-delay:.28s}.vv-wl-card:nth-child(8){animation-delay:.32s}
+.vv-wl-card:hover{transform:translateY(-7px);box-shadow:var(--sh-lg);border-color:rgba(230,57,70,.2);}
+.vv-wl-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--orange));transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.22,1,.36,1);}
+.vv-wl-card:hover::before{transform:scaleX(1);}
+
+/* Image */
+.vv-wl-img{position:relative;height:185px;overflow:hidden;background:var(--dark2);}
+.vv-wl-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.22,1,.36,1);}
+.vv-wl-card:hover .vv-wl-img img{transform:scale(1.07);}
+.vv-wl-no-img{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:52px;color:rgba(255,255,255,.12);}
+.vv-wl-date-chip{position:absolute;bottom:10px;left:10px;background:rgba(15,23,42,.75);color:rgba(255,255,255,.85);border-radius:20px;padding:4px 12px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;backdrop-filter:blur(4px);}
+.vv-heart{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.95);display:flex;align-items:center;justify-content:center;font-size:15px;animation:heartBeat 1.4s ease .5s;}
+
+/* Body */
+.vv-wl-body{padding:16px 18px;}
+.vv-wl-name{font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:1.5px;color:var(--dark);line-height:1;margin-bottom:2px;}
+.vv-wl-brand{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.vv-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.chip{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
+.chip-fuel {background:var(--amber-l);color:var(--amber);}
+.chip-trans{background:var(--blue-l); color:var(--blue);}
+.chip-yr   {background:var(--teal-l); color:var(--teal);}
+.vv-wl-price{font-family:'Space Mono',monospace;font-size:14px;color:var(--orange);font-weight:700;margin-bottom:12px;}
+.vv-wl-note{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:11px;color:var(--text2);font-style:italic;margin-bottom:12px;line-height:1.5;}
+
+/* Card actions */
+.vv-wl-acts{display:flex;gap:7px;}
+.vv-btn-sm{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;text-decoration:none;transition:all .2s;flex:1;justify-content:center;}
+.btn-view{background:var(--dark);color:#fff;}
+.btn-view:hover{background:var(--dark2);color:#fff;text-decoration:none;transform:translateY(-2px);}
+.btn-remove{background:var(--red-l);color:var(--red);border:1.5px solid rgba(230,57,70,.2);}
+.btn-remove:hover{background:var(--red);color:#fff;text-decoration:none;transform:translateY(-2px);}
+
+/* ── See More bar ── */
+.vv-see-more{
+  margin-top:28px;text-align:center;
+  animation:fadeUp .5s ease .3s both;
+}
+.vv-see-more-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 36px;border-radius:14px;
+  background:var(--card);border:1.5px solid var(--border);
+  font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--text2);text-decoration:none;
+  box-shadow:var(--sh-sm);
+  transition:all .28s cubic-bezier(.22,1,.36,1);
+}
+.vv-see-more-btn:hover{border-color:var(--red);color:var(--red);text-decoration:none;transform:translateY(-3px);box-shadow:var(--sh-md);}
+.vv-see-more-btn .count-badge{
+  background:var(--red);color:#fff;border-radius:20px;
+  padding:3px 10px;font-size:10px;font-weight:700;
+}
+
+/* ── Show all collapse bar ── */
+.vv-collapse-bar{
+  margin-top:28px;text-align:center;
+  animation:fadeUp .4s ease both;
+}
+.vv-collapse-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 26px;border-radius:10px;
+  background:#fff;border:1.5px solid var(--border);
+  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  transition:all .2s;
+}
+.vv-collapse-btn:hover{border-color:var(--red);color:var(--red);text-decoration:none;}
+
+/* ── Empty state ── */
+.vv-empty{
+  text-align:center;padding:80px 24px;
+  background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);
+  box-shadow:var(--sh-sm);
+  animation:fadeUp .5s ease both;
+}
+.vv-empty-icon{font-size:64px;display:block;margin-bottom:18px;}
+.vv-empty-title{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:2px;color:var(--dark);margin-bottom:8px;}
+.vv-empty-sub{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6;}
+
+/* ── Stats row ── */
+.vv-stats-row{
+  display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap;
+  animation:fadeUp .5s ease .08s both;
+}
+.vv-stat-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:10px;padding:10px 16px;box-shadow:var(--sh-sm);
+  font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;
+}
+.vv-stat-chip strong{color:var(--dark);font-size:16px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;}
+
+@media(max-width:640px){
+  .vv-page{padding:24px 16px 80px;}
+  .vv-wl-grid{grid-template-columns:1fr;}
+  .vv-nav-bar{flex-direction:column;align-items:flex-start;}
+}
+</style>
+
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div>
+  <div class="vv-ring vv-ring-b"></div>
+  <div class="vv-page">
+
+    <!-- ── Breadcrumb ── -->
+    <div class="vv-breadcrumb">
+      <a href="{% url 'user-dashboard' %}">Dashboard</a>
+      <span class="sep">›</span>
+      <span class="curr">❤️ Saved Cars</span>
+    </div>
+
+    <!-- ── Page Header ── -->
+    <div class="vv-ph">
+      <div>
+        <div class="vv-eyebrow">My Garage</div>
+        <div class="vv-title">Saved <em>Cars</em></div>
+        <div class="vv-sub">
+          {% if show_all %}
+            Showing all your saved vehicles
+          {% else %}
+            Showing your last 4 saved cars
+          {% endif %}
+        </div>
+      </div>
+      <div class="vv-pill"><span class="live"></span>{{ total }} Saved</div>
+    </div>
+
+    <!-- ── Quick Nav Bar ── -->
+    <div class="vv-nav-bar">
+      <span class="vv-nav-label">Go to →</span>
+      <a href="{% url 'user-dashboard' %}" class="vv-btn vv-btn-dark">
+        ← Dashboard
+      </a>
+      <a href="{% url 'public_car_list' %}" class="vv-btn vv-btn-red">
+        🚗 Browse Cars to Save
+      </a>
+      <a href="{% url 'public_car_list' %}" class="vv-btn vv-btn-outline">
+        ⚖️ Compare Cars
+      </a>
+    </div>
+
+    {% if wishlist_items %}
+
+    <!-- ── Stats Row ── -->
+    <div class="vv-stats-row">
+      <div class="vv-stat-chip">❤️ <strong>{{ total }}</strong> Total Saved</div>
+      {% if show_all %}
+        <div class="vv-stat-chip">👁 Showing <strong>All</strong></div>
+      {% else %}
+        <div class="vv-stat-chip">👁 Showing <strong>4</strong> of <strong>{{ total }}</strong></div>
+      {% endif %}
+    </div>
+
+    <!-- ── Car Grid ── -->
+    <div class="vv-wl-grid">
+      {% for item in wishlist_items %}
+      <div class="vv-wl-card">
+
+        <!-- Image -->
+        <div class="vv-wl-img">
+          <div class="vv-heart">❤️</div>
+          {% if item.car.carImage %}
+            <img src="{{ item.car.carImage.url }}" alt="{{ item.car.carName }}">
+          {% else %}
+            <div class="vv-wl-no-img">🚗</div>
+          {% endif %}
+          <div class="vv-wl-date-chip">Saved {{ item.savedAt|timesince }} ago</div>
+        </div>
+
+        <!-- Body -->
+        <div class="vv-wl-body">
+          <div class="vv-wl-name">{{ item.car.carName }}</div>
+          <div class="vv-wl-brand">{{ item.car.brand }}</div>
+          <div class="vv-chips">
+            <span class="chip chip-fuel">⛽ {{ item.car.fuelType }}</span>
+            <span class="chip chip-trans">⚙ {{ item.car.transmission }}</span>
+            <span class="chip chip-yr">📅 {{ item.car.launchYear }}</span>
+          </div>
+          <div class="vv-wl-price">₹ {{ item.car.price|floatformat:0 }}</div>
+          {% if item.note %}
+            <div class="vv-wl-note">📝 {{ item.note }}</div>
+          {% endif %}
+          <div class="vv-wl-acts">
+            <a href="{% url 'car_detail' item.car.pk %}" class="vv-btn-sm btn-view">
+              👁 View
+            </a>
+            <form method="POST" action="{% url 'toggle_wishlist' item.car.pk %}" style="flex:1;display:flex;">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+              <button type="submit" class="vv-btn-sm btn-remove" style="width:100%;">
+                🗑 Remove
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- ── See More / Show Less ── -->
+    {% if has_more %}
+    <div class="vv-see-more">
+      <a href="?show=all" class="vv-see-more-btn">
+        See All Saved Cars
+        <span class="count-badge">{{ total }}</span>
+        ↓
+      </a>
+    </div>
+    {% endif %}
+
+    {% if show_all and total > 4 %}
+    <div class="vv-collapse-bar">
+      <a href="{% url 'wishlist' %}" class="vv-collapse-btn">↑ Show Less</a>
+    </div>
+    {% endif %}
+
+    {% else %}
+
+    <!-- ── Empty State ── -->
+    <div class="vv-empty">
+      <span class="vv-empty-icon">❤️</span>
+      <div class="vv-empty-title">No Saved Cars Yet</div>
+      <div class="vv-empty-sub">
+        Browse cars and click the 🤍 Save button on any car detail page<br>
+        to add it to your wishlist.
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="{% url 'public_car_list' %}" class="vv-btn vv-btn-red" style="padding:14px 32px;">
+          🚗 Browse Cars
+        </a>
+        <a href="{% url 'user_dashboard' %}" class="vv-btn vv-btn-outline" style="padding:14px 32px;">
+          ← Back to Dashboard
+        </a>
+      </div>
+    </div>
+
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}
