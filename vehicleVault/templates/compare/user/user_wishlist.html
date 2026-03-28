@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
+
+{% block content %}
+{% include 'compare/user/user_sidebar.html' %}
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --primary:#e63946; --primary-l:#fff0f1;
+    --accent:#f4a261;  --accent-l:#fff4ea;
+    --teal:#0d9488;    --teal-l:#f0fdfa;
+    --bg:#f5f6fa;      --card:#ffffff;    --card2:#f9fafb;
+    --border:rgba(0,0,0,0.07); --text:#0f172a; --text2:#334155; --muted:#94a3b8;
+    --sh-sm:0 2px 12px rgba(15,23,42,0.07);
+    --sh-md:0 8px 32px rgba(15,23,42,0.10);
+    --sh-lg:0 20px 60px rgba(15,23,42,0.13);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);}
+  @keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+
+  .wl-root{min-height:100vh;font-family:'DM Sans',sans-serif;color:var(--text);padding:40px 48px 80px;position:relative;z-index:1;}
+  .wl-inner{max-width:1320px;margin:0 auto;}
+
+  /* Header */
+  .wl-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:40px;opacity:0;transform:translateY(20px);animation:fadeUp .6s ease .05s forwards;}
+  .wl-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--primary);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .wl-eyebrow::before{content:'';width:18px;height:2px;background:var(--primary);border-radius:2px;}
+  .wl-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(42px,5vw,68px);letter-spacing:2px;line-height:.95;color:var(--text);}
+  .wl-title span{color:var(--primary);}
+  .wl-sub{font-size:13px;color:var(--muted);margin-top:8px;font-style:italic;}
+  .wl-cta{display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:#fff;text-decoration:none;padding:12px 24px;border-radius:12px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;box-shadow:0 4px 20px rgba(230,57,70,.28);transition:all .25s;align-self:flex-end;}
+  .wl-cta:hover{background:#cf2533;transform:translateY(-2px);color:#fff;}
+
+  /* Stats strip */
+  .stats-strip{display:flex;gap:0;background:var(--card);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:32px;opacity:0;transform:translateY(16px);animation:fadeUp .55s ease .08s forwards;}
+  .stat-item{flex:1;padding:18px 24px;text-align:center;position:relative;}
+  .stat-item+.stat-item::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:1px;background:var(--border);}
+  .stat-num{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--text);letter-spacing:2px;line-height:1;}
+  .stat-num.red{color:var(--primary);}
+  .stat-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+  /* Grid */
+  .wl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;}
+
+  /* Car card */
+  .wl-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--sh-sm);transition:all .3s;opacity:0;transform:translateY(20px);position:relative;}
+  .wl-card:nth-child(1){animation:fadeUp .6s ease .10s forwards;}
+  .wl-card:nth-child(2){animation:fadeUp .6s ease .17s forwards;}
+  .wl-card:nth-child(3){animation:fadeUp .6s ease .24s forwards;}
+  .wl-card:nth-child(4){animation:fadeUp .6s ease .31s forwards;}
+  .wl-card:nth-child(n+5){animation:fadeUp .6s ease .36s forwards;}
+  .wl-card:hover{box-shadow:var(--sh-md);border-color:rgba(230,57,70,.18);transform:translateY(-5px);}
+  .wl-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent));}
+
+  /* Card image */
+  .wl-img-wrap{position:relative;height:180px;overflow:hidden;}
+  .wl-img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+  .wl-card:hover .wl-img{transform:scale(1.05);}
+  .wl-img-placeholder{width:100%;height:100%;background:linear-gradient(135deg,#f1f5f9,#e2e8f0);display:flex;align-items:center;justify-content:center;font-size:52px;}
+
+  /* Remove button */
+  .wl-remove{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:rgba(230,57,70,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;transition:all .2s;z-index:2;}
+  .wl-remove:hover{background:#cf2533;transform:scale(1.1);}
+
+  /* Added date badge */
+  .wl-date-badge{position:absolute;bottom:10px;left:10px;background:rgba(15,23,42,0.75);backdrop-filter:blur(6px);border-radius:8px;padding:4px 10px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;color:#fff;text-transform:uppercase;}
+
+  /* Card body */
+  .wl-body{padding:18px 20px 20px;}
+  .wl-brand{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+  .wl-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1.5px;color:var(--text);line-height:1;margin-bottom:12px;}
+  .wl-specs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+  .wl-spec{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--text2);}
+  .wl-price{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--accent);margin-bottom:14px;}
+  .wl-actions{display:flex;gap:8px;}
+  .btn-view{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--primary-l);color:var(--primary);border:1.5px solid rgba(230,57,70,.2);border-radius:10px;padding:9px 14px;text-decoration:none;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
+  .btn-view:hover{background:var(--primary);color:#fff;}
+  .btn-compare{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#f8fafc;color:var(--text2);border:1.5px solid var(--border);border-radius:10px;padding:9px 14px;text-decoration:none;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
+  .btn-compare:hover{background:var(--text);color:#fff;}
+
+  /* Empty */
+  .wl-empty{text-align:center;padding:80px 40px;background:var(--card);border:2px dashed var(--border);border-radius:24px;opacity:0;transform:translateY(20px);animation:fadeUp .65s ease .2s forwards;}
+  .wl-empty-icon{font-size:60px;margin-bottom:16px;display:block;}
+  .wl-empty p{color:var(--muted);font-size:15px;margin-bottom:24px;line-height:1.7;}
+
+  @media(max-width:768px){.wl-root{padding:24px 18px 60px;}.wl-grid{grid-template-columns:1fr;}}
+</style>
+
+<div class="wl-root">
+  <div class="wl-inner">
+
+    <!-- Header -->
+    <div class="wl-header">
+      <div>
+        <div class="wl-eyebrow">My Collection</div>
+        <div class="wl-title">My <span>Wishlist</span></div>
+        <p class="wl-sub">Cars you've saved for later</p>
+      </div>
+      <a href="{% url 'public_car_list' %}" class="wl-cta">+ Browse Cars</a>
+    </div>
+
+    {% if wishlist_items %}
+
+    <!-- Stats -->
+    <div class="stats-strip">
+      <div class="stat-item">
+        <div class="stat-num red">{{ wishlist_items|length }}</div>
+        <div class="stat-lbl">Saved Cars</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">{{ wishlist_items.0.savedAt|date:"d M Y" }}</div>
+        <div class="stat-lbl">Latest Save</div>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="wl-grid">
+      {% for item in wishlist_items %}
+      <div class="wl-card">
+
+        <!-- Remove button -->
+        <button class="wl-remove"
+                onclick="removeFromWishlist({{ item.car.id }}, this)"
+                title="Remove from wishlist">✕</button>
+
+        <!-- Image -->
+        <div class="wl-img-wrap">
+          {% if item.car.carImage %}
+            <img src="{{ item.car.carImage.url }}" alt="{{ item.car.carName }}" class="wl-img">
+          {% else %}
+            <div class="wl-img-placeholder">🚗</div>
+          {% endif %}
+          <div class="wl-date-badge">{{ item.savedAt|date:"d M Y" }}</div>
+        </div>
+
+        <!-- Body -->
+        <div class="wl-body">
+          <div class="wl-brand">{{ item.car.brand }}</div>
+          <div class="wl-name">{{ item.car.carName }}</div>
+          <div class="wl-specs">
+            <span class="wl-spec">⛽ {{ item.car.fuelType }}</span>
+            <span class="wl-spec">⚙️ {{ item.car.transmission }}</span>
+            <span class="wl-spec">📏 {{ item.car.mileage }} km/l</span>
+          </div>
+          <div class="wl-price">₹ {{ item.car.price|floatformat:0 }}</div>
+          <div class="wl-actions">
+            <a href="{% url 'car_detail' item.car.id %}" class="btn-view">View Details →</a>
+            <a href="{% url 'public_car_list' %}?preselect={{ item.car.id }}" class="btn-compare">⚖ Compare</a>
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+
+    <!-- Empty State -->
+    <div class="wl-empty">
+      <span class="wl-empty-icon">🤍</span>
+      <p>You haven't saved any cars yet.<br>Browse cars and tap the ❤️ heart button to save them here.</p>
+      <a href="{% url 'public_car_list' %}" class="wl-cta">Browse Cars →</a>
+    </div>
+
+    {% endif %}
+
+  </div>
+</div>
+
+<script>
+function removeFromWishlist(carId, btn) {
+  fetch(`/compare/user/wishlist/toggle/${carId}/`, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': '{{ csrf_token }}',
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (!data.saved) {
+      // Remove the card with animation
+      const card = btn.closest('.wl-card');
+      card.style.transition = 'all 0.3s ease';
+      card.style.opacity = '0';
+      card.style.transform = 'scale(0.9)';
+      setTimeout(() => {
+        card.remove();
+        // Update stat count
+        const statNum = document.querySelector('.stat-num.red');
+        if (statNum) {
+          const newCount = parseInt(statNum.textContent) - 1;
+          statNum.textContent = newCount;
+          if (newCount === 0) location.reload();
+        }
+      }, 300);
+    }
+  })
+  .catch(err => console.error('Wishlist error:', err));
+}
+</script>
+
+{% endblock %}

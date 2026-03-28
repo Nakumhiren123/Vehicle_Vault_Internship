@@ -162,6 +162,26 @@
   .vv-cl-grid { grid-template-columns: 1fr; }
   .vv-cmp-bar { padding: 14px 20px; }
 }
+ 
+/* ── Brand Picker ─────────────────────────────────────────── */
+.brand-section { margin-bottom: 32px; animation: fadeUp .55s cubic-bezier(.22,1,.36,1) .06s both; }
+.brand-section-title { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--muted); margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+.brand-section-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--border),transparent); }
+.brand-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:12px; }
+.brand-card { display:flex; flex-direction:column; align-items:center; gap:8px; padding:16px 10px; border-radius:16px; background:#fff; border:1.5px solid var(--border); cursor:pointer; text-decoration:none; transition:all .25s cubic-bezier(.22,1,.36,1); box-shadow:var(--sh-sm); position:relative; overflow:hidden; }
+.brand-card::before { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--red),var(--orange)); transform:scaleX(0); transform-origin:left; transition:transform .3s; }
+.brand-card:hover, .brand-card.active { border-color:var(--red); transform:translateY(-4px); box-shadow:0 12px 32px rgba(230,57,70,.15); text-decoration:none; }
+.brand-card:hover::before, .brand-card.active::before { transform:scaleX(1); }
+.brand-card.active { background:linear-gradient(135deg,#fff0f1,#fff8f5); }
+.brand-logo { width:52px; height:36px; object-fit:contain; filter:grayscale(30%); transition:filter .3s; }
+.brand-card:hover .brand-logo, .brand-card.active .brand-logo { filter:grayscale(0%); }
+.brand-logo-fallback { width:52px; height:36px; display:flex; align-items:center; justify-content:center; font-size:22px; }
+.brand-name { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--dark); font-weight:700; text-align:center; line-height:1.3; }
+.brand-count { font-size:10px; color:var(--muted); }
+.brand-all-card { background:linear-gradient(135deg,#0f172a,#1e293b); border-color:#0f172a; }
+.brand-all-card .brand-name, .brand-all-card .brand-count { color:rgba(255,255,255,0.7); }
+.brand-all-card:hover, .brand-all-card.active { background:linear-gradient(135deg,#e63946,#f4a261); border-color:#e63946; }
+ 
 </style>
  
 <div class="vv-wrap">
@@ -183,6 +203,123 @@
       </div>
     </div>
  
+ 
+    <!-- ── Brand Picker ── -->
+    {% if not sel_brand %}
+    <div class="brand-section">
+      <div class="brand-section-title">Choose a Brand</div>
+      <div class="brand-grid">
+ 
+        <!-- All Cars card -->
+        <a href="{% url 'public_car_list' %}"
+           class="brand-card brand-all-card {% if not sel_brand %}active{% endif %}">
+          <div class="brand-logo-fallback">🚗</div>
+          <div class="brand-name">All Cars</div>
+          <div class="brand-count">{{ cars|length }} cars</div>
+        </a>
+ 
+        {% for b in brand_data %}
+        <a href="?brand={{ b.brand }}"
+           class="brand-card {% if sel_brand == b.brand %}active{% endif %}">
+          {% with bname=b.brand|lower %}
+          {% if "hyundai" in bname %}
+            <img src="https://www.carlogos.org/car-logos/hyundai-logo.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "tata" in bname %}
+            <img src="https://www.carlogos.org/car-logos/tata-logo.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "maruti" in bname or "suzuki" in bname %}
+            <img src="https://www.carlogos.org/car-logos/maruti-suzuki-logo.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "honda" in bname %}
+            <img src="https://www.carlogos.org/car-logos/honda-logo.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "toyota" in bname %}
+            <img src="https://www.carlogos.org/car-logos/toyota-logo.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "mahindra" in bname %}
+            <img src="https://www.carlogos.org/car-logos/mahindra-logo.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "kia" in bname %}
+            <img src="https://www.carlogos.org/car-logos/kia-logo.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "mg" in bname %}
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/MG_Cars_logo.svg/120px-MG_Cars_logo.svg.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "skoda" in bname %}
+            <img src="https://www.carlogos.org/car-logos/skoda-logo.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "volkswagen" in bname or "vw" in bname %}
+            <img src="https://www.carlogos.org/car-logos/volkswagen-logo.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "renault" in bname %}
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Renault_2021_Text.svg/120px-Renault_2021_Text.svg.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "nissan" in bname %}
+            <img src="https://www.carlogos.org/car-logos/nissan-logo.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "ford" in bname %}
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ford_logo_flat.svg/120px-Ford_logo_flat.svg.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "jeep" in bname %}
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Jeep_logo.svg/120px-Jeep_logo.svg.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "bmw" in bname %}
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/120px-BMW.svg.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "mercedes" in bname %}
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/120px-Mercedes-Logo.svg.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "audi" in bname %}
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/120px-Audi-Logo_2016.svg.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "citroen" in bname %}
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Citroën_2022_logo.svg/120px-Citroën_2022_logo.svg.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% elif "volvo" in bname %}
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Volvo_logo.svg/120px-Volvo_logo.svg.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="brand-logo-fallback" style="display:none;">🚗</div>
+          {% else %}
+            <div class="brand-logo-fallback">🚗</div>
+          {% endif %}
+          {% endwith %}
+          <div class="brand-name">{{ b.brand }}</div>
+          <div class="brand-count">{{ b.car_count }} car{{ b.car_count|pluralize }}</div>
+        </a>
+        {% endfor %}
+ 
+      </div>
+    </div>
+    {% endif %}
+ 
+    <!-- Brand filter active banner -->
+    {% if sel_brand %}
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+                background:linear-gradient(135deg,#fff0f1,#fff8f5);
+                border:1.5px solid rgba(230,57,70,0.2);border-radius:14px;
+                padding:14px 20px;margin-bottom:24px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:22px;">🚗</span>
+        <div>
+          <div style="font-weight:700;font-size:15px;color:#0f172a;">
+            {{ sel_brand }} Cars
+          </div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:2px;">
+            Showing {{ cars|length }} car{{ cars|length|pluralize }} from {{ sel_brand }}
+          </div>
+        </div>
+      </div>
+      <a href="{% url 'public_car_list' %}"
+         style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
+                background:#fff;border:1.5px solid rgba(230,57,70,0.2);border-radius:10px;
+                font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;
+                text-transform:uppercase;color:var(--red);text-decoration:none;
+                transition:all .2s;">
+        ← All Brands
+      </a>
+    </div>
+    {% endif %}
+ 
     <!-- ── Preselect Banner (shown when coming from car detail) ── -->
     <div id="preselect-banner" style="display:none;background:linear-gradient(135deg,#fff0f1,#fff8f0);
          border:1.5px solid rgba(230,57,70,0.25);border-radius:14px;padding:14px 20px;
@@ -199,7 +336,7 @@
     </div>
  
     <!-- ── Filter Bar ── -->
-    <form method="GET" action="{% url 'public_car_list' %}" id="filterForm">
+    {% comment %} <form method="GET" action="{% url 'public_car_list' %}" id="filterForm">
     <div class="vv-filter-bar">
       <div class="vv-filter-row">
  
@@ -309,18 +446,27 @@
       {% endif %}
  
     </div>
-    </form>
+    </form> {% endcomment %}
  
     <!-- ── Results info ── -->
+    {% if sel_brand or search or sel_fuel or sel_trans or sel_sort %}
     <div class="vv-results-info">
       <div class="vv-results-count">
         <strong>{{ cars|length }}</strong> car{% if cars|length != 1 %}s{% endif %} found
       </div>
       <div>Tick up to 2 cars then click Compare</div>
     </div>
+    {% else %}
+    <!-- No brand selected — show call to action -->
+    {% comment %} <div style="text-align:center;padding:48px 24px;background:#fff;border:1.5px dashed rgba(15,23,42,0.1);border-radius:20px;margin-top:8px;">
+      <div style="font-size:52px;margin-bottom:12px;">👆</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:#0f172a;margin-bottom:8px;">Select a Brand to Browse Cars</div>
+      <div style="font-size:14px;color:#94a3b8;">Click any brand above to see all cars from that manufacturer</div>
+    </div> {% endcomment %}
+    {% endif %}
  
     <!-- ── Car Grid ── -->
-    {% if cars %}
+    {% if cars and sel_brand or search or sel_fuel or sel_trans or sel_sort %}
     <div class="vv-cl-grid" id="carGrid">
       {% for car in cars %}
       <div class="vv-car-card" id="card-{{ car.pk }}">
@@ -369,7 +515,7 @@
     </div>
  
     {% else %}
-    <div class="vv-card">
+    {% comment %} <div class="vv-card">
       <div class="vv-card-bar"></div>
       <div class="vv-empty">
         <span class="vv-empty-icon">🔍</span>
@@ -379,7 +525,7 @@
         </div>
         <a href="{% url 'public_car_list' %}" class="vv-btn vv-btn-red">Clear Filters</a>
       </div>
-    </div>
+    </div> {% endcomment %}
     {% endif %}
  
   </div>

@@ -28,6 +28,7 @@ urlpatterns = [
     path('user/profile/',  views.user_profile,  name='user_profile'),
     path('admin/profile/',  views.admin_profile,  name='admin_profile'),
     path('.well-known/appspecific/com.chrome.devtools.json', devtools_json),
+    path('user/wishlist', views.user_wishlist, name='user_wishlist'),
     # Footer Pages
     path('about/', views.about_page, name='about_page'),
     path('contact/', views.contact_page, name='contact_page'),

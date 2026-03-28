@@ -14,12 +14,12 @@
     font-family: 'DM Sans', sans-serif;
     overflow-y: auto;
   }
-
+ 
   /* When sidebar.js adds .active */
   #sidebar.sidebar.active {
     transform: translateX(0);
   }
-
+ 
   /* ── Sidebar heading ── */
   #sidebar .text-center.mt-3 {
     font-family: 'Bebas Neue', sans-serif !important;
@@ -41,18 +41,18 @@
     border-radius: 4px;
     flex-shrink: 0;
   }
-
+ 
   /* ── Nav list ── */
   #sidebar .nav.flex-column {
     padding: 12px 10px;
     flex: 1;
   }
-
+ 
   /* ── Nav items ── */
   #sidebar .nav-item {
     margin-bottom: 2px;
   }
-
+ 
   #sidebar .nav-link {
     display: flex !important;
     align-items: center !important;
@@ -84,7 +84,7 @@
     opacity: 1;
     transform: scaleY(1);
   }
-
+ 
   /* Active link - auto set by sidebar script */
   #sidebar .nav-link.active-link {
     background: rgba(230,57,70,0.15) !important;
@@ -94,7 +94,7 @@
   #sidebar .nav-link.active-link::before {
     opacity: 1; transform: scaleY(1);
   }
-
+ 
   /* Logout link */
   #sidebar .nav-link.text-danger {
     color: rgba(230,57,70,0.8) !important;
@@ -104,7 +104,7 @@
     background: rgba(230,57,70,0.2) !important;
     color: #e63946 !important;
   }
-
+ 
   /* ── Overlay ── */
   #sidebar-overlay.sidebar-overlay {
     position: fixed;
@@ -121,62 +121,67 @@
     pointer-events: all;
   }
 </style>
-
+ 
 <!-- ORIGINAL HTML UNCHANGED -->
 <div id="sidebar" class="sidebar">
-
+ 
     <h4 class="text-center mt-3">VehicleVault</h4>
-
+ 
     <ul class="nav flex-column mt-4">
-
+ 
         <li class="nav-item">
             <a href="{% url "user-dashboard" %}" class="nav-link text-white">
                 🏠 Dashboard
             </a>
         </li>
-
+ 
         <li class="nav-item">
             <a href="{% url 'public_car_list' %}" class="nav-link text-white">
                 🚗 View Cars
             </a>
         </li>
-
+ 
         <li class="nav-item">
             <a href="{% url 'user_cars_viewed' %}" class="nav-link text-white">
                 👀 Cars Viewed
             </a>
         </li>
-
+ 
         <li class="nav-item">
             <a href="{% url 'user_comparisons' %}" class="nav-link text-white">
                 ⚖ Comparisons
             </a>
         </li>
-
+ 
         <li class="nav-item">
+            <a href="{% url 'user_wishlist' %}" class="nav-link text-white">
+              <span class="sidebar-icon">❤️</span> Wishlist
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="{% url 'user_reviews' %}" class="nav-link text-white">
                 ⭐ Reviews Given
             </a>
         </li>
-
+ 
         <li class="nav-item">
             <a href="{% url "user_profile" %}" class="nav-link text-white">
                 👤 Profile
             </a>
         </li>
-
+ 
         <li class="nav-item">
             <a href="{% url 'logout' %}" class="nav-link text-danger">
                 🚪 Logout
             </a>
         </li>
-
+ 
     </ul>
-
+ 
 </div>
-
+ 
 <div id="sidebar-overlay" class="sidebar-overlay"></div>
-
+ 
 <script>
 (function () {
   function openSidebar() {
@@ -187,7 +192,7 @@
     document.getElementById('sidebar').classList.remove('active');
     document.getElementById('sidebar-overlay').classList.remove('active');
   }
-
+ 
   document.addEventListener('DOMContentLoaded', function () {
     /* Hamburger button */
     var btn = document.getElementById('menu-toggle');
@@ -198,13 +203,13 @@
         sidebar.classList.contains('active') ? closeSidebar() : openSidebar();
       });
     }
-
+ 
     /* Click on overlay closes sidebar */
     var overlay = document.getElementById('sidebar-overlay');
     if (overlay) {
       overlay.addEventListener('click', closeSidebar);
     }
-
+ 
     /* Click anywhere outside sidebar also closes it */
     document.addEventListener('click', function (e) {
       var sidebar = document.getElementById('sidebar');
@@ -214,7 +219,7 @@
         closeSidebar();
       }
     });
-
+ 
     /* Highlight active nav link */
     document.querySelectorAll('#sidebar .nav-link').forEach(function (link) {
       if (link.href && window.location.href.startsWith(link.href)) {

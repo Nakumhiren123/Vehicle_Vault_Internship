@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .decorators import role_required
-from .models import Car, Review, Comparison, SearchHistory, Accessory, CarAccessoryMapping, CarVariant
+from .models import Car, Review, Comparison, SearchHistory, Accessory, CarAccessoryMapping, CarVariant, Wishlist
 from .forms import CarForm, ReviewForm, AccessoryForm, CarVariantForm, CarVariantFormSet
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Avg, Count
@@ -188,6 +188,8 @@ def userDashboardView(request):
 
     reviews = Review.objects.filter(user=request.user).count()
 
+    wishlist_count = Wishlist.objects.filter(user=request.user).count()
+
     # ── Featured cars (6 most recent active cars) ────────────
     recent_cars = Car.objects.filter(status=True).order_by('-id')[:6]
 
@@ -216,6 +218,7 @@ def userDashboardView(request):
         'cars_viewed':        cars_viewed,
         'comparisons':        comparisons,
         'reviews':            reviews,
+        'wishlist_count':     wishlist_count,
         'recent_cars':        recent_cars,
         'user_preference':    user_preference,
         'recent_comparisons': recent_comparisons,
@@ -333,6 +336,19 @@ def public_car_list(request):
     brands        = all_cars.values_list('brand',         flat=True).distinct().order_by('brand')
     transmissions = all_cars.values_list('transmission',  flat=True).distinct().order_by('transmission')
 
+    # ── Brand picker data (brand + car count) ──────────────────
+    from django.db.models import Count
+    brand_data = (
+        all_cars.values('brand')
+        .annotate(car_count=Count('id'))
+        .order_by('brand')
+    )
+
+    # Pass wishlist IDs so heart buttons show correct state
+    wishlist_ids = set()
+    if request.user.is_authenticated:
+        wishlist_ids = set(Wishlist.objects.filter(user=request.user).values_list('car_id', flat=True))
+
     return render(request, 'compare/user/car_list.html', {
         'cars':          cars,
         'search':        search,
@@ -343,6 +359,9 @@ def public_car_list(request):
         'fuel_types':    fuel_types,
         'brands':        brands,
         'transmissions': transmissions,
+        'wishlist_ids':  wishlist_ids,
+        'brand_data':    brand_data,
+        'sel_brand':     sel_brand,
     })
 
 @role_required(allowed_roles=['admin'])
@@ -412,11 +431,16 @@ def car_detail(request, pk):
                 review.save()
                 return redirect('car_detail', pk=car.id)
 
+    is_wishlisted = False
+    if request.user.is_authenticated:
+        is_wishlisted = Wishlist.objects.filter(user=request.user, car=car).exists()
+
     return render(request, 'compare/user/car_detail.html', {
-        'car': car,
-        'reviews': reviews,
-        'form': form,
-        'average_rating': average_rating
+        'car':            car,
+        'reviews':        reviews,
+        'form':           form,
+        'average_rating': average_rating,
+        'is_wishlisted':  is_wishlisted,
     })
 
 @staff_member_required
@@ -548,7 +572,7 @@ def support_page(request):
 # # Create your views here.
 # from django.contrib.auth.decorators import login_required, user_passes_test
 # from .decorators import role_required
-# from .models import Car, Review, Comparison, SearchHistory, Accessory, CarAccessoryMapping, CarVariant
+# from .models import Car, Review, Comparison, SearchHistory, Accessory, CarAccessoryMapping, CarVariant, Wishlist
 # from .forms import CarForm, ReviewForm, AccessoryForm, CarVariantForm, CarVariantFormSet
 # from django.contrib.admin.views.decorators import staff_member_required
 # from django.db.models import Avg, Count
@@ -1691,3 +1715,40 @@ def export_comparison_pdf_user(request):
 
     doc.build(story)
     return response
+
+
+# ============================================================
+#  WISHLIST VIEWS
+# ============================================================
+
+@login_required
+def toggle_wishlist(request, car_id):
+    """Add or remove a car from the user's wishlist (AJAX-friendly)."""
+    car  = Car.objects.get(id=car_id)
+    obj, created = Wishlist.objects.get_or_create(user=request.user, car=car)
+
+    if not created:
+        obj.delete()   # already in wishlist → remove
+        saved = False
+    else:
+        saved = True   # just added
+
+    # AJAX response
+    from django.http import JsonResponse
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'saved': saved, 'count': Wishlist.objects.filter(user=request.user).count()})
+
+    # Normal redirect back
+    return redirect(request.META.get('HTTP_REFERER', 'public_car_list'))
+
+
+@login_required
+def user_wishlist(request):
+    """Show all wishlisted cars for the logged-in user."""
+    items = Wishlist.objects.filter(
+        user=request.user
+    ).select_related('car').order_by('-savedAt')
+
+    return render(request, 'compare/user/user_wishlist.html', {
+        'wishlist_items': items,
+    })

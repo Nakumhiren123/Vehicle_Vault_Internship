@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
-
+ 
 {% block navbar %}
 {% include 'compare/user/user_navbar.html' %}
 {% endblock %}
-
+ 
 {% block content %}
 {% include 'compare/user/user_sidebar.html' %}
-
+ 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
+ 
 <style>
 :root {
   --red:      #e63946;
@@ -35,9 +35,9 @@
   --sh-lg:    0 20px 60px rgba(15,23,42,0.13);
   --sh-red:   0 12px 40px rgba(230,57,70,0.16);
 }
-
+ 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-
+ 
 .udb{
   min-height:100vh;background:var(--bg);
   font-family:'DM Sans',sans-serif;color:var(--text);
@@ -54,21 +54,21 @@
     radial-gradient(ellipse 60% 50% at 0% 0%,   rgba(230,57,70,0.07) 0%,transparent 55%),
     radial-gradient(ellipse 50% 40% at 100% 100%,rgba(37,99,235,0.05)  0%,transparent 50%);
 }
-
+ 
 @keyframes gridDrift{to{background-position:28px 28px;}}
 @keyframes fadeUp   {to{opacity:1;transform:translateY(0) scale(1);}}
 @keyframes pulse    {0%,100%{box-shadow:0 0 0 0 rgba(230,57,70,0.4)}50%{box-shadow:0 0 0 6px rgba(230,57,70,0)}}
 @keyframes spin     {to{transform:rotate(360deg);}}
 @keyframes namePulse{0%,100%{filter:drop-shadow(0 0 0px rgba(230,57,70,0))}50%{filter:drop-shadow(0 2px 14px rgba(230,57,70,0.3))}}
-
+ 
 .udb-inner{position:relative;z-index:1;max-width:1320px;margin:0 auto;}
-
+ 
 /* Deco circles */
 .deco{position:fixed;border-radius:50%;pointer-events:none;z-index:0;}
 .deco-1{width:480px;height:480px;border:1.5px solid rgba(230,57,70,0.07);top:-180px;right:-140px;animation:spin 65s linear infinite;}
 .deco-2{width:280px;height:280px;border:1.5px solid rgba(37,99,235,0.06);top:-60px;right:-50px;animation:spin 42s linear infinite reverse;}
 .deco-3{width:380px;height:380px;border:1.5px solid rgba(244,162,97,0.06);bottom:-100px;left:-100px;animation:spin 55s linear infinite;}
-
+ 
 /* Section label */
 .sec-lbl{
   font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;
@@ -77,7 +77,7 @@
 }
 .sec-lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
 .sec-lbl .dot{width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;animation:pulse 2s ease-in-out infinite;}
-
+ 
 /* Welcome banner */
 .welcome-banner{
   background:var(--card);border:1.5px solid var(--border);border-radius:24px;
@@ -102,7 +102,7 @@
 .wb-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,5.5vw,80px);line-height:0.92;letter-spacing:2px;color:var(--text);}
 .wb-name .hi{color:var(--red);display:inline-block;animation:namePulse 4s ease-in-out infinite;}
 .wb-sub{font-size:14px;color:var(--muted);margin-top:12px;font-weight:300;font-style:italic;}
-
+ 
 /* Search */
 .search-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
 .search-form{
@@ -122,7 +122,7 @@
 }
 .search-form button:hover{background:#cf2533;}
 .search-hint{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;}
-
+ 
 /* Stat cards */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
 .scard{
@@ -160,13 +160,13 @@
 .scard:nth-child(2):hover .scard-arr{color:#2563eb;transform:translate(4px,-4px);}
 .scard:nth-child(3):hover .scard-arr{color:#0d9488;transform:translate(4px,-4px);}
 .scard:nth-child(4):hover .scard-arr{color:#7c3aed;transform:translate(4px,-4px);}
-
+ 
 /* Divider */
 .divider{height:1px;margin:52px 0;background:linear-gradient(90deg,transparent,var(--border),rgba(230,57,70,0.18),var(--border),transparent);}
-
+ 
 /* Two-col layout */
 .two-col{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;}
-
+ 
 /* Car grid */
 .car-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
 .car-card{
@@ -210,7 +210,7 @@
 .view-btn:hover::after{transform:translateX(5px);}
 .empty-cars{grid-column:1/-1;text-align:center;padding:70px;color:var(--muted);font-size:15px;border:2px dashed var(--border);border-radius:18px;background:var(--card);}
 .empty-cars .icon{display:block;font-size:44px;margin-bottom:14px;}
-
+ 
 /* Side panels */
 .side-panels{display:flex;flex-direction:column;gap:20px;}
 .panel-box{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:26px;box-shadow:var(--sh-sm);}
@@ -220,7 +220,7 @@
 .pbadge-red{background:var(--red-l);color:var(--red);}
 .pbadge-blue{background:var(--blue-l);color:var(--blue);}
 .pbadge-teal{background:var(--teal-l);color:var(--teal);}
-
+ 
 /* Preferences */
 .pref-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);}
 .pref-row:last-child{border-bottom:none;}
@@ -231,7 +231,7 @@
 .pref-key{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase;}
 .pref-val{font-size:14px;font-weight:600;color:var(--text);margin-top:2px;}
 .empty-msg{font-size:12px;color:var(--muted);text-align:center;padding:16px 0;}
-
+ 
 /* Comparisons */
 .comp-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
 .comp-item:last-child{border-bottom:none;}
@@ -240,7 +240,7 @@
 .comp-c1{font-size:13px;font-weight:600;color:var(--text);}
 .comp-c2{font-size:11px;color:var(--muted);}
 .comp-ago{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
-
+ 
 /* Reviews row */
 .reviews-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
 .rev-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:20px 22px;box-shadow:var(--sh-sm);}
@@ -248,7 +248,7 @@
 .rev-stars{color:#f59e0b;font-size:13px;margin-bottom:6px;}
 .rev-text{font-size:12px;color:var(--muted);line-height:1.5;}
 .rev-time{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:8px;}
-
+ 
 /* Quick links */
 .quick-links{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
 .ql-card{
@@ -281,7 +281,7 @@
 .ql-card:nth-child(3) .ql-line{background:linear-gradient(90deg,var(--teal),#34d399);}
 .ql-card:nth-child(4) .ql-line{background:linear-gradient(90deg,var(--purple),#a78bfa);}
 .ql-card:hover .ql-line{transform:scaleX(1);}
-
+ 
 /* Search history chips */
 .search-chips{display:flex;flex-wrap:wrap;gap:8px;}
 .s-chip{
@@ -291,7 +291,7 @@
   font-family:'DM Sans',sans-serif;font-weight:500;
 }
 .s-chip span{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;}
-
+ 
 /* Responsive */
 @media(max-width:1200px){.two-col{grid-template-columns:1fr;}}
 @media(max-width:1100px){.stats-grid,.quick-links{grid-template-columns:repeat(2,1fr);}.car-grid{grid-template-columns:repeat(2,1fr);}.reviews-row{grid-template-columns:1fr;}}
@@ -302,14 +302,14 @@
   .search-form input{width:190px;}
 }
 </style>
-
+ 
 <div class="udb">
   <div class="deco deco-1"></div>
   <div class="deco deco-2"></div>
   <div class="deco deco-3"></div>
-
+ 
   <div class="udb-inner">
-
+ 
     <!-- Welcome -->
     <div class="welcome-banner">
       <div>
@@ -325,11 +325,11 @@
         <span class="search-hint">↑ find your perfect car</span>
       </div>
     </div>
-
+ 
     <!-- Activity Stats -->
     <div class="sec-lbl"><span class="dot"></span>Your Activity</div>
     <div class="stats-grid">
-
+ 
       <a href="{% url 'public_car_list' %}" class="scard">
         <div class="blob"></div>
         <div class="scard-icon">🚗</div>
@@ -337,7 +337,7 @@
         <div class="scard-lbl">Browse Cars</div>
         <span class="scard-arr">↗</span>
       </a>
-
+ 
       <a href="{% url 'user_cars_viewed' %}" class="scard">
         <div class="blob"></div>
         <div class="scard-icon">👁</div>
@@ -345,7 +345,7 @@
         <div class="scard-lbl">Cars Viewed</div>
         <span class="scard-arr">↗</span>
       </a>
-
+ 
       <a href="{% url 'user_comparisons' %}" class="scard">
         <div class="blob"></div>
         <div class="scard-icon">⚖️</div>
@@ -353,7 +353,7 @@
         <div class="scard-lbl">Comparisons</div>
         <span class="scard-arr">↗</span>
       </a>
-
+ 
       <a href="{% url 'user_reviews' %}" class="scard">
         <div class="blob"></div>
         <div class="scard-icon">⭐</div>
@@ -361,15 +361,23 @@
         <div class="scard-lbl">Reviews Given</div>
         <span class="scard-arr">↗</span>
       </a>
-
+ 
+      <a href="{% url 'user_wishlist' %}" class="scard">
+        <div class="blob"></div>
+        <div class="scard-icon">❤️</div>
+        <div class="scard-num">{{ wishlist_count }}</div>
+        <div class="scard-lbl">Saved Cars</div>
+        <span class="scard-arr">↗</span>
+      </a>
+ 
     </div>
-
+ 
     <div class="divider"></div>
-
+ 
     <!-- Featured Cars + Side Panels -->
     <div class="sec-lbl"><span class="dot"></span>Featured Cars</div>
     <div class="two-col">
-
+ 
       <!-- Left: Cars -->
       <div class="car-grid">
         {% for car in recent_cars %}
@@ -401,10 +409,10 @@
         </div>
         {% endfor %}
       </div>
-
+ 
       <!-- Right: Side panels -->
       <div class="side-panels">
-
+ 
         <!-- My Preferences (UserPreference model) -->
         <div class="panel-box">
           <div class="panel-head">
@@ -428,7 +436,7 @@
           <div class="empty-msg">⚙️ No preferences set yet.<br><span style="color:var(--muted);font-size:11px;">Contact admin to set your fuel, budget &amp; brand preferences.</span></div>
           {% endif %}
         </div>
-
+ 
         <!-- Recent Comparisons (Comparison model) -->
         <div class="panel-box">
           <div class="panel-head">
@@ -454,7 +462,7 @@
           <div class="empty-msg">No comparisons yet.<br><a href="{% url 'public_car_list' %}" style="color:var(--blue);">Start comparing →</a></div>
           {% endfor %}
         </div>
-
+ 
         <!-- Recent Search History (SearchHistory model) -->
         {% if recent_searches %}
         <div class="panel-box">
@@ -469,10 +477,10 @@
           </div>
         </div>
         {% endif %}
-
+ 
       </div>
     </div>
-
+ 
     <!-- My Recent Reviews (Review model) -->
     {% if my_reviews %}
     <div class="sec-lbl" style="margin-top:44px;"><span class="dot"></span>My Recent Reviews</div>
@@ -489,46 +497,46 @@
       {% endfor %}
     </div>
     {% endif %}
-
+ 
     <div class="divider"></div>
-
+ 
     <!-- Quick Links -->
     <div class="sec-lbl"><span class="dot"></span>Quick Links</div>
     <div class="quick-links">
-
+ 
       <a href="{% url 'public_car_list' %}" class="ql-card">
         <div class="ql-bg"></div>
         <div class="ql-icon">🔎</div>
         <div class="ql-label">Search Cars</div>
         <div class="ql-line"></div>
       </a>
-
+ 
       <a href="{% url 'user_comparisons' %}" class="ql-card">
         <div class="ql-bg"></div>
         <div class="ql-icon">⚖️</div>
         <div class="ql-label">Compare Cars</div>
         <div class="ql-line"></div>
       </a>
-
+ 
       <a href="{% url 'user_reviews' %}" class="ql-card">
         <div class="ql-bg"></div>
         <div class="ql-icon">⭐</div>
         <div class="ql-label">My Reviews</div>
         <div class="ql-line"></div>
       </a>
-
+ 
       <a href="{% url 'user_profile' %}" class="ql-card">
         <div class="ql-bg"></div>
         <div class="ql-icon">👤</div>
         <div class="ql-label">My Profile</div>
         <div class="ql-line"></div>
       </a>
-
+ 
     </div>
-
+ 
   </div>
 </div>
-
+ 
 {% endblock %}
 
 {% comment %} {% extends "base.html" %}
