@@ -1,9 +1,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+ 
 <style>
 .adnav-root * { box-sizing: border-box; }
-
+ 
 .adnav-root {
   position: sticky; top: 0; z-index: 1100;
   height: 64px;
@@ -15,9 +15,9 @@
   justify-content: space-between;
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
-
+ 
 .adnav-left { display: flex; align-items: center; gap: 16px; }
-
+ 
 /* Hamburger */
 #menu-toggle {
   all: unset; cursor: pointer;
@@ -32,7 +32,7 @@
   background: #3b5bdb; color: #fff; border-color: #3b5bdb;
   box-shadow: 0 4px 12px rgba(59,91,219,0.3); transform: scale(1.06);
 }
-
+ 
 /* Brand */
 .adnav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
 .adnav-brand-icon {
@@ -44,7 +44,7 @@
 }
 .adnav-brand-text { font-size: 18px; font-weight: 800; color: #0f172a; letter-spacing: -0.4px; }
 .adnav-brand-text span { color: #3b5bdb; }
-
+ 
 /* Breadcrumb */
 .adnav-bc {
   display: flex; align-items: center; gap: 6px;
@@ -54,10 +54,10 @@
 }
 .adnav-bc .sep { color: #cbd5e1; }
 .adnav-bc .cur { color: #3b5bdb; font-weight: 600; }
-
+ 
 /* Right */
 .adnav-right { display: flex; align-items: center; gap: 10px; }
-
+ 
 /* Role badge */
 .adnav-badge {
   display: flex; align-items: center; gap: 6px;
@@ -74,10 +74,10 @@
   0%,100% { box-shadow: 0 0 0 0 rgba(59,91,219,0.4); }
   50%      { box-shadow: 0 0 0 4px rgba(59,91,219,0); }
 }
-
+ 
 /* Profile dropdown */
 .adnav-pdrop { position: relative; }
-
+ 
 .adnav-ptrigger {
   display: flex; align-items: center; gap: 10px;
   padding: 5px 10px 5px 6px; border-radius: 12px;
@@ -95,7 +95,7 @@
 .adnav-pname  { font-size: 13px; font-weight: 700; color: #0f172a; line-height: 1.2; }
 .adnav-pemail { font-size: 11px; color: #94a3b8; line-height: 1.2; }
 .adnav-pchev  { font-size: 10px; color: #94a3b8; margin-left: 2px; transition: transform 0.22s; }
-
+ 
 /* Dropdown */
 .adnav-dmenu {
   position: absolute; top: calc(100% + 10px); right: 0;
@@ -108,7 +108,7 @@
 }
 .adnav-pdrop.open .adnav-dmenu  { opacity:1; transform:translateY(0) scale(1); pointer-events:all; }
 .adnav-pdrop.open .adnav-pchev  { transform: rotate(180deg); }
-
+ 
 .adnav-dhead {
   background: linear-gradient(135deg, #f0f4ff, #faf5ff);
   border-radius: 10px; padding: 12px 14px;
@@ -116,7 +116,7 @@
 }
 .adnav-dsigned { font-size: 10px; color: #94a3b8; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 3px; }
 .adnav-demail  { font-size: 12px; font-weight: 700; color: #0f172a; }
-
+ 
 .adnav-ditem {
   display: flex; align-items: center; gap: 10px;
   padding: 9px 12px; border-radius: 9px; color: #475569;
@@ -127,30 +127,32 @@
 .adnav-ditem.danger:hover { background: #fef2f2; color: #dc2626; }
 .adnav-ddivider { border: none; border-top: 1px solid #f1f5f9; margin: 5px 0; }
 </style>
-
+ 
 <div class="adnav-root">
-
+ 
   <div class="adnav-left">
     <button id="menu-toggle" title="Toggle sidebar">☰</button>
-
+ 
     <a class="adnav-brand" href="/core/admin-dashboard/">
       
       <div class="adnav-brand-text">Vehicle<span>Vault</span></div>
     </a>
-
-    {% comment %} <div class="adnav-bc">
+ 
+    <div class="adnav-bc">
       <span>Admin</span>
       <span class="sep">/</span>
       <span class="cur">Dashboard</span>
-    </div> {% endcomment %}
+    </div>
   </div>
-
+ 
   <div class="adnav-right">
+    <!-- Dark mode toggle -->
+    <button class="dm-toggle" onclick="vvToggleTheme()" title="Toggle dark mode">🌙</button>
     <div class="adnav-badge">
       <span class="adnav-badge-dot"></span>
       Admin Panel
     </div>
-
+ 
     <div class="adnav-pdrop" id="adminProfileDrop">
       <div class="adnav-ptrigger"
            onclick="document.getElementById('adminProfileDrop').classList.toggle('open')">
@@ -163,7 +165,7 @@
         </div>
         <div class="adnav-pchev">▼</div>
       </div>
-
+ 
       <div class="adnav-dmenu">
         <div class="adnav-dhead">
           <div class="adnav-dsigned">Signed in as</div>
@@ -176,9 +178,9 @@
       </div>
     </div>
   </div>
-
+ 
 </div>
-
+ 
 <script>
 document.addEventListener('click', function (e) {
   const dd = document.getElementById('adminProfileDrop');

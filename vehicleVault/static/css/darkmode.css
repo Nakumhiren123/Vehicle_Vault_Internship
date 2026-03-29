@@ -1,0 +1,378 @@
+/* ================================================================
+   VehicleVault — Dark Mode
+   Strategy: override CSS variables at root level so ALL pages
+   that use var(--bg), var(--card) etc. automatically go dark.
+   ================================================================ */
+
+html[data-theme="dark"] {
+
+  /* ── Override CSS variables used across all pages ── */
+  --bg:        #0f172a !important;
+  --card:      #1e293b !important;
+  --card2:     #162032 !important;
+  --border:    rgba(255,255,255,0.08) !important;
+  --text:      #e2e8f0 !important;
+  --text2:     #cbd5e1 !important;
+  --muted:     #64748b !important;
+  --dark:      #f1f5f9 !important;
+  --sh-sm:     0 2px 12px rgba(0,0,0,0.3) !important;
+  --sh-md:     0 8px 32px rgba(0,0,0,0.4) !important;
+  --sh-lg:     0 20px 60px rgba(0,0,0,0.5) !important;
+}
+
+/* ── Global body & background ─────────────────────── */
+html[data-theme="dark"] body {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+/* ── Dashboard specific ───────────────────────────── */
+html[data-theme="dark"] .udb {
+  background: #0f172a !important;
+}
+html[data-theme="dark"] .udb::before {
+  opacity: 0.015 !important;
+}
+html[data-theme="dark"] .udb::after {
+  opacity: 0.5 !important;
+}
+html[data-theme="dark"] .welcome-banner {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .welcome-banner::before,
+html[data-theme="dark"] .welcome-banner::after {
+  opacity: 0.06 !important;
+}
+html[data-theme="dark"] .wb-name {
+  color: #f1f5f9 !important;
+}
+html[data-theme="dark"] .wb-sub {
+  color: #64748b !important;
+}
+html[data-theme="dark"] .search-form input {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+html[data-theme="dark"] .search-form input::placeholder {
+  color: #475569 !important;
+}
+html[data-theme="dark"] .search-hint {
+  color: #475569 !important;
+}
+html[data-theme="dark"] .scard {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .scard-icon { filter: none !important; }
+html[data-theme="dark"] .scard-num { color: #f1f5f9 !important; }
+html[data-theme="dark"] .scard-lbl { color: #64748b !important; }
+html[data-theme="dark"] .scard-arr { color: #94a3b8 !important; }
+html[data-theme="dark"] .divider {
+  background: rgba(255,255,255,0.06) !important;
+}
+html[data-theme="dark"] .sec-lbl { color: #475569 !important; }
+html[data-theme="dark"] .car-card {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .car-name { color: #f1f5f9 !important; }
+html[data-theme="dark"] .car-price { color: #f4a261 !important; }
+html[data-theme="dark"] .car-mileage { color: #64748b !important; }
+html[data-theme="dark"] .car-chip { opacity: 0.8 !important; }
+html[data-theme="dark"] .chip-fuel  { background: rgba(194,65,12,0.15) !important; color: #fb923c !important; }
+html[data-theme="dark"] .chip-trans { background: rgba(29,78,216,0.15) !important; color: #60a5fa !important; }
+html[data-theme="dark"] .chip-yr    { background: rgba(15,118,110,0.15) !important; color: #34d399 !important; }
+html[data-theme="dark"] .panel-box {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .panel-title { color: #f1f5f9 !important; }
+html[data-theme="dark"] .pi-label { color: #94a3b8 !important; }
+html[data-theme="dark"] .pi-val { color: #e2e8f0 !important; }
+html[data-theme="dark"] .pi-r { background: rgba(230,57,70,0.12) !important; }
+html[data-theme="dark"] .pi-o { background: rgba(244,162,97,0.12) !important; }
+html[data-theme="dark"] .pi-b { background: rgba(37,99,235,0.12) !important; }
+html[data-theme="dark"] .ql-card {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .ql-card:hover { background: #253347 !important; }
+html[data-theme="dark"] .ql-title { color: #f1f5f9 !important; }
+html[data-theme="dark"] .ql-sub { color: #64748b !important; }
+html[data-theme="dark"] .card-link {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .card-link-title { color: #f1f5f9 !important; }
+html[data-theme="dark"] .card-link-sub { color: #64748b !important; }
+
+/* ── Navbars ──────────────────────────────────────── */
+html[data-theme="dark"] .vv-unav,
+html[data-theme="dark"] .adnav-root {
+  background: rgba(15,23,42,0.98) !important;
+  border-bottom-color: rgba(255,255,255,0.07) !important;
+}
+html[data-theme="dark"] .vv-ubrand { color: #f1f5f9 !important; }
+html[data-theme="dark"] .vv-uham {
+  background: rgba(230,57,70,0.12) !important;
+}
+html[data-theme="dark"] .vv-udd-menu {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .vv-udd-head {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+html[data-theme="dark"] .vv-udd-item { color: #94a3b8 !important; }
+html[data-theme="dark"] .vv-udd-item:hover { background: rgba(255,255,255,0.05) !important; color: #f1f5f9 !important; }
+html[data-theme="dark"] .vv-udd-signed { color: #475569 !important; }
+html[data-theme="dark"] .vv-udd-email { color: #e2e8f0 !important; }
+html[data-theme="dark"] .adnav-ptrigger {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+html[data-theme="dark"] .adnav-pname { color: #f1f5f9 !important; }
+html[data-theme="dark"] .adnav-pemail { color: #475569 !important; }
+html[data-theme="dark"] .adnav-badge {
+  background: rgba(59,91,219,0.15) !important;
+  border-color: rgba(59,91,219,0.25) !important;
+}
+html[data-theme="dark"] .adnav-bc {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  color: #64748b !important;
+}
+html[data-theme="dark"] .adnav-dmenu {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .adnav-dhead {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+html[data-theme="dark"] .adnav-ditem { color: #94a3b8 !important; }
+html[data-theme="dark"] .adnav-ditem:hover { background: rgba(255,255,255,0.05) !important; }
+html[data-theme="dark"] .adnav-brand-text { color: #f1f5f9 !important; }
+
+/* ── Sidebar ──────────────────────────────────────── */
+html[data-theme="dark"] #sidebar.sidebar {
+  background: #1e293b !important;
+  border-right-color: rgba(255,255,255,0.06) !important;
+}
+html[data-theme="dark"] #sidebar .nav-link { color: #94a3b8 !important; }
+html[data-theme="dark"] #sidebar .nav-link:hover {
+  background: rgba(255,255,255,0.06) !important;
+  color: #f1f5f9 !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] #sidebar .nav-link.sb-active {
+  background: rgba(230,57,70,0.12) !important;
+  color: #f87171 !important;
+  border-color: rgba(230,57,70,0.2) !important;
+}
+html[data-theme="dark"] .sb-logo { border-bottom-color: rgba(255,255,255,0.06) !important; }
+html[data-theme="dark"] .sb-logo-name { color: #f1f5f9 !important; }
+html[data-theme="dark"] .sb-section { color: rgba(255,255,255,0.2) !important; }
+html[data-theme="dark"] .sb-user-card {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.07) !important;
+}
+html[data-theme="dark"] .sb-user-name { color: #f1f5f9 !important; }
+html[data-theme="dark"] .sb-user-role { color: #60a5fa !important; }
+html[data-theme="dark"] #sidebar-overlay.sidebar-overlay {
+  background: rgba(0,0,0,0.6) !important;
+}
+
+/* ── Car list page ────────────────────────────────── */
+html[data-theme="dark"] .cl-root { background: #0f172a !important; }
+html[data-theme="dark"] .cl-card {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .cl-card-name { color: #f1f5f9 !important; }
+html[data-theme="dark"] .cl-card-brand { color: #475569 !important; }
+html[data-theme="dark"] .cl-card-price { color: #f4a261 !important; }
+html[data-theme="dark"] .cl-mileage { color: #64748b !important; }
+html[data-theme="dark"] .cl-tag {
+  background: #0f172a !important;
+  border-color: rgba(255,255,255,0.08) !important;
+  color: #94a3b8 !important;
+}
+html[data-theme="dark"] .brand-tile {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .brand-tile-name { color: #f1f5f9 !important; }
+html[data-theme="dark"] .brand-tile-count { color: #475569 !important; }
+html[data-theme="dark"] .brand-tile-all {
+  background: linear-gradient(135deg,#0a0f1e,#162032) !important;
+}
+html[data-theme="dark"] .brand-banner {
+  background: rgba(230,57,70,0.08) !important;
+  border-color: rgba(230,57,70,0.2) !important;
+}
+html[data-theme="dark"] .brand-banner-title { color: #f1f5f9 !important; }
+html[data-theme="dark"] .brand-banner-sub { color: #64748b !important; }
+html[data-theme="dark"] .cl-filters {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .cl-search-input,
+html[data-theme="dark"] .cl-filter-group select {
+  background: #0f172a !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #e2e8f0 !important;
+}
+html[data-theme="dark"] .cl-results-count { color: #f1f5f9 !important; }
+html[data-theme="dark"] .cl-no-brand {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .cl-no-brand-title { color: #f1f5f9 !important; }
+html[data-theme="dark"] .cl-no-brand-sub { color: #64748b !important; }
+html[data-theme="dark"] .cl-clear-btn, html[data-theme="dark"] .brand-back-btn {
+  background: #0f172a !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #94a3b8 !important;
+}
+
+/* ── Admin pages ──────────────────────────────────── */
+html[data-theme="dark"] .vv-page { background: #0f172a !important; }
+html[data-theme="dark"] .vv-wrap { background: #0f172a !important; }
+html[data-theme="dark"] .vv-card {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .vv-title em { color: #e63946 !important; }
+html[data-theme="dark"] .vv-eyebrow { color: #e63946 !important; }
+html[data-theme="dark"] .vv-sub { color: #64748b !important; }
+html[data-theme="dark"] .vv-tbl thead tr {
+  background: #0f172a !important;
+}
+html[data-theme="dark"] .vv-tbl td,
+html[data-theme="dark"] .vv-tbl th {
+  color: #e2e8f0 !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+html[data-theme="dark"] .vv-tbl tbody tr:hover {
+  background: rgba(255,255,255,0.03) !important;
+}
+html[data-theme="dark"] .vv-avatar {
+  background: #334155 !important;
+  color: #94a3b8 !important;
+}
+html[data-theme="dark"] .dashboard-wrapper { background: #0f172a !important; }
+html[data-theme="dark"] .module-card {
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+}
+html[data-theme="dark"] .module-title { color: #f1f5f9 !important; }
+html[data-theme="dark"] .module-sub { color: #64748b !important; }
+html[data-theme="dark"] .module-action { color: #60a5fa !important; }
+html[data-theme="dark"] .vv-filter-bar {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .vv-filter-group select,
+html[data-theme="dark"] .vv-search-wrap input {
+  background: #0f172a !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #e2e8f0 !important;
+}
+
+/* ── Wishlist & comparison pages ──────────────────── */
+html[data-theme="dark"] .wl-root, html[data-theme="dark"] .uc-root,
+html[data-theme="dark"] .cp-root { background: #0f172a !important; }
+html[data-theme="dark"] .wl-card, html[data-theme="dark"] .hcard {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .wl-name, html[data-theme="dark"] .hcard-car-name { color: #f1f5f9 !important; }
+html[data-theme="dark"] .wl-brand, html[data-theme="dark"] .hcard-car-brand { color: #475569 !important; }
+html[data-theme="dark"] .wl-price { color: #f4a261 !important; }
+html[data-theme="dark"] .hcard-car {
+  background: #0f172a !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .wl-spec {
+  background: #0f172a !important;
+  border-color: rgba(255,255,255,0.08) !important;
+  color: #94a3b8 !important;
+}
+html[data-theme="dark"] .stats-strip {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .stat-num { color: #f1f5f9 !important; }
+html[data-theme="dark"] .stat-lbl { color: #475569 !important; }
+html[data-theme="dark"] .stat-item::before { background: rgba(255,255,255,0.06) !important; }
+
+/* ── Compare page ─────────────────────────────────── */
+html[data-theme="dark"] .compare-table-wrap {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="dark"] .compare-table tr { border-bottom-color: rgba(255,255,255,0.06) !important; }
+html[data-theme="dark"] .compare-table .feature-cell {
+  background: #162032 !important;
+  color: #64748b !important;
+}
+html[data-theme="dark"] .compare-table .val-cell { color: #e2e8f0 !important; }
+html[data-theme="dark"] .compare-table .name-header { color: #f1f5f9 !important; }
+html[data-theme="dark"] .car-header-card {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+
+/* ── Forms ────────────────────────────────────────── */
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+  background: #0f172a !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #e2e8f0 !important;
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder { color: #475569 !important; }
+
+/* ── Footer ───────────────────────────────────────── */
+html[data-theme="dark"] .vv-footer,
+html[data-theme="dark"] footer {
+  background: #080f1a !important;
+  border-top-color: rgba(255,255,255,0.06) !important;
+  color: #475569 !important;
+}
+
+/* ── Home page ────────────────────────────────────── */
+html[data-theme="dark"] .vv-features { background: #0f172a !important; }
+html[data-theme="dark"] .vv-how { background: #0d1525 !important; }
+html[data-theme="dark"] .feat-card {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.07) !important;
+}
+html[data-theme="dark"] .feat-title { color: #f1f5f9 !important; }
+html[data-theme="dark"] .feat-desc { color: #475569 !important; }
+
+/* ── Scrollbar ────────────────────────────────────── */
+html[data-theme="dark"] ::-webkit-scrollbar { width: 6px; height: 6px; }
+html[data-theme="dark"] ::-webkit-scrollbar-track { background: #0f172a; }
+html[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* ── Dark mode toggle button ──────────────────────── */
+.dm-toggle {
+  width: 40px; height: 40px; border-radius: 10px;
+  border: 1.5px solid rgba(15,23,42,0.1);
+  background: #f1f5f9; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; transition: all 0.25s; flex-shrink: 0;
+}
+.dm-toggle:hover { transform: scale(1.1); box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+html[data-theme="dark"] .dm-toggle {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}

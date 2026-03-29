@@ -2,24 +2,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+ 
 <title>{% block title %}Vehicle Vault{% endblock %}</title>
-
+ 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+ 
 <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 {% comment %} <link rel="stylesheet" href="{% static 'css/navbar.css' %}"> {% endcomment %}
 <link rel="stylesheet" href="{% static 'css/footer.css' %}">
-
+ 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
+<link rel="stylesheet" href="{% static 'css/darkmode.css' %}">
+ 
+<!-- Dark mode anti-flash: apply theme BEFORE page renders -->
+<script>
+(function(){
+  var t = localStorage.getItem('vv-theme');
+  if (t === 'dark') {
+    document.documentElement.setAttribute('data-theme','dark');
+  }
+})();
+</script>
+ 
 {% block extra_css %}{% endblock %}
-
+ 
 </head>
-
+ 
 <body class="d-flex flex-column min-vh-100">
-
+ 
 {% block navbar %}{% endblock %}
 <div clss="flex-grow-1">
     {% block content %}
@@ -30,32 +41,32 @@
         transform: translateY(20px);
         animation: fadeUp 0.8s ease forwards;
     }
-
+ 
     @keyframes fadeUp {
         to {
             opacity: 1;
             transform: translateY(0);
         }
     }
-
+ 
     /* Smooth Hover Effect */
     .hover-lift {
         transition: all 0.3s ease;
     }
-
+ 
     .hover-lift:hover {
         transform: translateY(-8px);
     }
     </style>
     {% endblock %}
 </div>
-
+ 
 <script src="{% static 'js/script.js' %}"></script>
-
+ 
 <!-- ADD THIS LINE -->
 <script src="{% static 'js/sidebar.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+ 
 {% block extra_js %}{% endblock %}
 <script>
 const observer = new IntersectionObserver(entries => {
@@ -65,56 +76,84 @@ const observer = new IntersectionObserver(entries => {
         }
     });
 });
-
+ 
 document.querySelectorAll('.feature-box, .stat-card, .chart-box')
     .forEach(el => observer.observe(el));
 </script>
-
+ 
 <script>
-
+ 
 const counters = document.querySelectorAll('.stat-number');
-
+ 
 counters.forEach(counter => {
-
+ 
 let start = 0;
 let end = parseInt(counter.innerText);
-
+ 
 if(!isNaN(end)){
-
+ 
 let duration = 800;
 let step = end / (duration / 16);
-
+ 
 function update(){
-
+ 
 start += step;
-
+ 
 if(start < end){
-
+ 
 counter.innerText = Math.floor(start);
 requestAnimationFrame(update);
-
+ 
 }else{
-
+ 
 counter.innerText = end;
-
+ 
 }
-
+ 
 }
-
+ 
 update();
-
+ 
 }
-
+ 
 });
-
+ 
 </script>
-{% if request.user.is_authenticated %}
-  {% include 'compare/partials/ai_assistant.html' %}
-{% endif %}
-
+ 
 {% include "compare/footer.html" %}
-
-
+ 
+<script>
+// ── Dark Mode Toggle ─────────────────────────────────────────
+function vvSetTheme(theme) {
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('vv-theme', 'dark');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('vv-theme', 'light');
+  }
+  // Update all toggle buttons on the page
+  document.querySelectorAll('.dm-toggle').forEach(function(btn) {
+    btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    btn.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+  });
+}
+ 
+function vvToggleTheme() {
+  var current = document.documentElement.getAttribute('data-theme');
+  vvSetTheme(current === 'dark' ? 'light' : 'dark');
+}
+ 
+// Set correct icon on page load
+(function(){
+  var theme = localStorage.getItem('vv-theme') || 'light';
+  document.querySelectorAll('.dm-toggle').forEach(function(btn) {
+    btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    btn.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+  });
+})();
+</script>
+ 
 </body>
 </html>
 
