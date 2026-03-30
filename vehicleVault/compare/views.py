@@ -1752,3 +1752,135 @@ def user_wishlist(request):
     return render(request, 'compare/user/user_wishlist.html', {
         'wishlist_items': items,
     })
+
+
+# ============================================================
+#  CAR BATTLE / VOTING VIEWS
+# ============================================================
+from .models import CarBattle, BattleVote
+ 
+@login_required
+def battle_list(request):
+    """Show all active battles with vote status for current user."""
+    battles = CarBattle.objects.filter(is_active=True).select_related(
+        'car1', 'car2'
+    ).order_by('-createdAt')
+ 
+    # Which battles has this user already voted in?
+    voted_ids = set(
+        BattleVote.objects.filter(user=request.user)
+        .values_list('battle_id', flat=True)
+    )
+    # What did they vote for in each battle?
+    vote_choices = {
+        v.battle_id: v.voted_for
+        for v in BattleVote.objects.filter(user=request.user)
+    }
+ 
+    # Attach vote info directly to each battle object so template doesn't need dict lookup
+    battles_with_votes = []
+    for battle in battles:
+        battle.user_voted    = battle.id in voted_ids
+        battle.user_vote_for = vote_choices.get(battle.id)  # 1 or 2 or None
+        battles_with_votes.append(battle)
+ 
+    return render(request, 'compare/user/battle_list.html', {
+        'battles': battles_with_votes,
+    })
+ 
+ 
+@login_required
+def battle_vote(request, battle_id, choice):
+    """Cast or change a vote. choice = 1 or 2."""
+    from django.db import transaction
+ 
+    if choice not in (1, 2):
+        return JsonResponse({'error': 'Invalid choice'}, status=400)
+ 
+    battle = get_object_or_404(CarBattle, id=battle_id, is_active=True)
+ 
+    with transaction.atomic():
+        existing = BattleVote.objects.filter(
+            battle=battle, user=request.user
+        ).first()
+ 
+        if existing:
+            if existing.voted_for == choice:
+                # Already voted for this — no change
+                pass
+            else:
+                # Switching vote
+                if existing.voted_for == 1:
+                    battle.votes_car1 = max(0, battle.votes_car1 - 1)
+                    battle.votes_car2 += 1
+                else:
+                    battle.votes_car2 = max(0, battle.votes_car2 - 1)
+                    battle.votes_car1 += 1
+                existing.voted_for = choice
+                existing.save()
+                battle.save()
+        else:
+            # First vote
+            if choice == 1:
+                battle.votes_car1 += 1
+            else:
+                battle.votes_car2 += 1
+            battle.save()
+            BattleVote.objects.create(
+                battle=battle, user=request.user, voted_for=choice
+            )
+ 
+    return JsonResponse({
+        'votes_car1': battle.votes_car1,
+        'votes_car2': battle.votes_car2,
+        'pct1':       battle.pct1(),
+        'pct2':       battle.pct2(),
+        'total':      battle.total_votes(),
+        'your_vote':  choice,
+    })
+ 
+ 
+# ── Admin: create battles ────────────────────────────────────
+@role_required(allowed_roles=['admin'])
+def battle_create(request):
+    """Admin creates a new battle."""
+    cars = Car.objects.filter(status=True).order_by('brand', 'carName')
+    error = None
+ 
+    if request.method == 'POST':
+        car1_id = request.POST.get('car1')
+        car2_id = request.POST.get('car2')
+        title   = request.POST.get('title', '').strip()
+ 
+        if car1_id == car2_id:
+            error = 'Please select two different cars.'
+        else:
+            car1 = get_object_or_404(Car, id=car1_id)
+            car2 = get_object_or_404(Car, id=car2_id)
+            CarBattle.objects.create(
+                car1=car1, car2=car2,
+                title=title or f'{car1.carName} vs {car2.carName}'
+            )
+            return redirect('admin_battles')
+ 
+    return render(request, 'compare/admin/battle_create.html', {
+        'cars': cars, 'error': error
+    })
+ 
+ 
+@role_required(allowed_roles=['admin'])
+def admin_battles(request):
+    """Admin view: list all battles."""
+    battles = CarBattle.objects.select_related('car1', 'car2').order_by('-createdAt')
+    return render(request, 'compare/admin/admin_battles.html', {
+        'battles': battles
+    })
+ 
+ 
+@role_required(allowed_roles=['admin'])
+def battle_toggle(request, battle_id):
+    """Toggle a battle active/inactive."""
+    battle = get_object_or_404(CarBattle, id=battle_id)
+    battle.is_active = not battle.is_active
+    battle.save()
+    return redirect('admin_battles')

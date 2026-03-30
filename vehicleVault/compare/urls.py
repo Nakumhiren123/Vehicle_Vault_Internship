@@ -64,6 +64,14 @@ urlpatterns = [
     path('admin/accessories/add/',            views.accessory_create, name='accessory_create'),
     path('admin/accessories/edit/<int:pk>/',  views.accessory_update, name='accessory_update'),
     path('admin/accessories/delete/<int:pk>/',views.accessory_delete, name='accessory_delete'),
+
+    # Car Battle / Voting
+    path('user/battles/',                          views.battle_list,    name='battle_list'),
+    path('user/battles/vote/<int:battle_id>/<int:choice>/', views.battle_vote, name='battle_vote'),
+    path('admin/battles/',                         views.admin_battles,  name='admin_battles'),
+    path('admin/battles/create/',                  views.battle_create,  name='battle_create'),
+    path('admin/battles/<int:battle_id>/toggle/',  views.battle_toggle,  name='battle_toggle'),
+    
     # path('admin/cars/', views.car_list, name='car_list'),
     # path('admin/cars/add/', views.car_create, name='car_create'),
     # path('admin/cars/edit/<int:pk>/', views.car_update, name='car_update'),

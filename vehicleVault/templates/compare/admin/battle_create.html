@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block navbar %}{% include 'compare/admin/admin_navbar.html' %}{% endblock %}
+{% block content %}
+{% include 'compare/admin/admin_sidebar.html' %}
+<link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
+
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div><div class="vv-ring vv-ring-b"></div>
+  <div class="vv-page">
+
+    <div class="vv-ph">
+      <div class="vv-ph-left">
+        <div class="vv-eyebrow">Admin Panel</div>
+        <div class="vv-title">Create <em>Battle</em></div>
+        <div class="vv-sub">Set up a new head-to-head car vote</div>
+      </div>
+      <a href="{% url 'admin_battles' %}" class="vv-back">← Back to Battles</a>
+    </div>
+
+    <div class="vv-card" style="max-width:620px;">
+      <div class="vv-card-bar"></div>
+      <div style="padding:32px 36px 36px;">
+
+        {% if error %}
+        <div style="background:#fff0f1;border:1.5px solid rgba(230,57,70,.25);border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:13px;color:#e63946;">
+          {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+          {% csrf_token %}
+
+          <div class="vv-sec"><span class="vv-dot"></span>Select Cars</div>
+          <div class="vv-form-grid">
+            <div>
+              <label class="vv-label">Car 1 (Red side)</label>
+              <select name="car1" class="vv-field" required>
+                <option value="">— Select Car 1 —</option>
+                {% for car in cars %}
+                <option value="{{ car.id }}">{{ car.brand }} {{ car.carName }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div>
+              <label class="vv-label">Car 2 (Dark side)</label>
+              <select name="car2" class="vv-field" required>
+                <option value="">— Select Car 2 —</option>
+                {% for car in cars %}
+                <option value="{{ car.id }}">{{ car.brand }} {{ car.carName }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div style="grid-column:1/-1;">
+              <label class="vv-label">Battle Title <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+              <input type="text" name="title" class="vv-field" placeholder="e.g. Budget King Showdown">
+            </div>
+          </div>
+
+          <div class="vv-form-actions">
+            <a href="{% url 'admin_battles' %}" class="vv-btn vv-btn-ghost">Cancel</a>
+            <button type="submit" class="vv-btn vv-btn-red">⚔️ Create Battle</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+<script>
+document.querySelectorAll('.vv-page select').forEach(el => el.classList.add('vv-field'));
+</script>
+{% endblock %}

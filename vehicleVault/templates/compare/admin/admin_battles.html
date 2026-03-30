@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block navbar %}{% include 'compare/admin/admin_navbar.html' %}{% endblock %}
+{% block content %}
+{% include 'compare/admin/admin_sidebar.html' %}
+<link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
+
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div><div class="vv-ring vv-ring-b"></div>
+  <div class="vv-page">
+
+    <div class="vv-ph">
+      <div class="vv-ph-left">
+        <div class="vv-eyebrow">Admin Panel</div>
+        <div class="vv-title">Car <em>Battles</em></div>
+        <div class="vv-sub">Manage head-to-head car voting battles</div>
+      </div>
+      <a href="{% url 'battle_create' %}" class="vv-btn-add">+ Create Battle</a>
+    </div>
+
+    <div class="vv-card">
+      <div class="vv-card-bar"></div>
+      <div class="vv-tbl-wrap">
+        <table class="vv-tbl">
+          <thead>
+            <tr>
+              <th>#</th><th>Battle</th><th>Car 1 Votes</th><th>Car 2 Votes</th><th>Total</th><th>Status</th><th>Created</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in battles %}
+            <tr>
+              <td style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">{{ forloop.counter }}</td>
+              <td>
+                <strong>{{ b.car1.carName }}</strong>
+                <span style="color:var(--red);font-weight:700;margin:0 6px;">VS</span>
+                <strong>{{ b.car2.carName }}</strong>
+              </td>
+              <td>
+                <span style="font-family:'Space Mono',monospace;font-weight:700;color:#e63946;">{{ b.votes_car1 }}</span>
+                <span style="font-size:11px;color:var(--muted);margin-left:4px;">({{ b.pct1 }}%)</span>
+              </td>
+              <td>
+                <span style="font-family:'Space Mono',monospace;font-weight:700;color:#0f172a;">{{ b.votes_car2 }}</span>
+                <span style="font-size:11px;color:var(--muted);margin-left:4px;">({{ b.pct2 }}%)</span>
+              </td>
+              <td style="font-family:'Space Mono',monospace;font-weight:700;">{{ b.total_votes }}</td>
+              <td>
+                {% if b.is_active %}
+                  <span class="vv-badge b-green">● Active</span>
+                {% else %}
+                  <span class="vv-badge b-red">● Inactive</span>
+                {% endif %}
+              </td>
+              <td style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">{{ b.createdAt|date:"d M Y" }}</td>
+              <td>
+                <a href="{% url 'battle_toggle' b.id %}"
+                   class="vv-btn {% if b.is_active %}vv-btn-warn{% else %}vv-btn-ghost{% endif %}">
+                  {% if b.is_active %}⏸ Deactivate{% else %}▶ Activate{% endif %}
+                </a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8">
+              <div class="vv-empty">
+                <span class="vv-empty-icon">⚔️</span>
+                <div class="vv-empty-title">No Battles Yet</div>
+                <div class="vv-empty-sub">Create your first car battle above.</div>
+              </div>
+            </td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

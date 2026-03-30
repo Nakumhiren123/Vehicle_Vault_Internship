@@ -239,3 +239,47 @@ class Wishlist(models.Model):
 
     def __str__(self):
         return f"{self.user.email} saved {self.car.carName}"
+
+
+# ── Car Battle / Voting ───────────────────────────────────────────
+class CarBattle(models.Model):
+    """A head-to-head battle between two cars where users vote."""
+    car1        = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='battles_as_car1')
+    car2        = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='battles_as_car2')
+    title       = models.CharField(max_length=200, blank=True)
+    votes_car1  = models.PositiveIntegerField(default=0)
+    votes_car2  = models.PositiveIntegerField(default=0)
+    is_active   = models.BooleanField(default=True)
+    createdAt   = models.DateTimeField(auto_now_add=True)
+ 
+    class Meta:
+        db_table = "car_battle"
+ 
+    def __str__(self):
+        return f"{self.car1.carName} vs {self.car2.carName}"
+ 
+    def total_votes(self):
+        return self.votes_car1 + self.votes_car2
+ 
+    def pct1(self):
+        total = self.total_votes()
+        return round((self.votes_car1 / total) * 100) if total > 0 else 50
+ 
+    def pct2(self):
+        total = self.total_votes()
+        return round((self.votes_car2 / total) * 100) if total > 0 else 50
+ 
+ 
+class BattleVote(models.Model):
+    """Tracks which user voted in which battle (prevents double voting)."""
+    battle  = models.ForeignKey(CarBattle, on_delete=models.CASCADE, related_name='vote_records')
+    user    = models.ForeignKey('core.User', on_delete=models.CASCADE)
+    voted_for = models.IntegerField(choices=[(1, 'Car 1'), (2, 'Car 2')])
+    votedAt = models.DateTimeField(auto_now_add=True)
+ 
+    class Meta:
+        db_table = "battle_vote"
+        unique_together = ('battle', 'user')  # one vote per battle per user
+ 
+    def __str__(self):
+        return f"{self.user.email} voted in battle {self.battle.id}"

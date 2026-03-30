@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
+
+{% block content %}
+{% include 'compare/user/user_sidebar.html' %}
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{--red:#e63946;--dark:#0f172a;--muted:#94a3b8;--border:rgba(15,23,42,.08);--bg:#f5f6fa;--card:#fff;--sh-sm:0 2px 12px rgba(15,23,42,.07);--sh-md:0 8px 32px rgba(15,23,42,.10);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+@keyframes barGrow{to{width:var(--w);}}
+
+.bt-root{padding:40px 48px 80px;min-height:100vh;font-family:"DM Sans",sans-serif;}
+.bt-inner{max-width:900px;margin:0 auto;}
+
+/* Header */
+.bt-header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:40px;opacity:0;transform:translateY(20px);animation:fadeUp .6s ease .04s forwards;}
+.bt-eyebrow{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.bt-eyebrow::before{content:"";width:20px;height:2px;background:var(--red);}
+.bt-h1{font-family:"Bebas Neue",sans-serif;font-size:clamp(48px,6vw,72px);letter-spacing:2px;line-height:.92;color:var(--dark);}
+.bt-h1 em{color:var(--red);font-style:normal;}
+.bt-sub{font-size:14px;color:var(--muted);margin-top:8px;}
+
+/* Battle cards */
+.battle-list{display:flex;flex-direction:column;gap:28px;}
+
+.battle-card{background:var(--card);border:1.5px solid var(--border);border-radius:24px;overflow:hidden;box-shadow:var(--sh-sm);opacity:0;transform:translateY(20px);transition:box-shadow .3s,border-color .3s;}
+.battle-card:nth-child(1){animation:fadeUp .6s ease .10s forwards;}
+.battle-card:nth-child(2){animation:fadeUp .6s ease .18s forwards;}
+.battle-card:nth-child(3){animation:fadeUp .6s ease .26s forwards;}
+.battle-card:nth-child(n+4){animation:fadeUp .6s ease .32s forwards;}
+.battle-card:hover{box-shadow:var(--sh-md);border-color:rgba(230,57,70,.15);}
+.battle-card::before{content:"";display:block;height:3px;background:linear-gradient(90deg,var(--red),#f4a261);}
+
+.battle-title{padding:18px 24px 0;font-family:"Space Mono",monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.battle-title strong{color:var(--dark);font-size:13px;letter-spacing:1px;}
+
+/* VS grid */
+.vs-grid{display:grid;grid-template-columns:1fr 60px 1fr;align-items:center;gap:0;padding:20px 24px;}
+.vs-badge{font-family:"Bebas Neue",sans-serif;font-size:32px;color:var(--red);text-align:center;letter-spacing:2px;}
+
+/* Car side */
+.car-side{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.car-side-img{width:100%;height:140px;object-fit:cover;border-radius:14px;border:1.5px solid var(--border);}
+.car-side-placeholder{width:100%;height:140px;background:linear-gradient(135deg,#f1f5f9,#e2e8f0);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:44px;border:1.5px solid var(--border);}
+.car-side-brand{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.car-side-name{font-family:"Bebas Neue",sans-serif;font-size:24px;letter-spacing:1px;color:var(--dark);text-align:center;line-height:1;}
+.car-side-price{font-family:"Space Mono",monospace;font-size:12px;color:#f4a261;font-weight:700;}
+
+/* Vote button */
+.vote-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 24px;border-radius:12px;border:none;cursor:pointer;font-family:"Space Mono",monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;transition:all .25s;width:100%;max-width:220px;}
+.vote-btn-1{background:var(--red);color:#fff;box-shadow:0 4px 16px rgba(230,57,70,.25);}
+.vote-btn-1:hover{background:#cf2533;transform:translateY(-2px);}
+.vote-btn-2{background:var(--dark);color:#fff;box-shadow:0 4px 16px rgba(15,23,42,.2);}
+.vote-btn-2:hover{background:#1e293b;transform:translateY(-2px);}
+.vote-btn.voted{opacity:0.6;cursor:default;transform:none !important;}
+.vote-btn.your-pick{opacity:1 !important;box-shadow:0 4px 20px rgba(230,57,70,.35);}
+.vote-btn.your-pick::after{content:" ✓";}
+
+/* Results bar */
+.results-wrap{padding:0 24px 24px;}
+.results-bar{margin-bottom:12px;}
+.results-labels{display:flex;justify-content:space-between;margin-bottom:6px;}
+.results-label{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:1px;color:var(--muted);}
+.results-label strong{color:var(--dark);font-size:12px;}
+.bar-track{height:10px;background:#f1f5f9;border-radius:10px;overflow:hidden;display:flex;}
+.bar-fill-1{height:100%;background:linear-gradient(90deg,var(--red),#f4a261);border-radius:10px 0 0 10px;transition:width .8s cubic-bezier(.22,1,.36,1);}
+.bar-fill-2{height:100%;background:linear-gradient(90deg,#334155,#0f172a);border-radius:0 10px 10px 0;transition:width .8s cubic-bezier(.22,1,.36,1);}
+.results-total{text-align:center;font-family:"Space Mono",monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:8px;}
+
+/* Login prompt */
+.login-prompt{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;background:#fff0f1;border-radius:10px;font-size:13px;color:var(--red);}
+
+/* Empty */
+.bt-empty{text-align:center;padding:80px 32px;background:var(--card);border:2px dashed var(--border);border-radius:24px;}
+.bt-empty-icon{font-size:56px;margin-bottom:12px;display:block;}
+.bt-empty-title{font-family:"Bebas Neue",sans-serif;font-size:32px;color:var(--dark);margin-bottom:8px;}
+.bt-empty-sub{font-size:14px;color:var(--muted);}
+
+@media(max-width:600px){.bt-root{padding:24px 18px 60px;}.vs-grid{grid-template-columns:1fr 44px 1fr;gap:0;}.car-side-img,.car-side-placeholder{height:100px;}.car-side-name{font-size:18px;}.bt-h1{font-size:42px;}}
+</style>
+
+<div class="bt-root">
+<div class="bt-inner">
+
+  <div class="bt-header">
+    <div>
+      <div class="bt-eyebrow">Community</div>
+      <div class="bt-h1">Car <em>Battle</em></div>
+      <div class="bt-sub">Vote for your favourite — see live results instantly</div>
+    </div>
+    <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);">
+      {{ battles|length }} Active Battle{{ battles|length|pluralize }}
+    </div>
+  </div>
+
+  {% if battles %}
+  <div class="battle-list">
+    {% for battle in battles %}
+    <div class="battle-card" id="battle-{{ battle.id }}">
+
+      <div class="battle-title">
+        <strong>{{ battle.title }}</strong>
+      </div>
+
+      <!-- VS Grid -->
+      <div class="vs-grid">
+
+        <!-- Car 1 -->
+        <div class="car-side">
+          {% if battle.car1.carImage %}
+            <img src="{{ battle.car1.carImage.url }}" class="car-side-img" alt="{{ battle.car1.carName }}">
+          {% else %}
+            <div class="car-side-placeholder">🚗</div>
+          {% endif %}
+          <div class="car-side-brand">{{ battle.car1.brand }}</div>
+          <div class="car-side-name">{{ battle.car1.carName }}</div>
+          <div class="car-side-price">₹{{ battle.car1.price|floatformat:0 }}</div>
+          <button class="vote-btn vote-btn-1 {% if battle.user_voted %}voted{% endif %} {% if battle.user_vote_for == 1 %}your-pick{% endif %}"
+                  id="btn1-{{ battle.id }}"
+                  onclick="castVote({{ battle.id }}, 1)"
+                  {% if battle.user_voted %}disabled{% endif %}>
+            👍 Vote
+          </button>
+        </div>
+
+        <div class="vs-badge">VS</div>
+
+        <!-- Car 2 -->
+        <div class="car-side">
+          {% if battle.car2.carImage %}
+            <img src="{{ battle.car2.carImage.url }}" class="car-side-img" alt="{{ battle.car2.carName }}">
+          {% else %}
+            <div class="car-side-placeholder">🚗</div>
+          {% endif %}
+          <div class="car-side-brand">{{ battle.car2.brand }}</div>
+          <div class="car-side-name">{{ battle.car2.carName }}</div>
+          <div class="car-side-price">₹{{ battle.car2.price|floatformat:0 }}</div>
+          <button class="vote-btn vote-btn-2 {% if battle.user_voted %}voted{% endif %} {% if battle.user_vote_for == 2 %}your-pick{% endif %}"
+                  id="btn2-{{ battle.id }}"
+                  onclick="castVote({{ battle.id }}, 2)"
+                  {% if battle.user_voted %}disabled{% endif %}>
+            👍 Vote
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Results -->
+      <div class="results-wrap">
+        <div class="results-bar">
+          <div class="results-labels">
+            <div class="results-label">
+              <strong id="pct1-{{ battle.id }}">{{ battle.pct1 }}%</strong>
+              · <span id="votes1-{{ battle.id }}">{{ battle.votes_car1 }}</span> votes
+            </div>
+            <div class="results-label">
+              <span id="votes2-{{ battle.id }}">{{ battle.votes_car2 }}</span> votes ·
+              <strong id="pct2-{{ battle.id }}">{{ battle.pct2 }}%</strong>
+            </div>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill-1" id="bar1-{{ battle.id }}" style="width:{{ battle.pct1 }}%"></div>
+            <div class="bar-fill-2" id="bar2-{{ battle.id }}" style="width:{{ battle.pct2 }}%"></div>
+          </div>
+        </div>
+        <div class="results-total" id="total-{{ battle.id }}">
+          {{ battle.total_votes }} vote{{ battle.total_votes|pluralize }} total
+          {% if battle.user_voted %} · You voted {% if battle.user_vote_for == 1 %}{{ battle.car1.carName }}{% else %}{{ battle.car2.carName }}{% endif %}{% endif %}
+        </div>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="bt-empty">
+    <span class="bt-empty-icon">⚔️</span>
+    <div class="bt-empty-title">No Battles Yet</div>
+    <div class="bt-empty-sub">Check back soon — admin will set up car battles for you to vote on!</div>
+  </div>
+  {% endif %}
+
+</div>
+</div>
+
+<script>
+function castVote(battleId, choice) {
+  const btn1 = document.getElementById('btn1-' + battleId);
+  const btn2 = document.getElementById('btn2-' + battleId);
+
+  // Disable both buttons immediately
+  btn1.disabled = true;
+  btn2.disabled = true;
+  btn1.classList.add('voted');
+  btn2.classList.add('voted');
+
+  fetch(`/compare/user/battles/vote/${battleId}/${choice}/`, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': '{{ csrf_token }}',
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.error) {
+      console.error(data.error);
+      return;
+    }
+
+    // Update bars
+    document.getElementById('bar1-' + battleId).style.width = data.pct1 + '%';
+    document.getElementById('bar2-' + battleId).style.width = data.pct2 + '%';
+
+    // Update percentages
+    document.getElementById('pct1-' + battleId).textContent = data.pct1 + '%';
+    document.getElementById('pct2-' + battleId).textContent = data.pct2 + '%';
+
+    // Update vote counts
+    document.getElementById('votes1-' + battleId).textContent = data.votes_car1;
+    document.getElementById('votes2-' + battleId).textContent = data.votes_car2;
+
+    // Update total
+    document.getElementById('total-' + battleId).textContent =
+      data.total + (data.total === 1 ? ' vote total · You voted' : ' votes total · You voted');
+
+    // Highlight the chosen button
+    if (choice === 1) {
+      btn1.classList.add('your-pick');
+    } else {
+      btn2.classList.add('your-pick');
+    }
+
+    // Pulse animation on winning bar
+    const winBar = choice === 1
+      ? document.getElementById('bar1-' + battleId)
+      : document.getElementById('bar2-' + battleId);
+    winBar.style.transform = 'scaleY(1.4)';
+    setTimeout(() => winBar.style.transform = '', 300);
+  })
+  .catch(err => {
+    console.error('Vote failed:', err);
+    btn1.disabled = false;
+    btn2.disabled = false;
+    btn1.classList.remove('voted');
+    btn2.classList.remove('voted');
+  });
+}
+</script>
+
+{% endblock %}
