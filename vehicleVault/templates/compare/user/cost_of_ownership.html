@@ -1,0 +1,548 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
+{% block content %}
+{% include 'compare/user/user_sidebar.html' %}
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+:root{
+  --red:#e63946; --red-l:#fff0f1;
+  --orange:#f4a261; --orange-l:#fff4ea;
+  --teal:#0d9488; --teal-l:#f0fdfa;
+  --blue:#2563eb; --blue-l:#eff6ff;
+  --purple:#7c3aed; --purple-l:#faf5ff;
+  --dark:#0f172a; --muted:#94a3b8;
+  --border:rgba(15,23,42,.08); --bg:#f5f6fa; --card:#fff;
+  --sh-sm:0 2px 12px rgba(15,23,42,.07);
+  --sh-md:0 8px 32px rgba(15,23,42,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+
+.coo-root{padding:40px 48px 80px;min-height:100vh;font-family:"DM Sans",sans-serif;}
+.coo-inner{max-width:1100px;margin:0 auto;}
+
+/* ── Header ── */
+.coo-header{margin-bottom:36px;opacity:0;transform:translateY(20px);animation:fadeUp .6s ease .04s forwards;}
+.coo-eyebrow{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.coo-eyebrow::before{content:"";width:20px;height:2px;background:var(--red);}
+.coo-h1{font-family:"Bebas Neue",sans-serif;font-size:clamp(44px,5vw,68px);letter-spacing:2px;line-height:.92;color:var(--dark);}
+.coo-h1 em{color:var(--red);font-style:normal;}
+.coo-sub{font-size:14px;color:var(--muted);margin-top:8px;max-width:600px;}
+
+/* ── Car Picker ── */
+.car-picker{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:22px 28px;margin-bottom:22px;box-shadow:var(--sh-sm);opacity:0;transform:translateY(14px);animation:fadeUp .55s ease .08s forwards;}
+.picker-lbl{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.car-select{width:100%;padding:12px 16px;background:#f8fafd;border:1.5px solid var(--border);border-radius:10px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;cursor:pointer;appearance:none;transition:border-color .2s;}
+.car-select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,70,.1);}
+.car-strip{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.car-chip{display:inline-flex;align-items:center;gap:6px;background:#f8fafd;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--dark);}
+.car-chip b{font-family:"Space Mono",monospace;color:var(--red);}
+
+/* ── Two-col layout ── */
+.coo-grid{display:grid;grid-template-columns:340px 1fr;gap:22px;align-items:start;}
+
+/* ── Inputs panel ── */
+.inputs-panel{background:var(--card);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--sh-sm);opacity:0;transform:translateY(14px);animation:fadeUp .55s ease .14s forwards;position:sticky;top:80px;}
+.inputs-panel-bar{height:3px;background:linear-gradient(90deg,var(--red),var(--orange));}
+.inputs-body{padding:22px 24px 26px;}
+.section-title{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin:18px 0 10px;}
+.section-title:first-child{margin-top:0;}
+
+.input-row{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.input-lbl{font-size:12px;color:var(--dark);font-weight:500;}
+.input-wrap{position:relative;}
+.inp{width:100%;padding:10px 48px 10px 12px;background:#f8fafd;border:1.5px solid var(--border);border-radius:8px;font-family:"Space Mono",monospace;font-size:13px;color:var(--dark);outline:none;transition:border-color .2s;}
+.inp:focus{border-color:var(--red);background:#fff;}
+.inp-unit{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-family:"Space Mono",monospace;font-size:10px;color:var(--muted);pointer-events:none;}
+.range-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.range-row input[type=range]{flex:1;accent-color:var(--red);}
+.range-val{font-family:"Space Mono",monospace;font-size:12px;color:var(--dark);min-width:32px;text-align:right;}
+
+.calc-btn{width:100%;padding:13px;background:var(--red);color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:"Space Mono",monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-top:8px;transition:all .25s;box-shadow:0 4px 16px rgba(230,57,70,.25);}
+.calc-btn:hover{background:#cf2533;transform:translateY(-2px);}
+
+/* ── Results panel ── */
+.results-panel{display:flex;flex-direction:column;gap:18px;opacity:0;transform:translateY(14px);animation:fadeUp .55s ease .20s forwards;}
+
+/* Grand total banner */
+.total-banner{background:linear-gradient(135deg,var(--dark),#1e293b);border-radius:20px;padding:24px 28px;color:#fff;position:relative;overflow:hidden;}
+.total-banner::before{content:"";position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(230,57,70,.1);}
+.total-banner::after{content:"";position:absolute;bottom:-20px;right:40px;width:80px;height:80px;border-radius:50%;background:rgba(244,162,97,.08);}
+.total-label{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px;}
+.total-val{font-family:"Bebas Neue",sans-serif;font-size:52px;letter-spacing:2px;line-height:1;color:#fff;}
+.total-val span{color:var(--red);}
+.total-sub{font-size:12px;color:rgba(255,255,255,.45);margin-top:6px;}
+.total-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08);}
+.total-item-lbl{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;}
+.total-item-val{font-family:"Bebas Neue",sans-serif;font-size:26px;color:#fff;letter-spacing:1px;}
+
+/* Cost breakdown cards */
+.breakdown-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.bcard{border-radius:16px;padding:18px 20px;border:1.5px solid transparent;}
+.bcard-icon{font-size:22px;margin-bottom:8px;}
+.bcard-lbl{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.bcard-val{font-family:"Bebas Neue",sans-serif;font-size:28px;letter-spacing:1px;line-height:1;color:var(--dark);}
+.bcard-sub{font-size:11px;margin-top:4px;color:var(--muted);}
+.bcard-pct{display:inline-block;padding:2px 8px;border-radius:20px;font-family:"Space Mono",monospace;font-size:9px;margin-top:6px;}
+.bc-fuel    {background:var(--red-l);   border-color:rgba(230,57,70,.15);}
+.bc-fuel     .bcard-lbl{color:var(--red);}
+.bc-fuel     .bcard-pct{background:var(--red);color:#fff;}
+.bc-ins     {background:var(--blue-l);  border-color:rgba(37,99,235,.15);}
+.bc-ins      .bcard-lbl{color:var(--blue);}
+.bc-ins      .bcard-pct{background:var(--blue);color:#fff;}
+.bc-maint   {background:var(--teal-l);  border-color:rgba(13,148,136,.15);}
+.bc-maint    .bcard-lbl{color:var(--teal);}
+.bc-maint    .bcard-pct{background:var(--teal);color:#fff;}
+.bc-dep     {background:var(--orange-l);border-color:rgba(244,162,97,.2);}
+.bc-dep      .bcard-lbl{color:var(--orange);}
+.bc-dep      .bcard-pct{background:var(--orange);color:#fff;}
+.bc-regis   {background:var(--purple-l);border-color:rgba(124,58,237,.15);}
+.bc-regis    .bcard-lbl{color:var(--purple);}
+.bc-regis    .bcard-pct{background:var(--purple);color:#fff;}
+.bc-other   {background:#f8fafc;        border-color:var(--border);}
+.bc-other    .bcard-lbl{color:var(--muted);}
+.bc-other    .bcard-pct{background:#64748b;color:#fff;}
+
+/* Chart card */
+.chart-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:22px 24px;box-shadow:var(--sh-sm);}
+.chart-card-title{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:1px;color:var(--dark);margin-bottom:16px;}
+
+/* Year-by-year table */
+.year-table{width:100%;border-collapse:collapse;}
+.year-table th{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:8px 12px;text-align:left;border-bottom:1.5px solid var(--border);}
+.year-table td{padding:10px 12px;font-size:13px;color:var(--dark);border-bottom:1px solid rgba(15,23,42,.05);}
+.year-table tr:last-child td{border-bottom:none;font-weight:600;}
+.year-table .yr-num{font-family:"Space Mono",monospace;font-size:11px;color:var(--muted);}
+.year-table .yr-total{font-family:"Space Mono",monospace;font-size:13px;font-weight:700;color:var(--red);}
+.year-table tr:last-child{background:#f8fafc;}
+
+/* Empty state */
+.coo-empty{text-align:center;padding:60px 32px;background:var(--card);border:2px dashed var(--border);border-radius:20px;}
+.coo-empty-icon{font-size:52px;margin-bottom:12px;display:block;}
+.coo-empty-title{font-family:"Bebas Neue",sans-serif;font-size:28px;color:var(--dark);margin-bottom:8px;}
+.coo-empty-sub{font-size:14px;color:var(--muted);}
+
+@media(max-width:900px){
+  .coo-grid{grid-template-columns:1fr;}
+  .inputs-panel{position:static;}
+  .breakdown-grid{grid-template-columns:1fr 1fr;}
+  .coo-root{padding:24px 18px 60px;}
+}
+@media(max-width:480px){.breakdown-grid{grid-template-columns:1fr;}.total-row{grid-template-columns:1fr;gap:10px;}}
+</style>
+
+<div class="coo-root">
+<div class="coo-inner">
+
+  <!-- Header -->
+  <div class="coo-header">
+    <div class="coo-eyebrow">Tools</div>
+    <div class="coo-h1">Cost of <em>Ownership</em></div>
+    <div class="coo-sub">See the true 5-year cost of owning a car — fuel, insurance, maintenance, depreciation and more, all in one place.</div>
+  </div>
+
+  <!-- Car Picker -->
+  <div class="car-picker">
+    <div class="picker-lbl">Select a Car</div>
+    <form method="GET" action="{% url 'cost_of_ownership' %}">
+      <select name="car" class="car-select" onchange="this.form.submit()">
+        <option value="">— Choose a car to calculate ownership cost —</option>
+        {% for car in cars %}
+        <option value="{{ car.id }}" {% if selected_car and selected_car.id == car.id %}selected{% endif %}>
+          {{ car.brand }} {{ car.carName }} — ₹{{ car.price }} · {{ car.mileage }} km/l · {{ car.fuelType }}
+        </option>
+        {% endfor %}
+      </select>
+    </form>
+    {% if selected_car %}
+    <div class="car-strip">
+      <div class="car-chip">🚗 <b>{{ selected_car.carName }}</b></div>
+      <div class="car-chip">⛽ Mileage: <b>{{ selected_car.mileage }} km/l</b></div>
+      <div class="car-chip">🔥 <b>{{ selected_car.fuelType }}</b></div>
+      <div class="car-chip">📅 <b>{{ selected_car.launchYear }}</b></div>
+      <div class="car-chip">💰 Ex-showroom: <b>₹{{ selected_car.price }}</b></div>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if selected_car %}
+  <div class="coo-grid">
+
+    <!-- ── Left: Inputs ── -->
+    <div class="inputs-panel">
+      <div class="inputs-panel-bar"></div>
+      <div class="inputs-body">
+
+        <div class="section-title">Driving Habits</div>
+        <div class="input-row">
+          <div class="input-lbl">Daily Distance</div>
+          <div class="input-wrap">
+            <input type="number" id="i-km" class="inp" value="40" min="1" max="500" oninput="calc()">
+            <div class="inp-unit">km/day</div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-lbl">Fuel Price</div>
+          <div class="input-wrap">
+            <input type="number" id="i-fuel" class="inp"
+                   value="{% if 'diesel' in selected_car.fuelType|lower %}90{% elif 'electric' in selected_car.fuelType|lower %}8{% elif 'cng' in selected_car.fuelType|lower %}80{% else %}105{% endif %}"
+                   min="1" max="500" oninput="calc()">
+            <div class="inp-unit">₹/L</div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-lbl">Driving Days / Month</div>
+          <div class="input-wrap">
+            <input type="number" id="i-days" class="inp" value="26" min="1" max="31" oninput="calc()">
+            <div class="inp-unit">days</div>
+          </div>
+        </div>
+
+        <div class="section-title">Insurance</div>
+        <div class="input-row">
+          <div class="input-lbl">Annual Insurance Premium</div>
+          <div class="input-wrap">
+            <input type="number" id="i-ins" class="inp" value="" placeholder="Auto-estimated" min="0" oninput="calc()">
+            <div class="inp-unit">₹/yr</div>
+          </div>
+        </div>
+
+        <div class="section-title">Maintenance</div>
+        <div class="input-row">
+          <div class="input-lbl">Annual Service Cost</div>
+          <div class="input-wrap">
+            <input type="number" id="i-service" class="inp" value="" placeholder="Auto-estimated" min="0" oninput="calc()">
+            <div class="inp-unit">₹/yr</div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-lbl">Tyre Replacement (every N years)</div>
+          <div class="input-wrap">
+            <input type="number" id="i-tyre-years" class="inp" value="3" min="1" max="10" oninput="calc()">
+            <div class="inp-unit">years</div>
+          </div>
+        </div>
+
+        <div class="section-title">Depreciation & Financing</div>
+        <div class="range-row">
+          <span style="font-size:12px;color:var(--dark);min-width:120px;">Depreciation rate</span>
+          <input type="range" id="i-dep" min="5" max="25" value="15" step="1" oninput="document.getElementById('dep-val').textContent=this.value+'%'; calc()">
+          <span class="range-val" id="dep-val">15%</span>
+        </div>
+        <div class="range-row">
+          <span style="font-size:12px;color:var(--dark);min-width:120px;">Ownership period</span>
+          <input type="range" id="i-years" min="1" max="10" value="5" step="1" oninput="document.getElementById('yr-val').textContent=this.value+' yr'; calc()">
+          <span class="range-val" id="yr-val">5 yr</span>
+        </div>
+
+        <div class="section-title">One-time Costs</div>
+        <div class="input-row">
+          <div class="input-lbl">Registration + RTO (% of price)</div>
+          <div class="input-wrap">
+            <input type="number" id="i-rto" class="inp" value="11" min="0" max="30" oninput="calc()">
+            <div class="inp-unit">%</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Right: Results ── -->
+    <div class="results-panel">
+
+      <!-- Grand total -->
+      <div class="total-banner">
+        <div class="total-label">Total Cost of Ownership</div>
+        <div class="total-val" id="r-grand">₹<span id="r-grand-num">—</span></div>
+        <div class="total-sub" id="r-sub">Over <span id="r-years-lbl">5</span> years · <span id="r-permo">—</span>/month</div>
+        <div class="total-row">
+          <div>
+            <div class="total-item-lbl">On-road Price</div>
+            <div class="total-item-val" id="r-onroad">—</div>
+          </div>
+          <div>
+            <div class="total-item-lbl">Running Cost</div>
+            <div class="total-item-val" id="r-running">—</div>
+          </div>
+          <div>
+            <div class="total-item-lbl">Resale Value</div>
+            <div class="total-item-val" id="r-resale">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Breakdown cards -->
+      <div class="breakdown-grid">
+        <div class="bcard bc-fuel">
+          <div class="bcard-icon">⛽</div>
+          <div class="bcard-lbl">Fuel Cost</div>
+          <div class="bcard-val" id="b-fuel">—</div>
+          <div class="bcard-sub" id="b-fuel-sub">—</div>
+          <div class="bcard-pct" id="b-fuel-pct">—</div>
+        </div>
+        <div class="bcard bc-ins">
+          <div class="bcard-icon">🛡</div>
+          <div class="bcard-lbl">Insurance</div>
+          <div class="bcard-val" id="b-ins">—</div>
+          <div class="bcard-sub" id="b-ins-sub">—</div>
+          <div class="bcard-pct" id="b-ins-pct">—</div>
+        </div>
+        <div class="bcard bc-maint">
+          <div class="bcard-icon">🔧</div>
+          <div class="bcard-lbl">Maintenance</div>
+          <div class="bcard-val" id="b-maint">—</div>
+          <div class="bcard-sub" id="b-maint-sub">—</div>
+          <div class="bcard-pct" id="b-maint-pct">—</div>
+        </div>
+        <div class="bcard bc-dep">
+          <div class="bcard-icon">📉</div>
+          <div class="bcard-lbl">Depreciation Loss</div>
+          <div class="bcard-val" id="b-dep">—</div>
+          <div class="bcard-sub" id="b-dep-sub">—</div>
+          <div class="bcard-pct" id="b-dep-pct">—</div>
+        </div>
+        <div class="bcard bc-regis">
+          <div class="bcard-icon">📋</div>
+          <div class="bcard-lbl">Registration & RTO</div>
+          <div class="bcard-val" id="b-reg">—</div>
+          <div class="bcard-sub">One-time cost</div>
+          <div class="bcard-pct" id="b-reg-pct">—</div>
+        </div>
+        <div class="bcard bc-other">
+          <div class="bcard-icon">🔩</div>
+          <div class="bcard-lbl">Tyres & Misc</div>
+          <div class="bcard-val" id="b-other">—</div>
+          <div class="bcard-sub" id="b-other-sub">—</div>
+          <div class="bcard-pct" id="b-other-pct">—</div>
+        </div>
+      </div>
+
+      <!-- Donut chart -->
+      <div class="chart-card">
+        <div class="chart-card-title">Cost Breakdown</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center;">
+          <div style="position:relative;max-width:240px;margin:0 auto;">
+            <canvas id="donut-chart" height="240"></canvas>
+          </div>
+          <div id="legend" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+      </div>
+
+      <!-- Year-by-year table -->
+      <div class="chart-card">
+        <div class="chart-card-title">Year-by-Year Costs</div>
+        <table class="year-table">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Fuel</th>
+              <th>Insurance</th>
+              <th>Maintenance</th>
+              <th>Total (yr)</th>
+              <th>Cumulative</th>
+            </tr>
+          </thead>
+          <tbody id="year-tbody"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  {% else %}
+  <div class="coo-empty">
+    <span class="coo-empty-icon">🧮</span>
+    <div class="coo-empty-title">Select a Car to Begin</div>
+    <div class="coo-empty-sub">Choose any car from the dropdown above to see its full cost of ownership breakdown</div>
+  </div>
+  {% endif %}
+
+</div>
+</div>
+
+{% if selected_car %}
+<script>
+var CAR_PRICE = {{ selected_car.price }};
+var MILEAGE   = {{ selected_car.mileage }};
+var FUEL_TYPE = "{{ selected_car.fuelType|lower }}";
+var donutChart = null;
+
+function fmt(n) {
+  if (n >= 10000000) return '₹' + (n/10000000).toFixed(2) + 'Cr';
+  if (n >= 100000)   return '₹' + (n/100000).toFixed(2)   + 'L';
+  if (n >= 1000)     return '₹' + (n/1000).toFixed(1)     + 'K';
+  return '₹' + Math.round(n);
+}
+
+function pct(part, total) {
+  return total > 0 ? Math.round(part/total*100) + '%' : '0%';
+}
+
+function calc() {
+  var km        = parseFloat(document.getElementById('i-km').value)       || 40;
+  var fuelPrice = parseFloat(document.getElementById('i-fuel').value)     || 105;
+  var days      = parseFloat(document.getElementById('i-days').value)     || 26;
+  var depRate   = parseFloat(document.getElementById('i-dep').value)      || 15;
+  var years     = parseInt(document.getElementById('i-years').value)      || 5;
+  var rtoRate   = parseFloat(document.getElementById('i-rto').value)      || 11;
+  var tyreYears = parseFloat(document.getElementById('i-tyre-years').value)|| 3;
+
+  // Auto-estimate insurance & service if not overridden
+  var insInput     = document.getElementById('i-ins').value;
+  var serviceInput = document.getElementById('i-service').value;
+  var annualIns     = insInput     ? parseFloat(insInput)     : Math.round(CAR_PRICE * 0.028);
+  var annualService = serviceInput ? parseFloat(serviceInput) : Math.round(CAR_PRICE * 0.006 + 5000);
+
+  // ── On-road price ──
+  var rtoAmt  = CAR_PRICE * (rtoRate / 100);
+  var onRoad  = CAR_PRICE + rtoAmt;
+
+  // ── Fuel ──
+  var litresPerDay   = km / MILEAGE;
+  var litresPerMonth = litresPerDay * days;
+  var fuelPerYear    = litresPerMonth * 12 * fuelPrice;
+  var totalFuel      = fuelPerYear * years;
+
+  // ── Insurance (reduces by 5% each year after year 1) ──
+  var totalIns = 0;
+  for (var y = 0; y < years; y++) {
+    totalIns += annualIns * Math.pow(0.95, y);
+  }
+
+  // ── Maintenance (increases by 12% per year) ──
+  var totalMaint = 0;
+  for (var y = 0; y < years; y++) {
+    totalMaint += annualService * Math.pow(1.12, y);
+  }
+
+  // ── Tyres ──
+  var tyreSets   = Math.floor(years / tyreYears);
+  var tyreCost   = tyreSets * Math.round(CAR_PRICE * 0.015 + 12000);
+
+  // ── Misc (toll, parking, cleaning: ~₹500/mo) ──
+  var miscTotal = 500 * 12 * years;
+
+  // ── Depreciation ──
+  var resale = CAR_PRICE;
+  for (var y = 0; y < years; y++) {
+    resale *= (1 - depRate/100);
+  }
+  resale = Math.round(resale);
+  var depLoss = CAR_PRICE - resale;
+
+  // ── Grand total ──
+  var runningTotal = totalFuel + totalIns + totalMaint + tyreCost + miscTotal;
+  var grandTotal   = onRoad + runningTotal + depLoss - CAR_PRICE; // exclude car price itself, include dep loss
+  // Actually show true total cost = onRoad + running costs
+  grandTotal = onRoad + runningTotal;
+
+  // ── Update UI ──
+  var totalForPct = grandTotal;
+  document.getElementById('r-grand-num').textContent = fmt(grandTotal).replace('₹','');
+  document.getElementById('r-grand').textContent     = fmt(grandTotal);
+  document.getElementById('r-years-lbl').textContent = years;
+  document.getElementById('r-permo').textContent     = fmt(grandTotal / (years*12));
+  document.getElementById('r-onroad').textContent    = fmt(onRoad);
+  document.getElementById('r-running').textContent   = fmt(runningTotal);
+  document.getElementById('r-resale').textContent    = fmt(resale);
+
+  function setCard(id, val, sub, pctVal) {
+    document.getElementById('b-' + id).textContent     = fmt(val);
+    if (sub) document.getElementById('b-' + id + '-sub').textContent = sub;
+    document.getElementById('b-' + id + '-pct').textContent = pct(val, totalForPct);
+  }
+
+  setCard('fuel',  totalFuel,  'over ' + years + ' years',  totalForPct);
+  setCard('ins',   Math.round(totalIns), '~₹' + fmt(annualIns) + '/yr avg', totalForPct);
+  setCard('maint', Math.round(totalMaint), '~₹' + fmt(annualService) + '/yr + rising', totalForPct);
+  setCard('dep',   depLoss,   'Resale: ' + fmt(resale), totalForPct);
+  document.getElementById('b-reg').textContent    = fmt(rtoAmt);
+  document.getElementById('b-reg-pct').textContent = pct(rtoAmt, totalForPct);
+  document.getElementById('b-other').textContent  = fmt(tyreCost + miscTotal);
+  document.getElementById('b-other-sub').textContent = tyreSets + ' tyre set' + (tyreSets!==1?'s':'') + ' + misc';
+  document.getElementById('b-other-pct').textContent = pct(tyreCost+miscTotal, totalForPct);
+
+  // ── Donut chart ──
+  var data   = [Math.round(totalFuel), Math.round(totalIns), Math.round(totalMaint), depLoss, Math.round(rtoAmt), Math.round(tyreCost+miscTotal)];
+  var labels = ['Fuel','Insurance','Maintenance','Depreciation','Registration','Tyres & Misc'];
+  var colors = ['#e63946','#2563eb','#0d9488','#f4a261','#7c3aed','#64748b'];
+
+  if (donutChart) {
+    donutChart.data.datasets[0].data = data;
+    donutChart.update();
+  } else {
+    var ctx = document.getElementById('donut-chart').getContext('2d');
+    donutChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{ data: data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff', hoverOffset: 8 }]
+      },
+      options: {
+        cutout: '68%',
+        plugins: { legend: { display: false }, tooltip: {
+          callbacks: { label: function(c) { return ' ' + c.label + ': ' + fmt(c.raw); }}
+        }},
+        animation: { animateScale: true }
+      }
+    });
+  }
+
+  // Legend
+  var legend = document.getElementById('legend');
+  legend.innerHTML = labels.map(function(l,i) {
+    return '<div style="display:flex;align-items:center;gap:8px;">' +
+      '<div style="width:10px;height:10px;border-radius:50%;background:' + colors[i] + ';flex-shrink:0;"></div>' +
+      '<div style="font-size:12px;color:#475569;">' + l + '</div>' +
+      '<div style="font-family:Space Mono,monospace;font-size:11px;color:#0f172a;margin-left:auto;">' + fmt(data[i]) + '</div>' +
+      '</div>';
+  }).join('');
+
+  // ── Year-by-year table ──
+  var tbody = document.getElementById('year-tbody');
+  var cumulative = onRoad;  // starts with on-road price
+  tbody.innerHTML = '';
+
+  for (var y = 1; y <= years; y++) {
+    var yrFuel  = Math.round(fuelPerYear);
+    var yrIns   = Math.round(annualIns * Math.pow(0.95, y-1));
+    var yrMaint = Math.round(annualService * Math.pow(1.12, y-1));
+    var yrTyre  = (y % tyreYears === 0) ? Math.round(CAR_PRICE * 0.015 + 12000) : 0;
+    var yrMisc  = 500 * 12;
+    var yrTotal = yrFuel + yrIns + yrMaint + yrTyre + yrMisc;
+    cumulative += yrTotal;
+
+    var row = '<tr>' +
+      '<td class="yr-num">Year ' + y + (yrTyre ? ' 🔩' : '') + '</td>' +
+      '<td>' + fmt(yrFuel) + '</td>' +
+      '<td>' + fmt(yrIns) + '</td>' +
+      '<td>' + fmt(yrMaint) + (yrTyre ? ' + ' + fmt(yrTyre) : '') + '</td>' +
+      '<td class="yr-total">' + fmt(yrTotal) + '</td>' +
+      '<td style="font-size:12px;color:#64748b;">' + fmt(cumulative) + '</td>' +
+      '</tr>';
+    tbody.innerHTML += row;
+  }
+
+  // Total row
+  tbody.innerHTML += '<tr>' +
+    '<td style="font-weight:700;font-size:13px;">TOTAL</td>' +
+    '<td style="font-weight:600;">' + fmt(totalFuel) + '</td>' +
+    '<td style="font-weight:600;">' + fmt(Math.round(totalIns)) + '</td>' +
+    '<td style="font-weight:600;">' + fmt(Math.round(totalMaint)) + '</td>' +
+    '<td class="yr-total" style="font-size:15px;">' + fmt(grandTotal) + '</td>' +
+    '<td></td>' +
+    '</tr>';
+}
+
+// Run on load
+calc();
+</script>
+{% endif %}
+
+{% endblock %}

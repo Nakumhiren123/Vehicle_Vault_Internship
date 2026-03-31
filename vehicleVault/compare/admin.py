@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Car, CarVariant, Accessory, CarAccessoryMapping,
-    Comparison, Review, UserPreference, SearchHistory, UserInteraction
+    Comparison, Review, UserPreference, SearchHistory, UserInteraction, CarPriceHistory
 )
 # Register your models here.
 
@@ -90,6 +90,23 @@ class SearchHistoryAdmin(admin.ModelAdmin):
     ordering      = ['-searchedAt']
  
  
+# ── Car Price History ────────────────────────────────────────────
+class CarPriceHistoryInline(admin.TabularInline):
+    model = CarPriceHistory
+    extra = 1
+    fields = ['recorded_on', 'price', 'note']
+    ordering = ['recorded_on']
+ 
+ 
+@admin.register(CarPriceHistory)
+class CarPriceHistoryAdmin(admin.ModelAdmin):
+    list_display  = ['car', 'price', 'recorded_on', 'note']
+    list_filter   = ['car__brand', 'recorded_on']
+    search_fields = ['car__carName', 'note']
+    ordering      = ['-recorded_on']
+    date_hierarchy = 'recorded_on'
+
+
 # ── User Interaction ──────────────────────────────────────────────
 @admin.register(UserInteraction)
 class UserInteractionAdmin(admin.ModelAdmin):

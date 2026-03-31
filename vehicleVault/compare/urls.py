@@ -65,6 +65,13 @@ urlpatterns = [
     path('admin/accessories/edit/<int:pk>/',  views.accessory_update, name='accessory_update'),
     path('admin/accessories/delete/<int:pk>/',views.accessory_delete, name='accessory_delete'),
 
+     # Price Trends
+    path('user/price-trends/',                  views.price_trends,      name='price_trends'),
+    path('admin/cars/<int:car_id>/price-history/', views.add_price_history, name='add_price_history'),
+    
+    # Fuel Cost Calculator
+    path('user/fuel-calculator/', views.fuel_calculator, name='fuel_calculator'),
+    path('user/cost-of-ownership/', views.cost_of_ownership, name='cost_of_ownership'),
     # Car Battle / Voting
     path('user/battles/',                          views.battle_list,    name='battle_list'),
     path('user/battles/vote/<int:battle_id>/<int:choice>/', views.battle_vote, name='battle_vote'),

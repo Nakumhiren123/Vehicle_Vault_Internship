@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
+{% block content %}
+{% include 'compare/user/user_sidebar.html' %}
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{--red:#e63946;--orange:#f4a261;--teal:#0d9488;--dark:#0f172a;--muted:#94a3b8;--border:rgba(15,23,42,.08);--bg:#f5f6fa;--card:#fff;--sh-sm:0 2px 12px rgba(15,23,42,.07);--sh-md:0 8px 32px rgba(15,23,42,.10);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+@keyframes countUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.fc-root{padding:40px 48px 80px;min-height:100vh;font-family:"DM Sans",sans-serif;}
+.fc-inner{max-width:1000px;margin:0 auto;}
+
+.fc-header{margin-bottom:36px;opacity:0;transform:translateY(20px);animation:fadeUp .6s ease .04s forwards;}
+.fc-eyebrow{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.fc-eyebrow::before{content:"";width:20px;height:2px;background:var(--red);}
+.fc-h1{font-family:"Bebas Neue",sans-serif;font-size:clamp(48px,6vw,72px);letter-spacing:2px;line-height:.92;color:var(--dark);}
+.fc-h1 em{color:var(--red);font-style:normal;}
+.fc-sub{font-size:14px;color:var(--muted);margin-top:8px;}
+
+/* Car picker */
+.car-picker{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:24px 28px;margin-bottom:24px;box-shadow:var(--sh-sm);opacity:0;transform:translateY(16px);animation:fadeUp .6s ease .08s forwards;}
+.picker-label{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.picker-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.car-select{flex:1;min-width:200px;padding:12px 16px;background:#f8fafd;border:1.5px solid var(--border);border-radius:10px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;cursor:pointer;transition:border-color .2s;appearance:none;}
+.car-select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,70,.1);}
+.picker-btn{padding:12px 24px;background:var(--red);color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:"Space Mono",monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;transition:all .2s;white-space:nowrap;}
+.picker-btn:hover{background:#cf2533;transform:translateY(-1px);}
+.car-info-strip{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.car-info-chip{display:flex;align-items:center;gap:7px;background:#f8fafd;border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--dark);}
+.car-info-chip span{font-family:"Space Mono",monospace;font-weight:700;color:var(--red);}
+
+/* Calculator card */
+.calc-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--sh-sm);opacity:0;transform:translateY(16px);animation:fadeUp .6s ease .14s forwards;}
+.calc-card-bar{height:3px;background:linear-gradient(90deg,var(--red),var(--orange));}
+.calc-body{padding:28px 32px 32px;}
+
+/* Inputs */
+.inputs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:28px;}
+.input-group{display:flex;flex-direction:column;gap:6px;}
+.input-lbl{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.input-wrap{position:relative;}
+.input-unit{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:"Space Mono",monospace;font-size:10px;color:var(--muted);pointer-events:none;}
+.calc-input{width:100%;padding:13px 48px 13px 16px;background:#f8fafd;border:1.5px solid var(--border);border-radius:10px;font-family:"Space Mono",monospace;font-size:14px;color:var(--dark);outline:none;transition:border-color .2s;}
+.calc-input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,70,.1);background:#fff;}
+
+/* Slider preset buttons */
+.presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.preset-btn{padding:4px 12px;border:1px solid var(--border);border-radius:20px;background:#fff;font-size:11px;color:var(--muted);cursor:pointer;transition:all .2s;font-family:"Space Mono",monospace;}
+.preset-btn:hover,.preset-btn.active{background:var(--red);color:#fff;border-color:var(--red);}
+
+/* Result cards */
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:20px;}
+.result-card{border-radius:16px;padding:20px 22px;transition:transform .2s;}
+.result-card:hover{transform:translateY(-3px);}
+.result-lbl{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.result-val{font-family:"Bebas Neue",sans-serif;font-size:36px;letter-spacing:1px;line-height:1;animation:countUp .4s ease;}
+.result-sub{font-size:11px;margin-top:5px;opacity:0.7;}
+.r-red  {background:#fff0f1;border:1.5px solid rgba(230,57,70,.15);}
+.r-red  .result-lbl{color:var(--red);}
+.r-red  .result-val{color:var(--dark);}
+.r-orange{background:#fff4ea;border:1.5px solid rgba(244,162,97,.25);}
+.r-orange .result-lbl{color:var(--orange);}
+.r-orange .result-val{color:var(--dark);}
+.r-teal {background:#f0fdfa;border:1.5px solid rgba(13,148,136,.2);}
+.r-teal  .result-lbl{color:var(--teal);}
+.r-teal  .result-val{color:var(--dark);}
+.r-dark {background:#f8fafc;border:1.5px solid var(--border);}
+.r-dark  .result-lbl{color:var(--muted);}
+.r-dark  .result-val{color:var(--dark);}
+.r-purple{background:#faf5ff;border:1.5px solid rgba(124,58,237,.15);}
+.r-purple .result-lbl{color:#7c3aed;}
+.r-purple .result-val{color:var(--dark);}
+
+/* Comparison bar */
+.compare-bar-section{padding:20px 0 0;}
+.compare-bar-title{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.compare-bar{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.compare-bar-lbl{font-size:12px;color:var(--dark);min-width:80px;}
+.compare-bar-track{flex:1;height:8px;background:#f1f5f9;border-radius:8px;overflow:hidden;}
+.compare-bar-fill{height:100%;border-radius:8px;transition:width .8s cubic-bezier(.22,1,.36,1);}
+.compare-bar-val{font-family:"Space Mono",monospace;font-size:11px;color:var(--dark);min-width:60px;text-align:right;}
+
+/* Tip box */
+.tip-box{margin-top:20px;padding:14px 18px;background:#f8fafd;border-radius:12px;border-left:3px solid var(--red);font-size:13px;color:#475569;line-height:1.6;}
+
+/* Empty state */
+.fc-empty{text-align:center;padding:60px 32px;background:var(--card);border:2px dashed var(--border);border-radius:20px;opacity:0;transform:translateY(16px);animation:fadeUp .6s ease .14s forwards;}
+.fc-empty-icon{font-size:52px;margin-bottom:12px;display:block;}
+.fc-empty-title{font-family:"Bebas Neue",sans-serif;font-size:28px;color:var(--dark);margin-bottom:8px;}
+.fc-empty-sub{font-size:14px;color:var(--muted);}
+
+@media(max-width:600px){.fc-root{padding:24px 18px 60px;}.calc-body{padding:20px;}}
+</style>
+
+<div class="fc-root">
+<div class="fc-inner">
+
+  <!-- Header -->
+  <div class="fc-header">
+    <div class="fc-eyebrow">Tools</div>
+    <div class="fc-h1">Fuel Cost <em>Calculator</em></div>
+    <div class="fc-sub">Enter your daily driving habits — see exactly how much you'll spend on fuel</div>
+  </div>
+
+  <!-- Car Picker -->
+  <div class="car-picker">
+    <div class="picker-label">Select a Car to Calculate</div>
+    <form method="GET" action="{% url 'fuel_calculator' %}">
+      <div class="picker-row">
+        <select name="car" class="car-select" onchange="this.form.submit()">
+          <option value="">— Choose a car —</option>
+          {% for car in cars %}
+          <option value="{{ car.id }}" {% if selected_car and selected_car.id == car.id %}selected{% endif %}>
+            {{ car.brand }} {{ car.carName }} ({{ car.mileage }} km/l)
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+    </form>
+
+    {% if selected_car %}
+    <div class="car-info-strip">
+      <div class="car-info-chip">🚗 <span>{{ selected_car.carName }}</span></div>
+      <div class="car-info-chip">⛽ Mileage: <span>{{ selected_car.mileage }} km/l</span></div>
+      <div class="car-info-chip">🔥 Fuel: <span>{{ selected_car.fuelType }}</span></div>
+      <div class="car-info-chip">💰 Price: <span>₹{{ selected_car.price }}</span></div>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if selected_car %}
+
+  <!-- Calculator -->
+  <div class="calc-card">
+    <div class="calc-card-bar"></div>
+    <div class="calc-body">
+
+      <!-- Inputs -->
+      <div class="inputs-grid">
+
+        <div class="input-group">
+          <div class="input-lbl">Daily Distance</div>
+          <div class="input-wrap">
+            <input type="number" id="fc-km" class="calc-input" value="40" min="1" max="2000" oninput="calc()">
+            <div class="input-unit">km/day</div>
+          </div>
+          <div class="presets">
+            <button class="preset-btn" onclick="set('fc-km',20)">20</button>
+            <button class="preset-btn active" onclick="set('fc-km',40)">40</button>
+            <button class="preset-btn" onclick="set('fc-km',80)">80</button>
+            <button class="preset-btn" onclick="set('fc-km',120)">120</button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-lbl">Fuel Price</div>
+          <div class="input-wrap">
+            <input type="number" id="fc-price" class="calc-input"
+                   value="{% if 'diesel' in selected_car.fuelType|lower %}90{% elif 'electric' in selected_car.fuelType|lower %}10{% elif 'cng' in selected_car.fuelType|lower %}80{% else %}105{% endif %}"
+                   min="1" max="500" oninput="calc()">
+            <div class="input-unit">₹/litre</div>
+          </div>
+          <div class="presets">
+            <button class="preset-btn" onclick="set('fc-price',90)">₹90</button>
+            <button class="preset-btn" onclick="set('fc-price',100)">₹100</button>
+            <button class="preset-btn active" onclick="set('fc-price',105)">₹105</button>
+            <button class="preset-btn" onclick="set('fc-price',110)">₹110</button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-lbl">Driving Days / Month</div>
+          <div class="input-wrap">
+            <input type="number" id="fc-days" class="calc-input" value="26" min="1" max="31" oninput="calc()">
+            <div class="input-unit">days</div>
+          </div>
+          <div class="presets">
+            <button class="preset-btn" onclick="set('fc-days',20)">20</button>
+            <button class="preset-btn active" onclick="set('fc-days',26)">26</button>
+            <button class="preset-btn" onclick="set('fc-days',30)">30</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Results -->
+      <div class="results-grid">
+        <div class="result-card r-red">
+          <div class="result-lbl">Daily Cost</div>
+          <div class="result-val" id="r-daily">₹0</div>
+          <div class="result-sub" id="r-daily-l">0 litres/day</div>
+        </div>
+        <div class="result-card r-orange">
+          <div class="result-lbl">Monthly Cost</div>
+          <div class="result-val" id="r-monthly">₹0</div>
+          <div class="result-sub" id="r-monthly-l">0 litres/month</div>
+        </div>
+        <div class="result-card r-teal">
+          <div class="result-lbl">Yearly Cost</div>
+          <div class="result-val" id="r-yearly">₹0</div>
+          <div class="result-sub" id="r-yearly-l">0 litres/year</div>
+        </div>
+        <div class="result-card r-dark">
+          <div class="result-lbl">Monthly KM</div>
+          <div class="result-val" id="r-km">0</div>
+          <div class="result-sub">km driven/month</div>
+        </div>
+        <div class="result-card r-purple">
+          <div class="result-lbl">Cost Per KM</div>
+          <div class="result-val" id="r-perkm">₹0</div>
+          <div class="result-sub">running cost</div>
+        </div>
+      </div>
+
+      <!-- Comparison bars -->
+      <div class="compare-bar-section">
+        <div class="compare-bar-title">Monthly Budget Breakdown</div>
+        <div class="compare-bar">
+          <div class="compare-bar-lbl" style="font-size:11px;">Fuel</div>
+          <div class="compare-bar-track"><div class="compare-bar-fill" id="bar-fuel" style="width:0%;background:linear-gradient(90deg,#e63946,#f4a261);"></div></div>
+          <div class="compare-bar-val" id="bar-fuel-val">₹0</div>
+        </div>
+        <div class="compare-bar">
+          <div class="compare-bar-lbl" style="font-size:11px;">Est. Service</div>
+          <div class="compare-bar-track"><div class="compare-bar-fill" id="bar-service" style="width:0%;background:linear-gradient(90deg,#7c3aed,#a78bfa);"></div></div>
+          <div class="compare-bar-val" id="bar-service-val">₹0</div>
+        </div>
+        <div class="compare-bar">
+          <div class="compare-bar-lbl" style="font-size:11px;">Est. Insurance</div>
+          <div class="compare-bar-track"><div class="compare-bar-fill" id="bar-insurance" style="width:0%;background:linear-gradient(90deg,#0d9488,#34d399);"></div></div>
+          <div class="compare-bar-val" id="bar-insurance-val">₹0</div>
+        </div>
+      </div>
+
+      <div class="tip-box" id="tip-box"></div>
+
+    </div>
+  </div>
+
+  {% else %}
+
+  <div class="fc-empty">
+    <span class="fc-empty-icon">⛽</span>
+    <div class="fc-empty-title">Select a Car to Begin</div>
+    <div class="fc-empty-sub">Choose any car from the dropdown above to calculate its fuel costs</div>
+  </div>
+
+  {% endif %}
+
+</div>
+</div>
+
+{% if selected_car %}
+<script>
+var MILEAGE   = {{ selected_car.mileage }};
+var FUEL_TYPE = "{{ selected_car.fuelType|lower }}";
+var CAR_PRICE = {{ selected_car.price }};
+
+function fmt(n) {
+  if (n >= 100000) return '₹' + (n/100000).toFixed(2) + 'L';
+  if (n >= 1000)   return '₹' + (n/1000).toFixed(1) + 'K';
+  return '₹' + Math.round(n);
+}
+
+function set(id, val) {
+  document.getElementById(id).value = val;
+  // Update active preset buttons
+  var input = document.getElementById(id);
+  var wrap  = input.closest('.input-group');
+  wrap.querySelectorAll('.preset-btn').forEach(function(b) {
+    b.classList.toggle('active', parseFloat(b.textContent.replace('₹','')) === val);
+  });
+  calc();
+}
+
+function calc() {
+  var km    = parseFloat(document.getElementById('fc-km').value)    || 0;
+  var price = parseFloat(document.getElementById('fc-price').value) || 0;
+  var days  = parseFloat(document.getElementById('fc-days').value)  || 26;
+
+  var litresPerDay   = km / MILEAGE;
+  var litresPerMonth = litresPerDay * days;
+  var litresPerYear  = litresPerMonth * 12;
+
+  var daily   = litresPerDay   * price;
+  var monthly = litresPerMonth * price;
+  var yearly  = litresPerYear  * price;
+  var perKm   = price / MILEAGE;
+  var kmMonth = km * days;
+
+  // Results
+  document.getElementById('r-daily').textContent    = fmt(daily);
+  document.getElementById('r-daily-l').textContent  = litresPerDay.toFixed(2) + ' litres/day';
+  document.getElementById('r-monthly').textContent  = fmt(monthly);
+  document.getElementById('r-monthly-l').textContent= litresPerMonth.toFixed(1) + ' litres/month';
+  document.getElementById('r-yearly').textContent   = fmt(yearly);
+  document.getElementById('r-yearly-l').textContent = litresPerYear.toFixed(0) + ' litres/year';
+  document.getElementById('r-km').textContent       = kmMonth.toLocaleString('en-IN');
+  document.getElementById('r-perkm').textContent    = '₹' + perKm.toFixed(2);
+
+  // Estimated service + insurance per month
+  var serviceMonthly   = Math.round(CAR_PRICE * 0.005 / 12);   // ~0.5% of car price yearly
+  var insuranceMonthly = Math.round(CAR_PRICE * 0.03 / 12);    // ~3% of car price yearly
+
+  // Comparison bars
+  var total = monthly + serviceMonthly + insuranceMonthly;
+  document.getElementById('bar-fuel').style.width          = (monthly / total * 100) + '%';
+  document.getElementById('bar-service').style.width       = (serviceMonthly / total * 100) + '%';
+  document.getElementById('bar-insurance').style.width     = (insuranceMonthly / total * 100) + '%';
+  document.getElementById('bar-fuel-val').textContent      = fmt(monthly);
+  document.getElementById('bar-service-val').textContent   = fmt(serviceMonthly);
+  document.getElementById('bar-insurance-val').textContent = fmt(insuranceMonthly);
+
+  // Smart tip
+  var tip = '';
+  if (FUEL_TYPE.includes('electric')) {
+    tip = '⚡ Great choice! Electric vehicles cost far less to run. The calculation uses per-unit electricity cost. Home charging is even cheaper than public chargers.';
+  } else if (perKm > 8) {
+    tip = '💸 High running cost per km. Consider maintaining optimal tyre pressure and servicing the engine regularly — this can improve mileage by 10–15%.';
+  } else if (yearly < 50000) {
+    tip = '✅ Excellent! This car has a very affordable annual fuel cost. Efficient mileage combined with your driving habit makes this a budget-friendly choice.';
+  } else if (km > 100) {
+    tip = '🛣️ High daily distance! Consider trip planning and combining errands to reduce total km. Highway driving is generally more fuel-efficient than city driving.';
+  } else {
+    tip = '📍 Tip: Keeping your engine well-tuned, using the correct engine oil, and maintaining steady speeds on highways can improve real-world mileage by up to 15%.';
+  }
+  document.getElementById('tip-box').textContent = tip;
+}
+
+// Init on load
+calc();
+</script>
+{% endif %}
+
+{% endblock %}

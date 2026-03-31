@@ -1,0 +1,436 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
+{% block content %}
+{% include 'compare/user/user_sidebar.html' %}
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+:root{--red:#e63946;--orange:#f4a261;--teal:#0d9488;--blue:#2563eb;--dark:#0f172a;--muted:#94a3b8;--border:rgba(15,23,42,.08);--bg:#f5f6fa;--card:#fff;--sh-sm:0 2px 12px rgba(15,23,42,.07);--sh-md:0 8px 32px rgba(15,23,42,.10);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+
+.pt-root{padding:40px 48px 80px;min-height:100vh;font-family:"DM Sans",sans-serif;}
+.pt-inner{max-width:1100px;margin:0 auto;}
+
+/* Header */
+.pt-header{margin-bottom:36px;opacity:0;transform:translateY(20px);animation:fadeUp .6s ease .04s forwards;}
+.pt-eyebrow{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.pt-eyebrow::before{content:"";width:20px;height:2px;background:var(--red);}
+.pt-h1{font-family:"Bebas Neue",sans-serif;font-size:clamp(44px,5vw,68px);letter-spacing:2px;line-height:.92;color:var(--dark);}
+.pt-h1 em{color:var(--red);font-style:normal;}
+.pt-sub{font-size:14px;color:var(--muted);margin-top:8px;}
+
+/* Car picker bar */
+.picker-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:22px 28px;margin-bottom:22px;box-shadow:var(--sh-sm);opacity:0;transform:translateY(14px);animation:fadeUp .55s ease .08s forwards;}
+.picker-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:flex-end;}
+.picker-group{display:flex;flex-direction:column;gap:6px;}
+.picker-lbl{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.car-select{width:100%;padding:11px 16px;background:#f8fafd;border:1.5px solid var(--border);border-radius:10px;font-family:"DM Sans",sans-serif;font-size:13px;color:var(--dark);outline:none;cursor:pointer;appearance:none;transition:border-color .2s;}
+.car-select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,70,.1);}
+.view-btn{padding:11px 24px;background:var(--red);color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:"Space Mono",monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;transition:all .2s;align-self:flex-end;}
+.view-btn:hover{background:#cf2533;transform:translateY(-1px);}
+
+/* Quick pick chips */
+.quick-wrap{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);}
+.quick-lbl{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.quick-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.quick-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:#f8fafd;border:1.5px solid var(--border);border-radius:20px;font-size:12px;color:var(--dark);text-decoration:none;transition:all .2s;}
+.quick-chip:hover{border-color:var(--red);color:var(--red);background:var(--red-l,#fff0f1);text-decoration:none;}
+.quick-chip.active{background:var(--red);color:#fff;border-color:var(--red);}
+.quick-chip-brand{font-family:"Space Mono",monospace;font-size:9px;color:var(--muted);margin-right:2px;}
+
+/* Stats strip */
+.stats-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:22px;opacity:0;transform:translateY(14px);animation:fadeUp .55s ease .16s forwards;}
+.stat-box{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:16px 20px;box-shadow:var(--sh-sm);}
+.stat-box-lbl{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.stat-box-val{font-family:"Bebas Neue",sans-serif;font-size:26px;letter-spacing:1px;line-height:1;color:var(--dark);}
+.stat-box-val.up{color:#16a34a;}
+.stat-box-val.down{color:var(--red);}
+.stat-box-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+
+/* Chart card */
+.chart-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--sh-md);margin-bottom:22px;opacity:0;transform:translateY(14px);animation:fadeUp .6s ease .20s forwards;}
+.chart-card-bar{height:3px;background:linear-gradient(90deg,var(--red),var(--orange));}
+.chart-card-head{padding:20px 24px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.chart-title{font-family:"Bebas Neue",sans-serif;font-size:22px;letter-spacing:1px;color:var(--dark);}
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--dark);}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.chart-body{padding:20px 24px 24px;}
+.chart-wrap{position:relative;height:340px;}
+
+/* Toggle buttons */
+.range-btns{display:flex;gap:6px;}
+.range-btn{padding:5px 12px;border:1.5px solid var(--border);border-radius:20px;background:#fff;font-family:"Space Mono",monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .2s;}
+.range-btn:hover,.range-btn.active{background:var(--dark);color:#fff;border-color:var(--dark);}
+
+/* History table */
+.hist-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--sh-sm);opacity:0;transform:translateY(14px);animation:fadeUp .6s ease .26s forwards;}
+.hist-table{width:100%;border-collapse:collapse;}
+.hist-table th{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:12px 20px;text-align:left;border-bottom:1.5px solid var(--border);background:#f8fafc;}
+.hist-table td{padding:12px 20px;font-size:13px;color:var(--dark);border-bottom:1px solid rgba(15,23,42,.04);}
+.hist-table tr:last-child td{border-bottom:none;}
+.hist-table tr:hover td{background:#f8fafc;}
+.price-cell{font-family:"Space Mono",monospace;font-weight:700;font-size:13px;}
+.change-up{color:#16a34a;font-size:11px;font-family:"Space Mono",monospace;}
+.change-down{color:var(--red);font-size:11px;font-family:"Space Mono",monospace;}
+.note-pill{display:inline-block;background:#f1f5f9;border-radius:20px;padding:2px 10px;font-size:11px;color:#475569;}
+
+/* Empty */
+.pt-empty{text-align:center;padding:60px 32px;background:var(--card);border:2px dashed var(--border);border-radius:20px;}
+.pt-empty-icon{font-size:52px;margin-bottom:12px;display:block;}
+.pt-empty-title{font-family:"Bebas Neue",sans-serif;font-size:28px;color:var(--dark);margin-bottom:8px;}
+.pt-empty-sub{font-size:14px;color:var(--muted);}
+
+/* No data message */
+.no-data{text-align:center;padding:48px;color:var(--muted);font-size:14px;}
+
+@media(max-width:700px){.pt-root{padding:24px 18px 60px;}.picker-grid{grid-template-columns:1fr;}.chart-wrap{height:250px;}}
+</style>
+
+<div class="pt-root">
+<div class="pt-inner">
+
+  <!-- Header -->
+  <div class="pt-header">
+    <div class="pt-eyebrow">Analytics</div>
+    <div class="pt-h1">Price <em>Trends</em></div>
+    <div class="pt-sub">Track how car prices have changed over time — compare two models side by side</div>
+  </div>
+
+  <!-- Car Picker -->
+  <div class="picker-card">
+    <form method="GET" action="{% url 'price_trends' %}" id="picker-form">
+      <div class="picker-grid">
+        <div class="picker-group">
+          <div class="picker-lbl">Primary Car</div>
+          <select name="car" class="car-select" id="sel-primary">
+            <option value="">— Select a car —</option>
+            {% for car in cars %}
+            <option value="{{ car.id }}" {% if sel_id == car.id|stringformat:"s" %}selected{% endif %}>
+              {{ car.brand }} {{ car.carName }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="picker-group">
+          <div class="picker-lbl">Compare With (optional)</div>
+          <select name="compare" class="car-select" id="sel-compare">
+            <option value="">— None —</option>
+            {% for car in cars %}
+            <option value="{{ car.id }}" {% if cmp_id == car.id|stringformat:"s" %}selected{% endif %}>
+              {{ car.brand }} {{ car.carName }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="view-btn">View Trend →</button>
+      </div>
+    </form>
+
+    {% if cars_with_history %}
+    <div class="quick-wrap">
+      <div class="quick-lbl">Cars with Price History</div>
+      <div class="quick-chips">
+        {% for car in cars_with_history %}
+        <a href="?car={{ car.id }}" class="quick-chip {% if sel_id == car.id|stringformat:'s' %}active{% endif %}">
+          <span class="quick-chip-brand">{{ car.brand }}</span>
+          {{ car.carName }}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if selected_car %}
+
+    {% if history_json != '[]' %}
+
+    <!-- Stats strip -->
+    <div class="stats-strip" id="stats-strip">
+      <div class="stat-box">
+        <div class="stat-box-lbl">Current Price</div>
+        <div class="stat-box-val" id="stat-current">—</div>
+        <div class="stat-box-sub">ex-showroom</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-lbl">Launch Price</div>
+        <div class="stat-box-val" id="stat-launch">—</div>
+        <div class="stat-box-sub">first recorded</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-lbl">Total Change</div>
+        <div class="stat-box-val" id="stat-change">—</div>
+        <div class="stat-box-sub" id="stat-change-sub">since launch</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-lbl">Lowest Price</div>
+        <div class="stat-box-val" id="stat-low">—</div>
+        <div class="stat-box-sub" id="stat-low-date">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-lbl">Highest Price</div>
+        <div class="stat-box-val" id="stat-high">—</div>
+        <div class="stat-box-sub" id="stat-high-date">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-lbl">Data Points</div>
+        <div class="stat-box-val" id="stat-count">—</div>
+        <div class="stat-box-sub">price records</div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-card">
+      <div class="chart-card-bar"></div>
+      <div class="chart-card-head">
+        <div>
+          <div class="chart-title">Price History Chart</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <div class="chart-legend" id="chart-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#e63946;"></div>
+              <span>{{ selected_car.carName }}</span>
+            </div>
+            {% if compare_car %}
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#2563eb;"></div>
+              <span>{{ compare_car.carName }}</span>
+            </div>
+            {% endif %}
+          </div>
+          <div class="range-btns">
+            <button class="range-btn active" onclick="setView('line', this)">Line</button>
+            <button class="range-btn" onclick="setView('bar', this)">Bar</button>
+          </div>
+        </div>
+      </div>
+      <div class="chart-body">
+        <div class="chart-wrap">
+          <canvas id="priceChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Table -->
+    <div class="hist-card">
+      <div style="padding:18px 20px 0;display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--dark);">Price Records — {{ selected_car.carName }}</div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;">{{ selected_car.brand }}</div>
+      </div>
+      <table class="hist-table" style="margin-top:12px;">
+        <thead>
+          <tr>
+            <th>#</th><th>Date</th><th>Price</th><th>Change</th><th>Note</th>
+          </tr>
+        </thead>
+        <tbody id="hist-tbody"></tbody>
+      </table>
+    </div>
+
+    {% else %}
+    <!-- No history for this car -->
+    <div class="pt-empty">
+      <span class="pt-empty-icon">📊</span>
+      <div class="pt-empty-title">No Price History Yet</div>
+      <div class="pt-empty-sub">
+        No price records have been added for <strong>{{ selected_car.carName }}</strong> yet.<br>
+        Admin can add price history via the admin panel.
+      </div>
+    </div>
+    {% endif %}
+
+  {% else %}
+  <div class="pt-empty">
+    <span class="pt-empty-icon">📈</span>
+    <div class="pt-empty-title">Select a Car to View Trends</div>
+    <div class="pt-empty-sub">Choose a car from the dropdown above to see its price history chart</div>
+  </div>
+  {% endif %}
+
+</div>
+</div>
+
+{% if selected_car and history_json != '[]' %}
+<script>
+var DATA1    = {{ history_json|safe }};
+var DATA2    = {{ compare_json|safe }};
+var CAR1     = "{{ selected_car.carName }}";
+var CAR2     = "{% if compare_car %}{{ compare_car.carName }}{% endif %}";
+var chartObj = null;
+
+function fmtPrice(n) {
+  if (n >= 10000000) return '₹' + (n/10000000).toFixed(2) + 'Cr';
+  if (n >= 100000)   return '₹' + (n/100000).toFixed(2)   + 'L';
+  return '₹' + n.toLocaleString('en-IN');
+}
+function fmtShort(n) {
+  if (n >= 100000) return (n/100000).toFixed(1) + 'L';
+  return (n/1000).toFixed(0) + 'K';
+}
+
+// ── Build stats ──────────────────────────────────────────────
+function buildStats() {
+  var prices  = DATA1.map(function(d){ return d.price; });
+  var first   = DATA1[0],  last = DATA1[DATA1.length - 1];
+  var minP    = Math.min(...prices), maxP = Math.max(...prices);
+  var minDate = DATA1[prices.indexOf(minP)].recorded_on;
+  var maxDate = DATA1[prices.indexOf(maxP)].recorded_on;
+  var change  = last.price - first.price;
+  var changePct = ((change / first.price) * 100).toFixed(1);
+
+  document.getElementById('stat-current').textContent   = fmtPrice(last.price);
+  document.getElementById('stat-launch').textContent    = fmtPrice(first.price);
+  document.getElementById('stat-low').textContent       = fmtPrice(minP);
+  document.getElementById('stat-high').textContent      = fmtPrice(maxP);
+  document.getElementById('stat-count').textContent     = DATA1.length;
+  document.getElementById('stat-low-date').textContent  = minDate;
+  document.getElementById('stat-high-date').textContent = maxDate;
+
+  var changeEl = document.getElementById('stat-change');
+  var prefix   = change >= 0 ? '+' : '';
+  changeEl.textContent = prefix + fmtShort(Math.abs(change)) + ' (' + prefix + changePct + '%)';
+  changeEl.className   = 'stat-box-val ' + (change >= 0 ? 'up' : 'down');
+}
+
+// ── Build chart ──────────────────────────────────────────────
+function buildChart(type) {
+  type = type || 'line';
+  var ctx = document.getElementById('priceChart').getContext('2d');
+
+  // Merge labels from both datasets
+  var allLabels = [...new Set([
+    ...DATA1.map(function(d){ return d.recorded_on; }),
+    ...(DATA2.length ? DATA2.map(function(d){ return d.recorded_on; }) : [])
+  ])].sort();
+
+  // Map prices to label positions (null if no data for that date)
+  function mapPrices(data, labels) {
+    var map = {};
+    data.forEach(function(d){ map[d.recorded_on] = d.price; });
+    return labels.map(function(l){ return map[l] !== undefined ? map[l] : null; });
+  }
+
+  var ds1 = {
+    label:              CAR1,
+    data:               mapPrices(DATA1, allLabels),
+    borderColor:        '#e63946',
+    backgroundColor:    type === 'bar' ? 'rgba(230,57,70,0.7)' : 'rgba(230,57,70,0.08)',
+    borderWidth:        2.5,
+    pointBackgroundColor:'#e63946',
+    pointRadius:        5,
+    pointHoverRadius:   8,
+    tension:            0.4,
+    fill:               type === 'line',
+    spanGaps:           true,
+  };
+
+  var datasets = [ds1];
+
+  if (DATA2.length) {
+    datasets.push({
+      label:              CAR2,
+      data:               mapPrices(DATA2, allLabels),
+      borderColor:        '#2563eb',
+      backgroundColor:    type === 'bar' ? 'rgba(37,99,235,0.65)' : 'rgba(37,99,235,0.06)',
+      borderWidth:        2.5,
+      pointBackgroundColor:'#2563eb',
+      pointRadius:        5,
+      pointHoverRadius:   8,
+      tension:            0.4,
+      fill:               false,
+      spanGaps:           true,
+    });
+  }
+
+  if (chartObj) { chartObj.destroy(); }
+
+  chartObj = new Chart(ctx, {
+    type: type,
+    data: { labels: allLabels, datasets: datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0f172a',
+          titleFont: { family: 'Space Mono', size: 10 },
+          bodyFont:  { family: 'DM Sans', size: 13 },
+          padding: 12,
+          cornerRadius: 10,
+          callbacks: {
+            label: function(ctx) {
+              return ' ' + ctx.dataset.label + ': ' + (ctx.raw ? fmtPrice(ctx.raw) : '—');
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(15,23,42,.05)' },
+          ticks: { font: { family: 'Space Mono', size: 9 }, color: '#94a3b8', maxRotation: 45 }
+        },
+        y: {
+          grid: { color: 'rgba(15,23,42,.05)' },
+          ticks: {
+            font: { family: 'Space Mono', size: 9 }, color: '#94a3b8',
+            callback: function(v) { return '₹' + fmtShort(v); }
+          },
+          beginAtZero: false
+        }
+      }
+    }
+  });
+}
+
+// ── Build history table ──────────────────────────────────────
+function buildTable() {
+  var tbody = document.getElementById('hist-tbody');
+  tbody.innerHTML = '';
+  DATA1.forEach(function(d, i) {
+    var prev   = i > 0 ? DATA1[i-1].price : null;
+    var change = prev !== null ? d.price - prev : null;
+    var changeHtml = '';
+    if (change !== null) {
+      var sign = change >= 0 ? '▲ +' : '▼ ';
+      var cls  = change >= 0 ? 'change-up' : 'change-down';
+      changeHtml = '<span class="' + cls + '">' + sign + fmtPrice(Math.abs(change)) + '</span>';
+    } else {
+      changeHtml = '<span style="color:#94a3b8;font-size:11px;">—</span>';
+    }
+    var noteHtml = d.note
+      ? '<span class="note-pill">' + d.note + '</span>'
+      : '<span style="color:#94a3b8;font-size:12px;">—</span>';
+
+    tbody.innerHTML += '<tr>' +
+      '<td style="font-family:Space Mono,monospace;font-size:11px;color:#94a3b8;">' + (i+1) + '</td>' +
+      '<td style="font-family:Space Mono,monospace;font-size:12px;">' + d.recorded_on + '</td>' +
+      '<td class="price-cell">' + fmtPrice(d.price) + '</td>' +
+      '<td>' + changeHtml + '</td>' +
+      '<td>' + noteHtml + '</td>' +
+      '</tr>';
+  });
+}
+
+function setView(type, btn) {
+  document.querySelectorAll('.range-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  buildChart(type);
+}
+
+// ── Init ─────────────────────────────────────────────────────
+buildStats();
+buildChart('line');
+buildTable();
+</script>
+{% endif %}
+
+{% endblock %}

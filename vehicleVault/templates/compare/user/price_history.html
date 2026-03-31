@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block navbar %}{% include 'compare/admin/admin_navbar.html' %}{% endblock %}
+{% block content %}
+{% include 'compare/admin/admin_sidebar.html' %}
+<link rel="stylesheet" href="{% static 'css/vv_pages.css' %}">
+
+<div class="vv-wrap">
+  <div class="vv-ring vv-ring-a"></div><div class="vv-ring vv-ring-b"></div>
+  <div class="vv-page">
+
+    <div class="vv-ph">
+      <div class="vv-ph-left">
+        <div class="vv-eyebrow">{{ car.brand }}</div>
+        <div class="vv-title">{{ car.carName }} — <em>Price History</em></div>
+        <div class="vv-sub">Add and manage price records for this car</div>
+      </div>
+      <a href="{% url 'car_list' %}" class="vv-back">← Back to Cars</a>
+    </div>
+
+    {% if saved %}
+    <div style="background:#f0fdf4;border:1.5px solid rgba(22,163,74,.2);border-radius:12px;padding:12px 18px;margin-bottom:20px;font-size:13px;color:#16a34a;display:flex;align-items:center;gap:8px;">
+      ✅ Price record saved successfully.
+    </div>
+    {% endif %}
+
+    <div style="display:grid;grid-template-columns:340px 1fr;gap:22px;align-items:start;">
+
+      <!-- Add form -->
+      <div class="vv-card">
+        <div class="vv-card-bar"></div>
+        <div style="padding:22px 24px 26px;">
+          <div class="vv-sec"><span class="vv-dot"></span>Add New Record</div>
+          <form method="POST">
+            {% csrf_token %}
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div>
+                <label class="vv-label">Date</label>
+                <input type="date" name="recorded_on" class="vv-field" required style="width:100%;">
+              </div>
+              <div>
+                <label class="vv-label">Price (₹)</label>
+                <input type="number" name="price" class="vv-field" placeholder="e.g. 1400000" required style="width:100%;">
+              </div>
+              <div>
+                <label class="vv-label">Note <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+                <input type="text" name="note" class="vv-field" placeholder="e.g. Price hike, Festive discount…" style="width:100%;">
+              </div>
+              <button type="submit" class="vv-btn vv-btn-red" style="margin-top:4px;">💾 Save Record</button>
+            </div>
+          </form>
+
+          <div style="margin-top:20px;padding:14px;background:#f8fafd;border-radius:10px;font-size:12px;color:#64748b;line-height:1.6;">
+            💡 Add a record every time the car's price changes — price hike, new year revision, festive offer, new variant launch etc.
+          </div>
+        </div>
+      </div>
+
+      <!-- Records table -->
+      <div class="vv-card">
+        <div class="vv-card-bar"></div>
+        <div class="vv-tbl-wrap">
+          <table class="vv-tbl">
+            <thead>
+              <tr><th>#</th><th>Date</th><th>Price</th><th>Change</th><th>Note</th></tr>
+            </thead>
+            <tbody>
+              {% for r in records %}
+              <tr>
+                <td style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">{{ forloop.counter }}</td>
+                <td style="font-family:'Space Mono',monospace;font-size:12px;">{{ r.recorded_on|date:"d M Y" }}</td>
+                <td style="font-family:'Space Mono',monospace;font-weight:700;color:var(--orange);">₹{{ r.price|floatformat:0 }}</td>
+                <td>
+                  {% if not forloop.first %}
+                    {% with prev=records|slice:"0:forloop.counter0" %}
+                    <span style="font-family:'Space Mono',monospace;font-size:11px;">—</span>
+                    {% endwith %}
+                  {% else %}
+                    <span style="color:var(--muted);font-size:11px;">Launch</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if r.note %}
+                    <span style="background:#f1f5f9;border-radius:20px;padding:2px 10px;font-size:11px;color:#475569;">{{ r.note }}</span>
+                  {% else %}—{% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="5">
+                <div class="vv-empty">
+                  <span class="vv-empty-icon">📊</span>
+                  <div class="vv-empty-title">No Records Yet</div>
+                  <div class="vv-empty-sub">Add the first price record using the form on the left.</div>
+                </div>
+              </td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- View trends link -->
+    {% if records %}
+    <div style="margin-top:18px;text-align:center;">
+      <a href="{% url 'price_trends' %}?car={{ car.id }}" class="vv-btn vv-btn-red">
+        📈 View Price Trend Chart →
+      </a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

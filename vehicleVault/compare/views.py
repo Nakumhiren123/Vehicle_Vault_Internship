@@ -1884,3 +1884,121 @@ def battle_toggle(request, battle_id):
     battle.is_active = not battle.is_active
     battle.save()
     return redirect('admin_battles')
+
+# ============================================================
+#  FUEL COST CALCULATOR (standalone page)
+# ============================================================
+@login_required
+def fuel_calculator(request):
+    """Standalone fuel cost calculator — user can pick any car."""
+    cars = Car.objects.filter(status=True).order_by('brand', 'carName')
+    selected_car = None
+    sel_id = request.GET.get('car')
+    if sel_id:
+        selected_car = Car.objects.filter(id=sel_id, status=True).first()
+    return render(request, 'compare/user/fuel_calculator.html', {
+        'cars': cars,
+        'selected_car': selected_car,
+    })
+ 
+ 
+# ============================================================
+#  COST OF OWNERSHIP CALCULATOR
+# ============================================================
+@login_required
+def cost_of_ownership(request):
+    """5-year total cost of ownership calculator."""
+    cars = Car.objects.filter(status=True).order_by('brand', 'carName')
+    selected_car = None
+    sel_id = request.GET.get('car')
+    if sel_id:
+        selected_car = Car.objects.filter(id=sel_id, status=True).first()
+    return render(request, 'compare/user/cost_of_ownership.html', {
+        'cars': cars,
+        'selected_car': selected_car,
+    })
+ 
+# ============================================================
+#  CAR PRICE HISTORY & TREND CHART
+# ============================================================
+from .models import CarPriceHistory
+import json
+ 
+@login_required
+def price_trends(request):
+    """Main price trends page — user picks a car to view its chart."""
+    cars = Car.objects.filter(status=True).order_by('brand', 'carName')
+    selected_car = None
+    history      = []
+    compare_car  = None
+    compare_hist = []
+ 
+    sel_id  = request.GET.get('car')
+    cmp_id  = request.GET.get('compare')
+ 
+    if sel_id:
+        selected_car = Car.objects.filter(id=sel_id, status=True).first()
+        if selected_car:
+            history = list(
+                CarPriceHistory.objects
+                .filter(car=selected_car)
+                .order_by('recorded_on')
+                .values('recorded_on', 'price', 'note')
+            )
+            # Convert dates to strings for JSON
+            for h in history:
+                h['recorded_on'] = h['recorded_on'].strftime('%b %Y')
+ 
+    if cmp_id and cmp_id != sel_id:
+        compare_car = Car.objects.filter(id=cmp_id, status=True).first()
+        if compare_car:
+            compare_hist = list(
+                CarPriceHistory.objects
+                .filter(car=compare_car)
+                .order_by('recorded_on')
+                .values('recorded_on', 'price', 'note')
+            )
+            for h in compare_hist:
+                h['recorded_on'] = h['recorded_on'].strftime('%b %Y')
+ 
+    # Cars that actually have price history
+    cars_with_history = Car.objects.filter(
+        status=True,
+        price_history__isnull=False
+    ).distinct().order_by('brand', 'carName')
+ 
+    return render(request, 'compare/user/price_trends.html', {
+        'cars':              cars,
+        'cars_with_history': cars_with_history,
+        'selected_car':      selected_car,
+        'history_json':      json.dumps(history),
+        'compare_car':       compare_car,
+        'compare_json':      json.dumps(compare_hist),
+        'sel_id':            sel_id or '',
+        'cmp_id':            cmp_id or '',
+    })
+ 
+ 
+# ── Admin: add price history record ─────────────────────────────────
+@role_required(allowed_roles=['admin'])
+def add_price_history(request, car_id):
+    """Quick admin form to add a price record."""
+    car = get_object_or_404(Car, id=car_id)
+ 
+    if request.method == 'POST':
+        price      = request.POST.get('price')
+        note       = request.POST.get('note', '')
+        recorded   = request.POST.get('recorded_on')
+        if price and recorded:
+            CarPriceHistory.objects.create(
+                car=car, price=int(price),
+                note=note, recorded_on=recorded
+            )
+        return redirect(f"{request.path}?saved=1")
+ 
+    records = CarPriceHistory.objects.filter(car=car).order_by('-recorded_on')
+    return render(request, 'compare/admin/price_history.html', {
+        'car': car, 'records': records,
+        'saved': request.GET.get('saved')
+    })
+ 

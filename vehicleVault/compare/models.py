@@ -283,3 +283,21 @@ class BattleVote(models.Model):
  
     def __str__(self):
         return f"{self.user.email} voted in battle {self.battle.id}"
+    
+
+# ── Car Price History ─────────────────────────────────────────────
+class CarPriceHistory(models.Model):
+    """Records price changes for a car over time."""
+    car       = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='price_history')
+    price     = models.IntegerField()
+    note      = models.CharField(max_length=200, blank=True,
+                    help_text="e.g. 'Price hike', 'Festive discount', 'New variant launch'")
+    recorded_on = models.DateField()
+    createdAt   = models.DateTimeField(auto_now_add=True)
+ 
+    class Meta:
+        db_table  = 'car_price_history'
+        ordering  = ['recorded_on']
+ 
+    def __str__(self):
+        return f"{self.car.carName} — ₹{self.price} on {self.recorded_on}"

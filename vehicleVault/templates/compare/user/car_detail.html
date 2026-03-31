@@ -467,8 +467,46 @@
         </div>
  
         <div class="detail-actions">
-          <a href="{% url 'public_car_list' %}?preselect={{ car.pk }}" class="btn-compare">Compare This Car</a>
+          <a href="{% url 'public_car_list' %}?preselect={{ car.pk }}" class="btn-compare">⚖️ Compare This Car</a>
+ 
+          {% if request.user.is_authenticated %}
+          <button id="wl-detail-btn"
+                  onclick="toggleWishlistDetail({{ car.pk }}, this)"
+                  style="display:inline-flex;align-items:center;gap:8px;
+                         padding:13px 22px;border-radius:12px;cursor:pointer;
+                         font-family:'Space Mono',monospace;font-size:11px;
+                         letter-spacing:2px;text-transform:uppercase;
+                         border:1.5px solid {% if is_wishlisted %}#e63946{% else %}rgba(15,23,42,0.12){% endif %};
+                         background:{% if is_wishlisted %}rgba(230,57,70,0.08){% else %}var(--card){% endif %};
+                         color:{% if is_wishlisted %}#e63946{% else %}var(--text2){% endif %};
+                         transition:all 0.25s;">
+            {% if is_wishlisted %}❤️ Saved{% else %}🤍 Save Car{% endif %}
+          </button>
+          {% endif %}
         </div>
+ 
+<script>
+function toggleWishlistDetail(carId, btn) {
+  fetch(`/compare/user/wishlist/toggle/${carId}/`, {
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    credentials: 'same-origin',
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.saved) {
+      btn.innerHTML = '❤️ Saved';
+      btn.style.border = '1.5px solid #e63946';
+      btn.style.background = 'rgba(230,57,70,0.08)';
+      btn.style.color = '#e63946';
+    } else {
+      btn.innerHTML = '🤍 Save Car';
+      btn.style.border = '1.5px solid rgba(15,23,42,0.12)';
+      btn.style.background = 'var(--card)';
+      btn.style.color = 'var(--text2)';
+    }
+  });
+}
+</script>
       </div>
     </div>
  
@@ -626,6 +664,128 @@
   </div>
 </div>
  
+<!-- ── Fuel Cost Calculator ── -->
+<div style="max-width:1200px;margin:0 auto;padding:0 48px 60px;">
+<div id="fuel-calc" style="background:#fff;border:1.5px solid rgba(15,23,42,.08);border-radius:24px;overflow:hidden;box-shadow:0 2px 12px rgba(15,23,42,.07);">
+ 
+  <div style="height:3px;background:linear-gradient(90deg,#e63946,#f4a261);"></div>
+ 
+  <div style="padding:28px 32px 32px;">
+ 
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+      <div style="width:44px;height:44px;border-radius:12px;background:rgba(230,57,70,.1);border:1.5px solid rgba(230,57,70,.2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">⛽</div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1.5px;color:#0f172a;line-height:1;">Fuel Cost Calculator</div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;margin-top:3px;">Based on {{ car.carName }} · {{ car.mileage }} km/l</div>
+      </div>
+    </div>
+ 
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
+ 
+      <!-- Daily KM -->
+      <div>
+        <label style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;display:block;margin-bottom:6px;">Daily Distance (km)</label>
+        <input type="number" id="fc-km" value="40" min="1" max="1000"
+               style="width:100%;padding:12px 16px;border:1.5px solid rgba(15,23,42,.1);border-radius:10px;font-family:'Space Mono',monospace;font-size:14px;color:#0f172a;outline:none;transition:border-color .2s;"
+               oninput="calcFuel()" onfocus="this.style.borderColor='#e63946'" onblur="this.style.borderColor='rgba(15,23,42,.1)'">
+      </div>
+ 
+      <!-- Fuel Price -->
+      <div>
+        <label style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;display:block;margin-bottom:6px;">Fuel Price (₹/litre)</label>
+        <input type="number" id="fc-price" value="{% if 'diesel' in car.fuelType|lower %}90{% elif 'electric' in car.fuelType|lower %}10{% elif 'cng' in car.fuelType|lower %}80{% else %}105{% endif %}" min="1" max="500"
+               style="width:100%;padding:12px 16px;border:1.5px solid rgba(15,23,42,.1);border-radius:10px;font-family:'Space Mono',monospace;font-size:14px;color:#0f172a;outline:none;transition:border-color .2s;"
+               oninput="calcFuel()" onfocus="this.style.borderColor='#e63946'" onblur="this.style.borderColor='rgba(15,23,42,.1)'">
+      </div>
+ 
+      <!-- Driving days -->
+      <div>
+        <label style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;display:block;margin-bottom:6px;">Driving Days/Month</label>
+        <input type="number" id="fc-days" value="26" min="1" max="31"
+               style="width:100%;padding:12px 16px;border:1.5px solid rgba(15,23,42,.1);border-radius:10px;font-family:'Space Mono',monospace;font-size:14px;color:#0f172a;outline:none;transition:border-color .2s;"
+               oninput="calcFuel()" onfocus="this.style.borderColor='#e63946'" onblur="this.style.borderColor='rgba(15,23,42,.1)'">
+      </div>
+ 
+    </div>
+ 
+    <!-- Results grid -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;">
+ 
+      <div style="background:#fff0f1;border:1.5px solid rgba(230,57,70,.15);border-radius:14px;padding:18px 20px;">
+        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#e63946;margin-bottom:6px;">Daily Cost</div>
+        <div id="fc-daily" style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;color:#0f172a;line-height:1;">₹0</div>
+      </div>
+ 
+      <div style="background:#fff4ea;border:1.5px solid rgba(244,162,97,.25);border-radius:14px;padding:18px 20px;">
+        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#f4a261;margin-bottom:6px;">Monthly Cost</div>
+        <div id="fc-monthly" style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;color:#0f172a;line-height:1;">₹0</div>
+      </div>
+ 
+      <div style="background:#f0fdfa;border:1.5px solid rgba(13,148,136,.2);border-radius:14px;padding:18px 20px;">
+        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#0d9488;margin-bottom:6px;">Yearly Cost</div>
+        <div id="fc-yearly" style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;color:#0f172a;line-height:1;">₹0</div>
+      </div>
+ 
+      <div style="background:#f1f5f9;border:1.5px solid rgba(15,23,42,.08);border-radius:14px;padding:18px 20px;">
+        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;">Fuel / Month</div>
+        <div id="fc-litres" style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;color:#0f172a;line-height:1;">0 L</div>
+      </div>
+ 
+    </div>
+ 
+    <!-- Tip -->
+    <div id="fc-tip" style="margin-top:16px;padding:12px 16px;background:#f8fafd;border-radius:10px;font-size:12px;color:#64748b;font-family:'DM Sans',sans-serif;line-height:1.6;"></div>
+ 
+  </div>
+</div>
+</div>
+ 
+<script>
+(function() {
+  var mileage = {{ car.mileage }};
+  var fuelType = "{{ car.fuelType|lower }}";
+ 
+  function fmt(n) {
+    if (n >= 100000) return '₹' + (n/100000).toFixed(1) + 'L';
+    if (n >= 1000)   return '₹' + Math.round(n/1000)   + 'K';
+    return '₹' + Math.round(n);
+  }
+ 
+  window.calcFuel = function() {
+    var km    = parseFloat(document.getElementById('fc-km').value)    || 0;
+    var price = parseFloat(document.getElementById('fc-price').value) || 0;
+    var days  = parseFloat(document.getElementById('fc-days').value)  || 0;
+ 
+    var litresPerDay   = km / mileage;
+    var dailyCost      = litresPerDay * price;
+    var monthlyCost    = dailyCost * days;
+    var yearlyCost     = monthlyCost * 12;
+    var litresPerMonth = litresPerDay * days;
+ 
+    document.getElementById('fc-daily').textContent   = fmt(dailyCost);
+    document.getElementById('fc-monthly').textContent = fmt(monthlyCost);
+    document.getElementById('fc-yearly').textContent  = fmt(yearlyCost);
+    document.getElementById('fc-litres').textContent  = litresPerMonth.toFixed(1) + ' L';
+ 
+    // Tip
+    var tip = '';
+    if (fuelType.includes('electric')) {
+      tip = '⚡ Electric vehicles cost significantly less to run. The price above reflects electricity cost per unit.';
+    } else if (yearlyCost > 150000) {
+      tip = '💡 Your annual fuel cost is high. Consider carpooling, combining trips, or maintaining tyre pressure for better mileage.';
+    } else if (yearlyCost < 50000) {
+      tip = '✅ Great! Your estimated fuel cost is quite reasonable for this vehicle.';
+    } else {
+      tip = '📍 Tip: Keeping your engine well-tuned and driving at steady speeds can improve mileage by up to 15%.';
+    }
+    document.getElementById('fc-tip').textContent = tip;
+  };
+ 
+  // Run on load
+  calcFuel();
+})();
+</script>
+ 
 {% if car.model_3d %}
 <script type="importmap">
   { "imports": {
@@ -649,7 +809,8 @@
 </script>
 {% endif %}
  
-{% endblock %}
+{% endblock %} 
+
 {% comment %}  {% extends 'base.html' %}
 {% block content %}
 
