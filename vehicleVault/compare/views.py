@@ -303,22 +303,33 @@ def public_car_list(request):
     sel_brand  = request.GET.get('brand',        '').strip()
     sel_trans  = request.GET.get('transmission', '').strip()
     sel_sort   = request.GET.get('sort',         '').strip()
+    min_price  = request.GET.get('min_price',    '').strip()
+    max_price  = request.GET.get('max_price',    '').strip()
 
     cars = Car.objects.filter(status=True)
 
     # ── Filters ───────────────────────────────────────────────
     if search:
         cars = cars.filter(
-            Q(carName__icontains=search) |
-            Q(brand__icontains=search)   |
-            Q(fuelType__icontains=search)
+            Q(carName__icontains=search)     |
+            Q(brand__icontains=search)       |
+            Q(fuelType__icontains=search)    |
+            Q(transmission__icontains=search)
         )
+        # Save search to history for logged-in users
+        if request.user.is_authenticated:
+            SearchHistory.objects.create(user=request.user, searchQuery=search)
+
     if sel_fuel:
         cars = cars.filter(fuelType__iexact=sel_fuel)
     if sel_brand:
         cars = cars.filter(brand__iexact=sel_brand)
     if sel_trans:
         cars = cars.filter(transmission__iexact=sel_trans)
+    if min_price.isdigit():
+        cars = cars.filter(price__gte=int(min_price))
+    if max_price.isdigit():
+        cars = cars.filter(price__lte=int(max_price))
 
     # ── Sorting ───────────────────────────────────────────────
     sort_map = {
@@ -356,12 +367,13 @@ def public_car_list(request):
         'sel_brand':     sel_brand,
         'sel_trans':     sel_trans,
         'sel_sort':      sel_sort,
+        'min_price':     min_price,
+        'max_price':     max_price,
         'fuel_types':    fuel_types,
         'brands':        brands,
         'transmissions': transmissions,
         'wishlist_ids':  wishlist_ids,
         'brand_data':    brand_data,
-        'sel_brand':     sel_brand,
     })
 
 @role_required(allowed_roles=['admin'])
@@ -1722,23 +1734,22 @@ def export_comparison_pdf_user(request):
 # ============================================================
 
 @login_required
+@login_required
 def toggle_wishlist(request, car_id):
     """Add or remove a car from the user's wishlist (AJAX-friendly)."""
-    car  = Car.objects.get(id=car_id)
+    from django.http import JsonResponse
+    car = get_object_or_404(Car, id=car_id)
     obj, created = Wishlist.objects.get_or_create(user=request.user, car=car)
 
     if not created:
-        obj.delete()   # already in wishlist → remove
+        obj.delete()
         saved = False
     else:
-        saved = True   # just added
+        saved = True
 
-    # AJAX response
-    from django.http import JsonResponse
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if request.method == 'POST':
         return JsonResponse({'saved': saved, 'count': Wishlist.objects.filter(user=request.user).count()})
 
-    # Normal redirect back
     return redirect(request.META.get('HTTP_REFERER', 'public_car_list'))
 
 
@@ -2002,3 +2013,19 @@ def add_price_history(request, car_id):
         'saved': request.GET.get('saved')
     })
  
+
+# ============================================================
+#  EMI CALCULATOR
+# ============================================================
+@login_required
+def emi_calculator(request):
+    """EMI calculator — user picks a car or enters price manually."""
+    cars = Car.objects.filter(status=True).order_by('brand', 'carName')
+    selected_car = None
+    sel_id = request.GET.get('car')
+    if sel_id:
+        selected_car = Car.objects.filter(id=sel_id, status=True).first()
+    return render(request, 'compare/user/emi_calculator.html', {
+        'cars': cars,
+        'selected_car': selected_car,
+    })

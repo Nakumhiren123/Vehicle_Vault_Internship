@@ -28,7 +28,8 @@ urlpatterns = [
     path('user/profile/',  views.user_profile,  name='user_profile'),
     path('admin/profile/',  views.admin_profile,  name='admin_profile'),
     path('.well-known/appspecific/com.chrome.devtools.json', devtools_json),
-    path('user/wishlist', views.user_wishlist, name='user_wishlist'),
+    path('user/wishlist/', views.user_wishlist, name='user_wishlist'),
+    path('user/wishlist/toggle/<int:car_id>/', views.toggle_wishlist, name='toggle_wishlist'),
     # Footer Pages
     path('about/', views.about_page, name='about_page'),
     path('contact/', views.contact_page, name='contact_page'),
@@ -72,6 +73,8 @@ urlpatterns = [
     # Fuel Cost Calculator
     path('user/fuel-calculator/', views.fuel_calculator, name='fuel_calculator'),
     path('user/cost-of-ownership/', views.cost_of_ownership, name='cost_of_ownership'),
+    path('user/emi-calculator/',  views.emi_calculator,  name='emi_calculator'),
+    
     # Car Battle / Voting
     path('user/battles/',                          views.battle_list,    name='battle_list'),
     path('user/battles/vote/<int:battle_id>/<int:choice>/', views.battle_vote, name='battle_vote'),

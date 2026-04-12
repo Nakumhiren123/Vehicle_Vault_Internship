@@ -140,6 +140,7 @@
 .scard:nth-child(7){animation:fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.52s forwards}
 .scard:nth-child(8){animation:fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.58s forwards}
 .scard:nth-child(9){animation:fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.64s forwards}
+.scard:nth-child(10){animation:fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.70s forwards}
 .scard::before{
   content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;
   transform:scaleX(0);transform-origin:left;transition:transform 0.45s cubic-bezier(0.22,1,0.36,1);
@@ -152,7 +153,8 @@
 .scard:nth-child(6)::before{background:linear-gradient(90deg,#0d9488,#34d399);}
 .scard:nth-child(7)::before{background:linear-gradient(90deg,#f4a261,#fbbf24);}
 .scard:nth-child(8)::before{background:linear-gradient(90deg,#2563eb,#0d9488);}
-.scard:nth-child(9)::before{background:linear-gradient(90deg,#e63946,#f4a261);}
+.scard:nth-child(9)::before{background:linear-gradient(90deg,#7c3aed,#e879f9);}
+.scard:nth-child(10)::before{background:linear-gradient(90deg,#e63946,#2563eb);}
 .scard:hover{transform:translateY(-8px) scale(1.01);box-shadow:var(--sh-lg);border-color:transparent;}
 .scard:hover::before{transform:scaleX(1);}
 .scard .blob{position:absolute;bottom:-20px;right:-20px;width:100px;height:100px;border-radius:50%;opacity:0.07;transition:opacity 0.4s,transform 0.4s;}
@@ -164,7 +166,8 @@
 .scard:nth-child(6) .blob{background:#0d9488;}
 .scard:nth-child(7) .blob{background:#f4a261;}
 .scard:nth-child(8) .blob{background:#2563eb;}
-.scard:nth-child(9) .blob{background:#e63946;}
+.scard:nth-child(9) .blob{background:#7c3aed;}
+.scard:nth-child(10) .blob{background:#e63946;}
 .scard:hover .blob{opacity:0.14;transform:scale(1.3);}
 .scard-icon{font-size:26px;margin-bottom:18px;display:inline-block;transition:transform 0.4s cubic-bezier(0.22,1,0.36,1);}
 .scard:hover .scard-icon{transform:rotate(-8deg) scale(1.25);}
@@ -179,8 +182,9 @@
 .scard:nth-child(6):hover .scard-arr{color:#0d9488;transform:translate(4px,-4px);}
 .scard:nth-child(7):hover .scard-arr{color:#f4a261;transform:translate(4px,-4px);}
 .scard:nth-child(8):hover .scard-arr{color:#2563eb;transform:translate(4px,-4px);}
-.scard:nth-child(9):hover .scard-arr{color:#e63946;transform:translate(4px,-4px);}
- 
+.scard:nth-child(9):hover .scard-arr{color:#7c3aed;transform:translate(4px,-4px);}
+.scard:nth-child(10):hover .scard-arr{color:#e63946;transform:translate(4px,-4px);}
+
 /* Divider */
 .divider{height:1px;margin:52px 0;background:linear-gradient(90deg,transparent,var(--border),rgba(230,57,70,0.18),var(--border),transparent);}
  
@@ -338,11 +342,11 @@
         <p class="wb-sub">Explore cars, compare models and share your reviews.</p>
       </div>
       <div class="search-wrap">
-        <form class="search-form" action="{% url 'public_car_list' %}" method="GET">
+        {% comment %} <form class="search-form" action="{% url 'public_car_list' %}" method="GET">
           <input type="text" name="search" placeholder="Search cars, brands, fuel type…">
           <button type="submit">Search</button>
         </form>
-        <span class="search-hint">↑ find your perfect car</span>
+        <span class="search-hint">↑ find your perfect car</span> {% endcomment %}
       </div>
     </div>
  
@@ -390,13 +394,13 @@
         <span class="scard-arr">↗</span>
       </a>
  
-      <a href="{% url 'battle_list' %}" class="scard">
+      {% comment %} <a href="{% url 'battle_list' %}" class="scard">
         <div class="blob"></div>
         <div class="scard-icon">⚔️</div>
         <div class="scard-num">Vote</div>
         <div class="scard-lbl">Car Battles</div>
         <span class="scard-arr">↗</span>
-      </a>
+      </a> {% endcomment %}
  
       <a href="{% url 'fuel_calculator' %}" class="scard">
         <div class="blob"></div>
@@ -414,11 +418,19 @@
         <span class="scard-arr">↗</span>
       </a>
  
-      <a href="{% url 'price_trends' %}" class="scard">
+      {% comment %} <a href="{% url 'price_trends' %}" class="scard">
         <div class="blob"></div>
         <div class="scard-icon">📈</div>
         <div class="scard-num">Trend</div>
         <div class="scard-lbl">Price History</div>
+        <span class="scard-arr">↗</span>
+      </a> {% endcomment %}
+ 
+      <a href="{% url 'emi_calculator' %}" class="scard">
+        <div class="blob"></div>
+        <div class="scard-icon">🏦</div>
+        <div class="scard-num">EMI</div>
+        <div class="scard-lbl">Loan Calculator</div>
         <span class="scard-arr">↗</span>
       </a>
  
@@ -466,7 +478,7 @@
       <div class="side-panels">
  
         <!-- My Preferences (UserPreference model) -->
-        <div class="panel-box">
+        {% comment %} <div class="panel-box">
           <div class="panel-head">
             <div class="panel-title">My Preferences</div>
             <span class="pbadge pbadge-red">Preferences</span>
@@ -487,7 +499,7 @@
           {% else %}
           <div class="empty-msg">⚙️ No preferences set yet.<br><span style="color:var(--muted);font-size:11px;">Contact admin to set your fuel, budget &amp; brand preferences.</span></div>
           {% endif %}
-        </div>
+        </div> {% endcomment %}
  
         <!-- Recent Comparisons (Comparison model) -->
         <div class="panel-box">

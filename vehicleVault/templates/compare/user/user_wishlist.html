@@ -174,34 +174,16 @@
 
 <script>
 function removeFromWishlist(carId, btn) {
-  fetch(`/compare/user/wishlist/toggle/${carId}/`, {
+  var card = btn.closest('.wl-card');
+  card.style.transition = 'all 0.3s ease';
+  card.style.opacity = '0';
+  card.style.transform = 'scale(0.9)';
+  fetch('/compare/user/wishlist/toggle/' + carId + '/', {
     method: 'POST',
-    headers: {
-      'X-CSRFToken': '{{ csrf_token }}',
-      'Content-Type': 'application/json',
-    },
+    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
   })
-  .then(r => r.json())
-  .then(data => {
-    if (!data.saved) {
-      // Remove the card with animation
-      const card = btn.closest('.wl-card');
-      card.style.transition = 'all 0.3s ease';
-      card.style.opacity = '0';
-      card.style.transform = 'scale(0.9)';
-      setTimeout(() => {
-        card.remove();
-        // Update stat count
-        const statNum = document.querySelector('.stat-num.red');
-        if (statNum) {
-          const newCount = parseInt(statNum.textContent) - 1;
-          statNum.textContent = newCount;
-          if (newCount === 0) location.reload();
-        }
-      }, 300);
-    }
-  })
-  .catch(err => console.error('Wishlist error:', err));
+  .then(function() { setTimeout(function(){ location.reload(); }, 300); })
+  .catch(function() { setTimeout(function(){ location.reload(); }, 300); });
 }
 </script>
 

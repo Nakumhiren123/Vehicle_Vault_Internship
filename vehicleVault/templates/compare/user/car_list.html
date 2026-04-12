@@ -205,7 +205,7 @@
  
  
     <!-- ── Brand Picker ── -->
-    {% if not sel_brand %}
+    {% if not sel_brand and not search and not sel_fuel and not sel_trans %}
     <div class="brand-section">
       <div class="brand-section-title">Choose a Brand</div>
       <div class="brand-grid">
@@ -217,8 +217,114 @@
           <div class="brand-name">All Cars</div>
           <div class="brand-count">{{ cars|length }} cars</div>
         </a>
- 
+        
         {% for b in brand_data %}
+        <a href="?brand={{ b.brand }}"
+          class="brand-card {% if sel_brand == b.brand %}active{% endif %}">
+ 
+        {% with bname=b.brand|lower %}
+ 
+        {% if "hyundai" in bname %}
+        <img src="https://www.carlogos.org/car-logos/hyundai-logo.png" class="brand-logo" alt="{{ b.brand }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="brand-logo-fallback" style="display:none;">🚗</div>
+ 
+        {% elif "tata" in bname %}
+        <img src="https://www.carlogos.org/car-logos/tata-logo.png" class="brand-logo">
+ 
+        {% elif "maruti" in bname %}
+        <img src="{% static 'images/maruti.png' %}" class="brand-logo">
+ 
+        {% elif "honda" in bname %}
+        <img src="https://www.carlogos.org/car-logos/honda-logo.png" class="brand-logo">
+ 
+        {% elif "toyota" in bname %}
+        <img src="https://www.carlogos.org/car-logos/toyota-logo.png" class="brand-logo">
+ 
+        {% elif "mahindra" in bname %}
+        <img src="https://www.carlogos.org/car-logos/mahindra-logo.png" class="brand-logo">
+ 
+        {% elif "kia" in bname %}
+        <img src="https://www.carlogos.org/car-logos/kia-logo.png" class="brand-logo">
+ 
+        {% elif "mg" in bname %}
+        <img src="https://www.carlogos.org/car-logos/mg-logo.png" class="brand-logo">
+ 
+        {% elif "skoda" in bname %}
+        <img src="https://www.carlogos.org/car-logos/skoda-logo.png" class="brand-logo">
+ 
+        {% elif "volkswagen" in bname or "vw" in bname %}
+        <img src="https://www.carlogos.org/car-logos/volkswagen-logo.png" class="brand-logo">
+ 
+        {% elif "renault" in bname %}
+        <img src="https://www.carlogos.org/car-logos/renault-logo.png" class="brand-logo">
+ 
+        {% elif "nissan" in bname %}
+        <img src="https://www.carlogos.org/car-logos/nissan-logo.png" class="brand-logo">
+ 
+        {% elif "ford" in bname %}
+        <img src="https://www.carlogos.org/car-logos/ford-logo.png" class="brand-logo">
+ 
+        {% elif "jeep" in bname %}
+        <img src="https://www.carlogos.org/car-logos/jeep-logo.png" class="brand-logo">
+ 
+        {% elif "bmw" in bname %}
+        <img src="https://www.carlogos.org/car-logos/bmw-logo.png" class="brand-logo">
+ 
+        {% elif "mercedes" in bname %}
+        <img src="https://www.carlogos.org/car-logos/mercedes-benz-logo.png" class="brand-logo">
+ 
+        {% elif "audi" in bname %}
+        <img src="https://www.carlogos.org/car-logos/audi-logo.png" class="brand-logo">
+ 
+        {% elif "citroen" in bname %}
+        <img src="https://www.carlogos.org/car-logos/citroen-logo.png" class="brand-logo">
+ 
+        {% elif "volvo" in bname %}
+        <img src="https://www.carlogos.org/car-logos/volvo-logo.png" class="brand-logo">
+ 
+        {% elif "ferrari" in bname %}
+        <img src="https://www.carlogos.org/car-logos/ferrari-logo.png" class="brand-logo">
+ 
+        {% elif "lamborghini" in bname %}
+        <img src="https://www.carlogos.org/car-logos/lamborghini-logo.png" class="brand-logo">
+ 
+        {% elif "land rover" in bname %}
+        <img src="https://www.carlogos.org/car-logos/land-rover-logo.png" class="brand-logo">
+ 
+        {% elif "lexus" in bname %}
+        <img src="https://www.carlogos.org/car-logos/lexus-logo.png" class="brand-logo">
+ 
+        {% elif "mini" in bname %}
+        <img src="https://www.carlogos.org/car-logos/mini-logo.png" class="brand-logo">
+ 
+        {% elif "porsche" in bname %}
+        <img src="https://www.carlogos.org/car-logos/porsche-logo.png" class="brand-logo">
+ 
+        {% elif "rolls" in bname %}
+        <img src="https://www.carlogos.org/car-logos/rolls-royce-logo.png" class="brand-logo">
+ 
+        {% elif "tesla" in bname %}
+        <img src="https://www.carlogos.org/car-logos/tesla-logo.png" class="brand-logo">
+ 
+        {% elif "jaguar" in bname %}
+        <img src="https://www.carlogos.org/car-logos/jaguar-logo.png" class="brand-logo">
+ 
+        {% elif "byd" in bname %}
+        <img src="https://www.carlogos.org/car-logos/byd-logo.png" class="brand-logo">
+ 
+        {% else %}
+        <div class="brand-logo-fallback">🚗</div>
+        {% endif %}
+ 
+        {% endwith %}
+ 
+        <div class="brand-name">{{ b.brand }}</div>
+        <div class="brand-count">{{ b.car_count }} car{{ b.car_count|pluralize }}</div>
+ 
+        </a>
+        {% endfor %}
+ 
+        {% comment %} {% for b in brand_data %}
         <a href="?brand={{ b.brand }}"
            class="brand-card {% if sel_brand == b.brand %}active{% endif %}">
           {% with bname=b.brand|lower %}
@@ -287,7 +393,7 @@
           <div class="brand-count">{{ b.car_count }} car{{ b.car_count|pluralize }}</div>
         </a>
         {% endfor %}
- 
+  {% endcomment %}
       </div>
     </div>
     {% endif %}

@@ -485,7 +485,36 @@
           {% endif %}
         </div>
  
+
 <script>
+function toggleWishlistDetail(carId, btn) {
+  fetch(`/compare/user/wishlist/toggle/${carId}/`, {
+    method: 'POST',                          // ← was missing
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-CSRFToken': '{{ csrf_token }}',     // ← was missing
+    },
+    credentials: 'same-origin',
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.saved) {
+      btn.innerHTML = '❤️ Saved';
+      btn.style.border = '1.5px solid #e63946';
+      btn.style.background = 'rgba(230,57,70,0.08)';
+      btn.style.color = '#e63946';
+    } else {
+      btn.innerHTML = '🤍 Save Car';
+      btn.style.border = '1.5px solid rgba(15,23,42,0.12)';
+      btn.style.background = 'var(--card)';
+      btn.style.color = 'var(--text2)';
+    }
+  })
+  .catch(err => console.error('Wishlist error:', err));
+}
+</script>
+
+{% comment %} <script>
 function toggleWishlistDetail(carId, btn) {
   fetch(`/compare/user/wishlist/toggle/${carId}/`, {
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -506,7 +535,7 @@ function toggleWishlistDetail(carId, btn) {
     }
   });
 }
-</script>
+</script> {% endcomment %}
       </div>
     </div>
  

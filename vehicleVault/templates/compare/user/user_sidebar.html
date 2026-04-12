@@ -158,11 +158,11 @@
               <span class="sidebar-icon">❤️</span> Wishlist
             </a>
           </li>
-          <li class="nav-item">
+          {% comment %} <li class="nav-item">
             <a href="{% url 'battle_list' %}" class="nav-link text-white">
               <span class="sidebar-icon">⚔️</span> Car Battles
             </a>
-          </li>
+          </li> {% endcomment %}
           <li class="nav-item">
             <a href="{% url 'fuel_calculator' %}" class="nav-link text-white">
               <span class="sidebar-icon">⛽</span> Fuel Calculator
@@ -173,9 +173,14 @@
               <span class="sidebar-icon">🧮</span> Cost of Ownership
             </a>
           </li>
-          <li class="nav-item">
+          {% comment %} <li class="nav-item">
             <a href="{% url 'price_trends' %}" class="nav-link text-white">
               <span class="sidebar-icon">📈</span> Price Trends
+            </a>
+          </li> {% endcomment %}
+          <li class="nav-item">
+            <a href="{% url 'emi_calculator' %}" class="nav-link text-white">
+              <span class="sidebar-icon">🏦</span> EMI Calculator
             </a>
           </li>
           <li class="nav-item">

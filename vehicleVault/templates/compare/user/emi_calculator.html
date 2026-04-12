@@ -1,0 +1,482 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block navbar %}{% include 'compare/user/user_navbar.html' %}{% endblock %}
+{% block content %}
+{% include 'compare/user/user_sidebar.html' %}
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+:root{
+  --red:#e63946;--red-l:#fff0f1;--orange:#f4a261;
+  --teal:#0d9488;--teal-l:#f0fdfa;--blue:#2563eb;--blue-l:#eff6ff;
+  --dark:#0f172a;--muted:#94a3b8;--border:rgba(15,23,42,.08);
+  --bg:#f5f6fa;--card:#fff;
+  --sh-sm:0 2px 12px rgba(15,23,42,.07);
+  --sh-md:0 8px 32px rgba(15,23,42,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.7;}}
+
+.emi-root{padding:40px 48px 80px;min-height:100vh;font-family:"DM Sans",sans-serif;}
+.emi-inner{max-width:1100px;margin:0 auto;}
+
+/* ── Header ── */
+.emi-header{margin-bottom:36px;opacity:0;transform:translateY(20px);animation:fadeUp .6s ease .04s forwards;}
+.emi-eyebrow{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.emi-eyebrow::before{content:"";width:20px;height:2px;background:var(--red);}
+.emi-h1{font-family:"Bebas Neue",sans-serif;font-size:clamp(44px,5vw,68px);letter-spacing:2px;line-height:.92;color:var(--dark);}
+.emi-h1 em{color:var(--red);font-style:normal;}
+.emi-sub{font-size:14px;color:var(--muted);margin-top:8px;}
+
+/* ── Car picker ── */
+.picker-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:20px 26px;margin-bottom:22px;box-shadow:var(--sh-sm);opacity:0;transform:translateY(14px);animation:fadeUp .55s ease .08s forwards;}
+.picker-lbl{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.picker-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
+.car-select{flex:1;min-width:220px;padding:11px 16px;background:#f8fafd;border:1.5px solid var(--border);border-radius:10px;font-family:"DM Sans",sans-serif;font-size:13px;color:var(--dark);outline:none;cursor:pointer;appearance:none;transition:border-color .2s;}
+.car-select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,70,.1);}
+.picker-btn{padding:11px 22px;background:var(--red);color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:"Space Mono",monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;transition:all .2s;}
+.picker-btn:hover{background:#cf2533;transform:translateY(-1px);}
+.car-strip{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.car-chip{display:inline-flex;align-items:center;gap:6px;background:#f8fafd;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--dark);}
+.car-chip b{font-family:"Space Mono",monospace;color:var(--red);}
+
+/* ── Main grid ── */
+.emi-grid{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start;}
+
+/* ── Inputs panel ── */
+.inp-panel{background:var(--card);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--sh-sm);position:sticky;top:76px;opacity:0;transform:translateY(14px);animation:fadeUp .55s ease .14s forwards;}
+.inp-bar{height:3px;background:linear-gradient(90deg,var(--red),var(--orange));}
+.inp-body{padding:22px 24px 26px;}
+.inp-section{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin:18px 0 10px;}
+.inp-section:first-child{margin-top:0;}
+.inp-row{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.inp-lbl{font-size:12px;font-weight:500;color:var(--dark);}
+.inp-wrap{position:relative;}
+.inp{width:100%;padding:11px 52px 11px 14px;background:#f8fafd;border:1.5px solid var(--border);border-radius:10px;font-family:"Space Mono",monospace;font-size:13px;color:var(--dark);outline:none;transition:border-color .2s;}
+.inp:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,70,.1);background:#fff;}
+.inp-unit{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:"Space Mono",monospace;font-size:10px;color:var(--muted);pointer-events:none;}
+/* Slider */
+.slider-row{margin-bottom:14px;}
+.slider-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.slider-lbl{font-size:12px;font-weight:500;color:var(--dark);}
+.slider-val{font-family:"Space Mono",monospace;font-size:12px;color:var(--red);font-weight:700;}
+input[type=range]{width:100%;accent-color:var(--red);cursor:pointer;}
+.slider-hints{display:flex;justify-content:space-between;font-family:"Space Mono",monospace;font-size:9px;color:var(--muted);margin-top:3px;}
+/* Preset chips */
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.preset{padding:3px 10px;border:1px solid var(--border);border-radius:20px;background:#fff;font-size:11px;color:var(--muted);cursor:pointer;transition:all .2s;font-family:"Space Mono",monospace;}
+.preset:hover,.preset.on{background:var(--red);color:#fff;border-color:var(--red);}
+
+/* ── Results panel ── */
+.results{display:flex;flex-direction:column;gap:18px;opacity:0;transform:translateY(14px);animation:fadeUp .6s ease .20s forwards;}
+
+/* EMI hero card */
+.emi-hero{background:linear-gradient(135deg,var(--dark),#1e293b);border-radius:20px;padding:26px 28px;color:#fff;position:relative;overflow:hidden;}
+.emi-hero::before{content:"";position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:rgba(230,57,70,.1);}
+.emi-hero::after{content:"";position:absolute;bottom:-30px;left:40px;width:100px;height:100px;border-radius:50%;background:rgba(244,162,97,.07);}
+.emi-hero-lbl{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:6px;}
+.emi-hero-val{font-family:"Bebas Neue",sans-serif;font-size:56px;letter-spacing:2px;line-height:1;color:#fff;position:relative;z-index:1;}
+.emi-hero-sub{font-size:13px;color:rgba(255,255,255,.45);margin-top:4px;}
+.emi-hero-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08);}
+.emi-mini-lbl{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:3px;}
+.emi-mini-val{font-family:"Bebas Neue",sans-serif;font-size:24px;letter-spacing:1px;color:#fff;}
+
+/* Breakdown cards */
+.breakdown-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.bcard{border-radius:16px;padding:18px 20px;border:1.5px solid transparent;}
+.bcard-icon{font-size:20px;margin-bottom:8px;}
+.bcard-lbl{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.bcard-val{font-family:"Bebas Neue",sans-serif;font-size:28px;letter-spacing:1px;line-height:1;color:var(--dark);}
+.bcard-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+.bc-loan  {background:var(--red-l); border-color:rgba(230,57,70,.15);} .bc-loan  .bcard-lbl{color:var(--red);}
+.bc-int   {background:var(--blue-l);border-color:rgba(37,99,235,.15);}  .bc-int   .bcard-lbl{color:var(--blue);}
+.bc-total {background:var(--teal-l);border-color:rgba(13,148,136,.15);} .bc-total .bcard-lbl{color:var(--teal);}
+
+/* Chart card */
+.chart-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:22px 24px;box-shadow:var(--sh-sm);}
+.chart-title{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:1px;color:var(--dark);margin-bottom:16px;}
+.chart-wrap{position:relative;height:220px;}
+
+/* Amortisation table */
+.amort-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--sh-sm);}
+.amort-head{padding:18px 20px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.amort-title{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:1px;color:var(--dark);}
+.amort-tbl{width:100%;border-collapse:collapse;margin-top:12px;}
+.amort-tbl th{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:10px 16px;text-align:left;border-bottom:1.5px solid var(--border);background:#f8fafc;}
+.amort-tbl td{padding:10px 16px;font-size:12px;color:var(--dark);border-bottom:1px solid rgba(15,23,42,.04);}
+.amort-tbl tr:last-child td{border:none;background:#f8fafc;font-weight:600;}
+.amort-tbl tr:hover td{background:#f8fafc;}
+.td-mono{font-family:"Space Mono",monospace;font-size:11px;}
+.td-int{color:var(--blue);font-family:"Space Mono",monospace;font-size:11px;}
+.td-prin{color:var(--teal);font-family:"Space Mono",monospace;font-size:11px;}
+.td-bal{color:var(--muted);font-family:"Space Mono",monospace;font-size:11px;}
+
+/* Tip */
+.tip-box{background:#f8fafd;border-left:3px solid var(--red);border-radius:10px;padding:14px 18px;font-size:13px;color:#475569;line-height:1.7;margin-top:4px;}
+
+@media(max-width:900px){.emi-grid{grid-template-columns:1fr;}.inp-panel{position:static;}.emi-root{padding:24px 18px 60px;}.breakdown-grid{grid-template-columns:1fr 1fr 1fr;}.emi-hero-row{grid-template-columns:1fr 1fr 1fr;}}
+@media(max-width:520px){.breakdown-grid{grid-template-columns:1fr;}.emi-hero-row{grid-template-columns:1fr;}}
+</style>
+
+<div class="emi-root">
+<div class="emi-inner">
+
+  <!-- Header -->
+  <div class="emi-header">
+    <div class="emi-eyebrow">Tools</div>
+    <div class="emi-h1">EMI <em>Calculator</em></div>
+    <div class="emi-sub">Calculate your monthly car loan instalment — principal, interest, total payment and full amortisation schedule</div>
+  </div>
+
+  <!-- Car picker -->
+  <div class="picker-card">
+    <div class="picker-lbl">Load Car Price (optional)</div>
+    <form method="GET" action="{% url 'emi_calculator' %}">
+      <div class="picker-row">
+        <select name="car" class="car-select" onchange="this.form.submit()">
+          <option value="">— Or select a car to auto-fill price —</option>
+          {% for car in cars %}
+          <option value="{{ car.id }}" {% if selected_car and selected_car.id == car.id %}selected{% endif %}>
+            {{ car.brand }} {{ car.carName }} — ₹{{ car.price }}
+          </option>
+          {% endfor %}
+        </select>
+        <a href="{% url 'emi_calculator' %}" class="picker-btn" style="background:#f1f5f9;color:#64748b;text-decoration:none;">✕ Clear</a>
+      </div>
+    </form>
+    {% if selected_car %}
+    <div class="car-strip">
+      <div class="car-chip">🚗 <b>{{ selected_car.carName }}</b></div>
+      <div class="car-chip">Ex-showroom: <b>₹{{ selected_car.price }}</b></div>
+      <div class="car-chip">⛽ <b>{{ selected_car.fuelType }}</b></div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Main grid -->
+  <div class="emi-grid">
+
+    <!-- Inputs -->
+    <div class="inp-panel">
+      <div class="inp-bar"></div>
+      <div class="inp-body">
+
+        <div class="inp-section">Loan Details</div>
+
+        <div class="inp-row">
+          <div class="inp-lbl">Car Price (Ex-showroom)</div>
+          <div class="inp-wrap">
+            <input type="number" id="i-price" class="inp"
+                   value="{{ selected_car.price|default:'1000000' }}"
+                   min="50000" max="100000000" step="10000" oninput="calc()">
+            <div class="inp-unit">₹</div>
+          </div>
+          <div class="presets">
+            <button class="preset" onclick="setVal('i-price',500000)">5L</button>
+            <button class="preset" onclick="setVal('i-price',1000000)">10L</button>
+            <button class="preset" onclick="setVal('i-price',1500000)">15L</button>
+            <button class="preset" onclick="setVal('i-price',2500000)">25L</button>
+          </div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-top">
+            <div class="slider-lbl">Down Payment</div>
+            <div class="slider-val" id="dp-val">20%</div>
+          </div>
+          <input type="range" id="i-dp" min="0" max="90" value="20" step="5"
+                 oninput="document.getElementById('dp-val').textContent=this.value+'%'; calc()">
+          <div class="slider-hints"><span>0%</span><span>90%</span></div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-top">
+            <div class="slider-lbl">Loan Tenure</div>
+            <div class="slider-val" id="tenure-val">5 years</div>
+          </div>
+          <input type="range" id="i-tenure" min="1" max="7" value="5" step="1"
+                 oninput="document.getElementById('tenure-val').textContent=this.value+' year'+(this.value>1?'s':''); calc()">
+          <div class="slider-hints"><span>1 yr</span><span>7 yrs</span></div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-top">
+            <div class="slider-lbl">Interest Rate (p.a.)</div>
+            <div class="slider-val" id="rate-val">8.5%</div>
+          </div>
+          <input type="range" id="i-rate" min="6" max="18" value="8.5" step="0.1"
+                 oninput="document.getElementById('rate-val').textContent=parseFloat(this.value).toFixed(1)+'%'; calc()">
+          <div class="slider-hints"><span>6%</span><span>18%</span></div>
+        </div>
+        <div class="presets" style="margin-top:-8px;margin-bottom:14px;">
+          <button class="preset" onclick="setRate(7.5)">SBI 7.5%</button>
+          <button class="preset" onclick="setRate(8.5)">HDFC 8.5%</button>
+          <button class="preset" onclick="setRate(9)">ICICI 9%</button>
+          <button class="preset" onclick="setRate(9.5)">Axis 9.5%</button>
+        </div>
+
+        <div class="inp-section">On-Road Costs</div>
+        <div class="inp-row">
+          <div class="inp-lbl">Registration + Insurance (% of price)</div>
+          <div class="inp-wrap">
+            <input type="number" id="i-rto" class="inp" value="14" min="0" max="30" step="0.5" oninput="calc()">
+            <div class="inp-unit">%</div>
+          </div>
+        </div>
+
+        <div class="tip-box" id="tip-box">
+          💡 Tip: A higher down payment reduces your EMI and total interest paid significantly.
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="results">
+
+      <!-- EMI hero -->
+      <div class="emi-hero">
+        <div class="emi-hero-lbl">Monthly EMI</div>
+        <div class="emi-hero-val" id="r-emi">₹0</div>
+        <div class="emi-hero-sub" id="r-emi-sub">for 0 months</div>
+        <div class="emi-hero-row">
+          <div>
+            <div class="emi-mini-lbl">Loan Amount</div>
+            <div class="emi-mini-val" id="r-loan">₹0</div>
+          </div>
+          <div>
+            <div class="emi-mini-lbl">Total Interest</div>
+            <div class="emi-mini-val" id="r-int-hero">₹0</div>
+          </div>
+          <div>
+            <div class="emi-mini-lbl">Total Payment</div>
+            <div class="emi-mini-val" id="r-total-hero">₹0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Breakdown cards -->
+      <div class="breakdown-grid">
+        <div class="bcard bc-loan">
+          <div class="bcard-icon">💰</div>
+          <div class="bcard-lbl">Loan Amount</div>
+          <div class="bcard-val" id="b-loan">₹0</div>
+          <div class="bcard-sub" id="b-loan-sub">after down payment</div>
+        </div>
+        <div class="bcard bc-int">
+          <div class="bcard-icon">📊</div>
+          <div class="bcard-lbl">Total Interest</div>
+          <div class="bcard-val" id="b-int">₹0</div>
+          <div class="bcard-sub" id="b-int-pct">0% of loan</div>
+        </div>
+        <div class="bcard bc-total">
+          <div class="bcard-icon">🧾</div>
+          <div class="bcard-lbl">Total Payment</div>
+          <div class="bcard-val" id="b-total">₹0</div>
+          <div class="bcard-sub" id="b-onroad">On-road: ₹0</div>
+        </div>
+      </div>
+
+      <!-- Donut chart -->
+      <div class="chart-card">
+        <div class="chart-title">Payment Breakdown</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center;">
+          <div style="max-width:200px;margin:0 auto;width:100%;">
+            <div class="chart-wrap"><canvas id="donutChart"></canvas></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;" id="donut-legend"></div>
+        </div>
+      </div>
+
+      <!-- Amortisation table (yearly) -->
+      <div class="amort-card">
+        <div class="amort-head">
+          <div class="amort-title">Yearly Amortisation</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">Payment schedule</div>
+        </div>
+        <table class="amort-tbl">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Principal</th>
+              <th>Interest</th>
+              <th>Total Paid</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody id="amort-tbody"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+var donutChart = null;
+
+function fmt(n) {
+  if (n >= 10000000) return '₹' + (n/10000000).toFixed(2) + 'Cr';
+  if (n >= 100000)   return '₹' + (n/100000).toFixed(2)   + 'L';
+  if (n >= 1000)     return '₹' + (n/1000).toFixed(1)     + 'K';
+  return '₹' + Math.round(n).toLocaleString('en-IN');
+}
+
+function setVal(id, val) {
+  document.getElementById(id).value = val;
+  calc();
+}
+
+function setRate(val) {
+  document.getElementById('i-rate').value = val;
+  document.getElementById('rate-val').textContent = val.toFixed(1) + '%';
+  calc();
+}
+
+function calc() {
+  var price   = parseFloat(document.getElementById('i-price').value)   || 1000000;
+  var dpPct   = parseFloat(document.getElementById('i-dp').value)      || 20;
+  var tenure  = parseInt(document.getElementById('i-tenure').value)    || 5;
+  var rate    = parseFloat(document.getElementById('i-rate').value)    || 8.5;
+  var rtoPct  = parseFloat(document.getElementById('i-rto').value)     || 14;
+
+  var onRoad     = price * (1 + rtoPct / 100);
+  var downPayment= price * dpPct / 100;
+  var loanAmt    = price - downPayment;   // loan on ex-showroom only
+  var months     = tenure * 12;
+  var monthlyRate= rate / 100 / 12;
+
+  // EMI formula: P * r * (1+r)^n / ((1+r)^n - 1)
+  var emi;
+  if (monthlyRate === 0) {
+    emi = loanAmt / months;
+  } else {
+    var factor = Math.pow(1 + monthlyRate, months);
+    emi = loanAmt * monthlyRate * factor / (factor - 1);
+  }
+
+  var totalPayment = emi * months;
+  var totalInt     = totalPayment - loanAmt;
+
+  // ── Update hero ──
+  document.getElementById('r-emi').textContent       = fmt(emi);
+  document.getElementById('r-emi-sub').textContent   = 'for ' + months + ' months (' + tenure + ' year' + (tenure > 1 ? 's' : '') + ')';
+  document.getElementById('r-loan').textContent      = fmt(loanAmt);
+  document.getElementById('r-int-hero').textContent  = fmt(totalInt);
+  document.getElementById('r-total-hero').textContent= fmt(totalPayment);
+
+  // ── Breakdown cards ──
+  document.getElementById('b-loan').textContent      = fmt(loanAmt);
+  document.getElementById('b-loan-sub').textContent  = 'Down payment: ' + fmt(downPayment);
+  document.getElementById('b-int').textContent       = fmt(totalInt);
+  document.getElementById('b-int-pct').textContent   = Math.round(totalInt / loanAmt * 100) + '% of loan amount';
+  document.getElementById('b-total').textContent     = fmt(totalPayment + downPayment);
+  document.getElementById('b-onroad').textContent    = 'On-road: ' + fmt(onRoad);
+
+  // ── Donut chart ──
+  var donutData   = [Math.round(loanAmt), Math.round(totalInt), Math.round(downPayment)];
+  var donutLabels = ['Principal', 'Interest', 'Down Payment'];
+  var donutColors = ['#0d9488', '#2563eb', '#e63946'];
+
+  if (donutChart) {
+    donutChart.data.datasets[0].data = donutData;
+    donutChart.update();
+  } else {
+    donutChart = new Chart(document.getElementById('donutChart').getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: donutLabels,
+        datasets: [{
+          data: donutData,
+          backgroundColor: donutColors,
+          borderWidth: 2, borderColor: '#fff', hoverOffset: 8
+        }]
+      },
+      options: {
+        cutout: '70%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: { label: function(c){ return ' ' + c.label + ': ' + fmt(c.raw); } }
+          }
+        },
+        animation: { animateScale: true }
+      }
+    });
+  }
+
+  // Legend
+  document.getElementById('donut-legend').innerHTML = donutLabels.map(function(l, i) {
+    return '<div style="display:flex;align-items:center;gap:8px;">' +
+      '<div style="width:10px;height:10px;border-radius:50%;background:' + donutColors[i] + ';flex-shrink:0;"></div>' +
+      '<div style="font-size:12px;color:#475569;flex:1;">' + l + '</div>' +
+      '<div style="font-family:Space Mono,monospace;font-size:11px;color:var(--dark);font-weight:700;">' + fmt(donutData[i]) + '</div>' +
+      '</div>';
+  }).join('');
+
+  // ── Yearly amortisation ──
+  var tbody   = document.getElementById('amort-tbody');
+  tbody.innerHTML = '';
+  var balance = loanAmt;
+  var cumPrin = 0, cumInt = 0, cumTotal = 0;
+
+  for (var y = 1; y <= tenure; y++) {
+    var yrPrin = 0, yrInt = 0;
+    for (var m = 0; m < 12; m++) {
+      var intPart  = balance * monthlyRate;
+      var prinPart = emi - intPart;
+      if (prinPart > balance) prinPart = balance;
+      balance  -= prinPart;
+      yrPrin   += prinPart;
+      yrInt    += intPart;
+      if (balance <= 0) break;
+    }
+    cumPrin  += yrPrin;
+    cumInt   += yrInt;
+    cumTotal += (yrPrin + yrInt);
+    var bal   = Math.max(0, balance);
+
+    tbody.innerHTML += '<tr>' +
+      '<td style="font-weight:600;font-size:12px;">Year ' + y + '</td>' +
+      '<td class="td-prin">' + fmt(yrPrin) + '</td>' +
+      '<td class="td-int">' + fmt(yrInt) + '</td>' +
+      '<td class="td-mono">' + fmt(yrPrin + yrInt) + '</td>' +
+      '<td class="td-bal">' + fmt(bal) + '</td>' +
+      '</tr>';
+  }
+
+  // Summary row
+  tbody.innerHTML += '<tr>' +
+    '<td style="font-weight:700;">Total</td>' +
+    '<td class="td-prin" style="font-weight:700;">' + fmt(cumPrin) + '</td>' +
+    '<td class="td-int" style="font-weight:700;">' + fmt(cumInt) + '</td>' +
+    '<td class="td-mono" style="font-weight:700;">' + fmt(cumTotal) + '</td>' +
+    '<td class="td-bal">—</td>' +
+    '</tr>';
+
+  // ── Smart tip ──
+  var intRatio = totalInt / loanAmt;
+  var tip = '';
+  if (dpPct < 10)
+    tip = '⚠️ Low down payment means higher EMI and more interest paid. Try increasing down payment to at least 20% to save significantly.';
+  else if (intRatio > 0.5)
+    tip = '💡 You\'ll pay more than 50% extra as interest. Consider a shorter tenure or larger down payment to reduce the total cost.';
+  else if (rate > 12)
+    tip = '🏦 Your interest rate is high. Compare rates across banks — SBI, HDFC and ICICI often offer competitive auto loan rates between 7.5–9%.';
+  else if (dpPct >= 40)
+    tip = '✅ Excellent! A high down payment means low EMI and minimal interest burden. Your total cost of borrowing is very reasonable.';
+  else
+    tip = '📍 Tip: Pre-paying even ₹10,000–20,000 extra per year can reduce your total interest significantly and shorten your tenure.';
+  document.getElementById('tip-box').textContent = tip;
+}
+
+// Init
+calc();
+</script>
+
+{% endblock %}
