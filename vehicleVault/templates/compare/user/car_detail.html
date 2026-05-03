@@ -22,6 +22,8 @@
     --blue-l:    #eff6ff;
     --teal:      #0d9488;
     --teal-l:    #f0fdfa;
+    --green:     #10b981;
+    --green-l:   #ecfdf5;
     --purple:    #7c3aed;
     --purple-l:  #faf5ff;
     --bg:        #f5f6fa;
@@ -38,7 +40,6 @@
   }
  
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
- 
   body { background: var(--bg); }
  
   .bg-dots {
@@ -57,353 +58,270 @@
   @keyframes gridDrift { 0%{background-position:0 0} 100%{background-position:32px 32px} }
   @keyframes fadeUp    { to { opacity:1; transform:translateY(0) scale(1); } }
   @keyframes spin      { to { transform:rotate(360deg); } }
+  @keyframes dotPulse  { 0%,100%{ box-shadow:0 0 0 0 rgba(230,57,70,0.4); } 50%{ box-shadow:0 0 0 6px rgba(230,57,70,0); } }
+  @keyframes greenPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(16,185,129,0.5); } 50%{ box-shadow:0 0 0 7px rgba(16,185,129,0); } }
  
-  .deco-c1 {
-    position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
-    width: 500px; height: 500px;
-    border: 1.5px solid rgba(230,57,70,0.07);
-    top: -180px; right: -160px;
-    animation: spin 60s linear infinite;
-  }
-  .deco-c2 {
-    position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
-    width: 300px; height: 300px;
-    border: 1.5px solid rgba(37,99,235,0.06);
-    top: -80px; right: -60px;
-    animation: spin 40s linear infinite reverse;
-  }
+  .deco-c1 { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; width: 500px; height: 500px; border: 1.5px solid rgba(230,57,70,0.07); top: -180px; right: -160px; animation: spin 60s linear infinite; }
+  .deco-c2 { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; width: 300px; height: 300px; border: 1.5px solid rgba(37,99,235,0.06); top: -80px; right: -60px; animation: spin 40s linear infinite reverse; }
  
-  .cd-root {
-    min-height: 100vh;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text);
-    padding: 40px 48px 80px;
-    position: relative;
-    z-index: 1;
-  }
+  .cd-root { min-height: 100vh; font-family: 'DM Sans', sans-serif; color: var(--text); padding: 40px 48px 80px; position: relative; z-index: 1; }
   .cd-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
  
   /* ── Breadcrumb ── */
-  .breadcrumb-bar {
-    display: flex; align-items: center; gap: 8px;
-    font-family: 'Space Mono', monospace; font-size: 10px;
-    letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
-    margin-bottom: 28px;
-    opacity: 0; transform: translateY(16px);
-    animation: fadeUp 0.6s ease 0.05s forwards;
-  }
+  .breadcrumb-bar { display: flex; align-items: center; gap: 8px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 28px; opacity: 0; transform: translateY(16px); animation: fadeUp 0.6s ease 0.05s forwards; }
   .breadcrumb-bar a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
   .breadcrumb-bar a:hover { color: var(--primary); }
   .breadcrumb-bar .sep { color: var(--border); }
   .breadcrumb-bar .current { color: var(--primary); }
  
   /* ── Hero Card ── */
-  .hero-card {
+  .hero-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-md); display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 28px; position: relative; opacity: 0; transform: translateY(28px) scale(0.98); animation: fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.1s forwards; }
+  .hero-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, var(--primary), var(--accent)); }
+  .hero-img-wrap { position: relative; overflow: hidden; min-height: 420px; background: var(--card2); }
+  .hero-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(0.22,1,0.36,1), filter 0.5s; filter: saturate(0.9) brightness(0.95); }
+  .hero-card:hover .hero-img-wrap img { transform: scale(1.04); filter: saturate(1.1) brightness(1); }
+  .hero-img-wrap::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, transparent 60%, rgba(255,255,255,0.5) 100%); }
+  .img-badge { position: absolute; top: 20px; left: 20px; z-index: 2; background: var(--primary); color: #fff; font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; padding: 6px 14px; border-radius: 30px; box-shadow: 0 4px 14px rgba(230,57,70,0.35); }
+  .hero-details { padding: 40px 44px; display: flex; flex-direction: column; justify-content: center; }
+  .car-eyebrow { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--primary); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+  .car-eyebrow::before { content: ''; width: 24px; height: 2px; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 2px; flex-shrink: 0; }
+  .car-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(42px, 4vw, 68px); letter-spacing: 2px; line-height: 0.95; color: var(--text); margin-bottom: 24px; }
+  .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  .spec-item { background: var(--bg); border-radius: 12px; padding: 14px 16px; border: 1.5px solid var(--border); transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s; }
+  .spec-item:hover { border-color: rgba(230,57,70,0.2); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+  .spec-key { font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .spec-val { font-size: 15px; font-weight: 600; color: var(--text); }
+  .spec-val.price { font-family: 'Space Mono', monospace; font-size: 14px; color: var(--accent); font-weight: 700; }
+  .detail-actions { display: flex; gap: 12px; }
+  .btn-compare { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: var(--primary); color: #fff; border: none; cursor: pointer; font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; padding: 14px 24px; border-radius: 12px; text-decoration: none; box-shadow: 0 4px 20px rgba(230,57,70,0.3); transition: all 0.28s cubic-bezier(0.22,1,0.36,1); }
+  .btn-compare::after { content: '⚖'; transition: transform 0.28s; }
+  .btn-compare:hover { background: #cf2533; color: #fff; box-shadow: var(--shadow-red); transform: translateY(-3px); }
+
+  /* ── Section label ── */
+  .sec-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 5px; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; margin-top: 48px; display: flex; align-items: center; gap: 12px; }
+  .sec-label::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--border),transparent); }
+  .sec-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); flex-shrink: 0; animation: dotPulse 2s ease-in-out infinite; }
+
+  /* ══════════════════════════════════════════════
+     OWNERSHIP HISTORY SECTION
+  ══════════════════════════════════════════════ */
+  .ownership-section {
+    margin-bottom: 32px;
+    opacity: 0; transform: translateY(20px);
+    animation: fadeUp 0.65s ease 0.22s forwards;
+  }
+  .ownership-card {
     background: var(--card);
     border: 1.5px solid var(--border);
-    border-radius: 24px;
+    border-radius: 22px;
     overflow: hidden;
-    box-shadow: var(--shadow-md);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    margin-bottom: 28px;
-    position: relative;
-    opacity: 0; transform: translateY(28px) scale(0.98);
-    animation: fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;
-  }
-  /* Red left stripe */
-  .hero-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
-    background: linear-gradient(180deg, var(--primary), var(--accent));
-  }
- 
-  /* Image side */
-  .hero-img-wrap {
-    position: relative; overflow: hidden;
-    min-height: 420px; background: var(--card2);
-  }
-  .hero-img-wrap img {
-    width: 100%; height: 100%; object-fit: cover;
-    transition: transform 0.8s cubic-bezier(0.22,1,0.36,1), filter 0.5s;
-    filter: saturate(0.9) brightness(0.95);
-  }
-  .hero-card:hover .hero-img-wrap img {
-    transform: scale(1.04); filter: saturate(1.1) brightness(1);
-  }
-  .hero-img-wrap::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(to right, transparent 60%, rgba(255,255,255,0.5) 100%);
-  }
-  .img-badge {
-    position: absolute; top: 20px; left: 20px; z-index: 2;
-    background: var(--primary); color: #fff;
-    font-family: 'Space Mono', monospace; font-size: 9px;
-    letter-spacing: 2px; text-transform: uppercase;
-    padding: 6px 14px; border-radius: 30px;
-    box-shadow: 0 4px 14px rgba(230,57,70,0.35);
-  }
- 
-  /* Details side */
-  .hero-details {
-    padding: 40px 44px;
-    display: flex; flex-direction: column; justify-content: center;
-  }
-  .car-eyebrow {
-    font-family: 'Space Mono', monospace; font-size: 10px;
-    letter-spacing: 4px; text-transform: uppercase; color: var(--primary);
-    margin-bottom: 8px; display: flex; align-items: center; gap: 10px;
-  }
-  .car-eyebrow::before {
-    content: ''; width: 24px; height: 2px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    border-radius: 2px; flex-shrink: 0;
-  }
-  .car-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(42px, 4vw, 68px);
-    letter-spacing: 2px; line-height: 0.95;
-    color: var(--text); margin-bottom: 24px;
-  }
-  .car-title span { color: var(--primary); }
- 
-  /* Spec grid */
-  .spec-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-    margin-bottom: 28px;
-  }
-  .spec-item {
-    background: var(--bg);
-    border-radius: 12px; padding: 14px 16px;
-    border: 1.5px solid var(--border);
-    transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
-  }
-  .spec-item:hover {
-    border-color: rgba(230,57,70,0.2);
     box-shadow: var(--shadow-sm);
-    transform: translateY(-2px);
   }
-  .spec-key {
-    font-size: 9px; font-weight: 700; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+  .ownership-card-topbar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--green), #34d399, var(--accent));
   }
-  .spec-val {
+  .ownership-card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 28px 16px; flex-wrap: wrap; gap: 12px;
+  }
+  .ownership-head-left { display: flex; align-items: center; gap: 14px; }
+  .ownership-icon-wrap {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--green-l); border: 1.5px solid rgba(16,185,129,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .ownership-head-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 1.5px; color: var(--text); line-height: 1;
+  }
+  .ownership-head-sub {
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 2px;
+  }
+  .ownership-count-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--green-l); border: 1.5px solid rgba(16,185,129,0.25);
+    border-radius: 30px; padding: 6px 14px;
+    font-family: 'Space Mono', monospace; font-size: 11px;
+    font-weight: 700; color: var(--green); letter-spacing: 1px;
+  }
+  .ownership-count-badge .count-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+    color: var(--green); line-height: 1;
+  }
+
+  /* Proportion bar */
+  .prop-bar-wrap { padding: 0 28px 18px; }
+  .prop-bar-label {
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 3px; text-transform: uppercase; color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .prop-bar {
+    display: flex; border-radius: 10px; overflow: hidden;
+    height: 32px; gap: 3px;
+  }
+  .prop-seg {
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    color: #fff; font-weight: 700; letter-spacing: 1px;
+    position: relative; cursor: default; min-width: 32px;
+    transition: filter 0.2s;
+  }
+  .prop-seg:hover { filter: brightness(1.1); }
+  .prop-seg:hover .seg-tip { opacity: 1; transform: translateX(-50%) translateY(-6px); }
+  .seg-tip {
+    position: absolute; bottom: calc(100% + 8px); left: 50%;
+    transform: translateX(-50%) translateY(0);
+    background: var(--text); color: #fff; border-radius: 9px;
+    padding: 8px 13px; font-size: 11px; white-space: nowrap;
+    opacity: 0; pointer-events: none; transition: all 0.2s; z-index: 20;
+    font-family: 'DM Sans', sans-serif; font-weight: 400; line-height: 1.5;
+    box-shadow: 0 6px 20px rgba(15,23,42,0.25);
+  }
+  .seg-tip::after {
+    content: ''; position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%); border: 5px solid transparent;
+    border-top-color: var(--text);
+  }
+
+  /* Owner cards */
+  .owner-cards { display: flex; flex-direction: column; gap: 0; padding: 0 28px 24px; }
+  .owner-card {
+    display: grid; grid-template-columns: 52px 1fr auto;
+    gap: 0; align-items: stretch;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .owner-card:last-child { border-bottom: none; }
+
+  /* Number + vertical line */
+  .owner-num-col { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .owner-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 15px;
+    color: #fff; flex-shrink: 0; position: relative; z-index: 1;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+  }
+  .owner-circle.is-current { animation: greenPulse 2.5s ease-in-out infinite; }
+  .owner-vline {
+    flex: 1; width: 2px; background: var(--border);
+    margin: 4px 0; min-height: 20px;
+  }
+  .owner-card:last-child .owner-vline { display: none; }
+
+  /* Owner info */
+  .owner-info { padding: 0 16px; }
+  .owner-name-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; flex-wrap: wrap; }
+  .owner-name {
     font-size: 15px; font-weight: 600; color: var(--text);
   }
-  .spec-val.price {
-    font-family: 'Space Mono', monospace; font-size: 14px;
-    color: var(--accent); font-weight: 700;
+  .owner-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 9px; border-radius: 20px;
+    font-family: 'Space Mono', monospace; font-size: 8px;
+    letter-spacing: 1px; text-transform: uppercase;
   }
- 
-  .detail-actions { display: flex; gap: 12px; }
-  .btn-compare {
-    flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-    background: var(--primary); color: #fff; border: none; cursor: pointer;
-    font-family: 'Space Mono', monospace; font-size: 11px;
-    letter-spacing: 2px; text-transform: uppercase;
-    padding: 14px 24px; border-radius: 12px;
-    text-decoration: none;
-    box-shadow: 0 4px 20px rgba(230,57,70,0.3);
-    transition: all 0.28s cubic-bezier(0.22,1,0.36,1);
+  .badge-current  { background: var(--green);    color: #fff; }
+  .badge-past     { background: var(--bg);        color: var(--muted); border: 1px solid var(--border); }
+  .badge-first    { background: var(--primary);   color: #fff; }
+
+  .owner-dates {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted);
   }
-  .btn-compare::after { content: '⚖'; transition: transform 0.28s; }
-  .btn-compare:hover {
-    background: #cf2533; color: #fff;
-    box-shadow: var(--shadow-red); transform: translateY(-3px);
+  .owner-date-val { color: var(--text2); font-weight: 700; }
+  .owner-arrow { color: var(--muted); }
+
+  /* Duration pill on right */
+  .owner-dur-col {
+    display: flex; align-items: flex-start; padding-top: 4px;
   }
- 
-  /* ── Section label ── */
-  .sec-label {
+  .dur-pill {
+    padding: 4px 12px; border-radius: 20px;
     font-family: 'Space Mono', monospace; font-size: 10px;
-    letter-spacing: 5px; text-transform: uppercase; color: var(--muted);
-    margin-bottom: 20px; margin-top: 48px;
-    display: flex; align-items: center; gap: 12px;
+    letter-spacing: 1px; white-space: nowrap; flex-shrink: 0;
   }
-  .sec-label::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--border),transparent); }
-  .sec-label .dot {
-    width: 6px; height: 6px; border-radius: 50%; background: var(--primary);
-    flex-shrink: 0; animation: dotPulse 2s ease-in-out infinite;
+  .dur-pill.past    { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+  .dur-pill.current { background: var(--green-l); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+
+  /* View full link */
+  .ownership-footer {
+    border-top: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 10px;
   }
-  @keyframes dotPulse {
-    0%,100%{ box-shadow:0 0 0 0 rgba(230,57,70,0.4); }
-    50%    { box-shadow:0 0 0 6px rgba(230,57,70,0); }
+  .ownership-footer-note {
+    font-size: 12px; color: var(--muted);
   }
- 
+  .view-timeline-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 20px; border-radius: 10px;
+    background: var(--green); color: #fff; border: none;
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 2px; text-transform: uppercase;
+    text-decoration: none; transition: all 0.25s;
+    box-shadow: 0 4px 14px rgba(16,185,129,0.25);
+  }
+  .view-timeline-btn:hover { background: #059669; transform: translateY(-2px); color: #fff; }
+
   /* ── Review Form ── */
-  .review-form-card {
-    background: var(--card);
-    border: 1.5px solid var(--border);
-    border-radius: 20px; padding: 32px 36px;
-    box-shadow: var(--shadow-sm);
-    position: relative; overflow: hidden;
-    opacity: 0; transform: translateY(24px);
-    animation: fadeUp 0.65s ease 0.3s forwards;
-  }
-  .review-form-card::before {
-    content: '';
-    position: absolute; top:0; left:0; right:0; height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-  }
-  .form-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px; letter-spacing: 1.5px; color: var(--text);
-    margin-bottom: 6px;
-  }
+  .review-form-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 20px; padding: 32px 36px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; opacity: 0; transform: translateY(24px); animation: fadeUp 0.65s ease 0.3s forwards; }
+  .review-form-card::before { content: ''; position: absolute; top:0; left:0; right:0; height: 3px; background: linear-gradient(90deg, var(--primary), var(--accent)); }
+  .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1.5px; color: var(--text); margin-bottom: 6px; }
   .form-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; font-style: italic; }
- 
   .form-group { margin-bottom: 18px; }
-  .form-label-custom {
-    font-family: 'Space Mono', monospace; font-size: 10px;
-    letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
-    margin-bottom: 8px; display: block;
-  }
- 
-  /* Style Django form widgets */
-  .review-form-card select,
-  .review-form-card textarea,
-  .review-form-card input {
-    width: 100%; background: var(--bg);
-    border: 1.5px solid var(--border); border-radius: 10px;
-    padding: 12px 16px; font-family: 'DM Sans', sans-serif;
-    font-size: 14px; color: var(--text);
-    transition: border-color 0.3s, box-shadow 0.3s; outline: none;
-    resize: vertical;
-  }
-  .review-form-card select:focus,
-  .review-form-card textarea:focus,
-  .review-form-card input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(230,57,70,0.1);
-  }
-  .btn-submit {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: var(--primary); color: #fff; border: none; cursor: pointer;
-    font-family: 'Space Mono', monospace; font-size: 11px;
-    letter-spacing: 2px; text-transform: uppercase;
-    padding: 13px 32px; border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(230,57,70,0.28);
-    transition: all 0.28s cubic-bezier(0.22,1,0.36,1);
-  }
+  .form-label-custom { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; display: block; }
+  .review-form-card select, .review-form-card textarea, .review-form-card input { width: 100%; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 16px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); transition: border-color 0.3s, box-shadow 0.3s; outline: none; resize: vertical; }
+  .review-form-card select:focus, .review-form-card textarea:focus, .review-form-card input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(230,57,70,0.1); }
+  .btn-submit { display: inline-flex; align-items: center; gap: 10px; background: var(--primary); color: #fff; border: none; cursor: pointer; font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; padding: 13px 32px; border-radius: 12px; box-shadow: 0 4px 20px rgba(230,57,70,0.28); transition: all 0.28s cubic-bezier(0.22,1,0.36,1); }
   .btn-submit::after { content: '→'; transition: transform 0.28s; }
   .btn-submit:hover { background:#cf2533; transform:translateY(-2px); box-shadow:var(--shadow-red); }
   .btn-submit:hover::after { transform: translateX(4px); }
- 
-  .login-nudge {
-    background: var(--primary-l); border: 1.5px solid var(--primary-m);
-    border-radius: 14px; padding: 18px 24px;
-    display: flex; align-items: center; gap: 14px;
-    font-size: 14px; color: var(--text2);
-    opacity: 0; transform: translateY(20px);
-    animation: fadeUp 0.6s ease 0.3s forwards;
-  }
+  .login-nudge { background: var(--primary-l); border: 1.5px solid var(--primary-m); border-radius: 14px; padding: 18px 24px; display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--text2); opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s ease 0.3s forwards; }
   .login-nudge .nudge-icon { font-size: 24px; flex-shrink: 0; }
   .login-nudge a { color: var(--primary); font-weight: 600; text-decoration: none; }
   .login-nudge a:hover { text-decoration: underline; }
- 
+
   /* ── Review Cards ── */
   .reviews-list { display: flex; flex-direction: column; gap: 16px; margin-top: 4px; }
- 
-  .review-card {
-    background: var(--card);
-    border: 1.5px solid var(--border);
-    border-radius: 18px; padding: 22px 26px;
-    box-shadow: var(--shadow-sm);
-    position: relative; overflow: hidden;
-    transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s, border-color 0.3s;
-    opacity: 0; transform: translateY(20px);
-  }
+  .review-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 18px; padding: 22px 26px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s, border-color 0.3s; opacity: 0; transform: translateY(20px); }
   .review-card:nth-child(1){ animation: fadeUp 0.6s ease 0.35s forwards; }
   .review-card:nth-child(2){ animation: fadeUp 0.6s ease 0.45s forwards; }
   .review-card:nth-child(3){ animation: fadeUp 0.6s ease 0.55s forwards; }
-  .review-card:nth-child(4){ animation: fadeUp 0.6s ease 0.65s forwards; }
-  .review-card:nth-child(n+5){ animation: fadeUp 0.6s ease 0.7s  forwards; }
- 
-  .review-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-    border-color: rgba(230,57,70,0.15);
-  }
-  .review-card::before {
-    content: '';
-    position: absolute; top:0; left:0; right:0; height:2px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    transform: scaleX(0); transform-origin: left;
-    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
-  }
+  .review-card:nth-child(n+4){ animation: fadeUp 0.6s ease 0.65s forwards; }
+  .review-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: rgba(230,57,70,0.15); }
+  .review-card::before { content: ''; position: absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, var(--primary), var(--accent)); transform: scaleX(0); transform-origin: left; transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); }
   .review-card:hover::before { transform: scaleX(1); }
- 
-  .review-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 10px; flex-wrap: wrap; gap: 8px;
-  }
+  .review-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
   .reviewer-info { display: flex; align-items: center; gap: 12px; }
-  .reviewer-avatar {
-    width: 38px; height: 38px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-l), var(--primary-m));
-    border: 2px solid var(--primary-m);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Bebas Neue', sans-serif; font-size: 16px;
-    color: var(--primary); flex-shrink: 0;
-  }
-  .reviewer-name {
-    font-weight: 600; font-size: 14px; color: var(--text);
-  }
-  .review-date {
-    font-family: 'Space Mono', monospace; font-size: 10px;
-    color: var(--muted); letter-spacing: 1px;
-  }
- 
+  .reviewer-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-l), var(--primary-m)); border: 2px solid var(--primary-m); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--primary); flex-shrink: 0; }
+  .reviewer-name { font-weight: 600; font-size: 14px; color: var(--text); }
+  .review-date { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; }
   .star-row { display: flex; align-items: center; gap: 4px; }
   .star { font-size: 14px; }
   .star.filled { filter: drop-shadow(0 0 3px rgba(244,162,97,0.5)); }
-  .rating-num {
-    font-family: 'Space Mono', monospace; font-size: 11px;
-    color: var(--accent); font-weight: 700; margin-left: 4px;
-  }
- 
-  .review-comment {
-    font-size: 14px; color: var(--text2); line-height: 1.65;
-    margin-top: 4px;
-  }
- 
-  .no-reviews {
-    background: var(--card); border: 2px dashed var(--border);
-    border-radius: 18px; padding: 56px; text-align: center;
-    color: var(--muted); font-size: 15px;
-  }
+  .rating-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); font-weight: 700; margin-left: 4px; }
+  .review-comment { font-size: 14px; color: var(--text2); line-height: 1.65; margin-top: 4px; }
+  .no-reviews { background: var(--card); border: 2px dashed var(--border); border-radius: 18px; padding: 56px; text-align: center; color: var(--muted); font-size: 15px; }
   .no-reviews .icon { display: block; font-size: 40px; margin-bottom: 12px; }
- 
+
   /* ── Avg Rating Banner ── */
-  .rating-banner {
-    background: var(--card);
-    border: 1.5px solid var(--border);
-    border-radius: 20px; padding: 24px 32px;
-    display: flex; align-items: center; gap: 24px;
-    box-shadow: var(--shadow-sm); margin-bottom: 0;
-    opacity: 0; transform: translateY(20px);
-    animation: fadeUp 0.65s ease 0.25s forwards;
-  }
-  .rating-big {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 64px; line-height: 1; color: var(--text); letter-spacing: 2px;
-  }
+  .rating-banner { background: var(--card); border: 1.5px solid var(--border); border-radius: 20px; padding: 24px 32px; display: flex; align-items: center; gap: 24px; box-shadow: var(--shadow-sm); margin-bottom: 0; opacity: 0; transform: translateY(20px); animation: fadeUp 0.65s ease 0.25s forwards; }
+  .rating-big { font-family: 'Bebas Neue', sans-serif; font-size: 64px; line-height: 1; color: var(--text); letter-spacing: 2px; }
   .rating-big span { color: var(--accent); }
   .rating-stars-large { display: flex; gap: 5px; margin-bottom: 4px; }
   .rating-stars-large .star { font-size: 22px; }
   .rating-sub { font-size: 12px; color: var(--muted); font-style: italic; }
- 
+
   /* ── Responsive ── */
-  @media(max-width:900px){
-    .hero-card{ grid-template-columns:1fr; }
-    .hero-img-wrap{ min-height:260px; }
-    .hero-details{ padding:28px 28px; }
-  }
-  @media(max-width:640px){
-    .cd-root{ padding:24px 18px 60px; }
-    .spec-grid{ grid-template-columns:1fr 1fr; }
-    .rating-banner{ flex-direction:column; align-items:flex-start; gap:12px; }
-  }
+  @media(max-width:900px){ .hero-card{ grid-template-columns:1fr; } .hero-img-wrap{ min-height:260px; } .hero-details{ padding:28px 28px; } }
+  @media(max-width:640px){ .cd-root{ padding:24px 18px 60px; } .spec-grid{ grid-template-columns:1fr 1fr; } .rating-banner{ flex-direction:column; align-items:flex-start; gap:12px; } .ownership-card-head{ flex-direction:column; align-items:flex-start; } .owner-card{ grid-template-columns: 44px 1fr; } .owner-dur-col{ display:none; } }
 </style>
  
 <div class="bg-dots"></div>
@@ -426,7 +344,6 @@
       <div class="hero-img-wrap" id="hero-img-wrap">
         <span class="img-badge">{% if car.model_3d %}360° View{% else %}Detail View{% endif %}</span>
         {% if car.model_3d %}
-          <!-- 3D Viewer -->
           <div id="car-3d-viewer" style="width:100%;height:100%;min-height:420px;"></div>
         {% elif car.carImage %}
           <img src="{{ car.carImage.url }}" alt="{{ car.carName }}">
@@ -484,15 +401,14 @@
           </button>
           {% endif %}
         </div>
- 
 
 <script>
 function toggleWishlistDetail(carId, btn) {
   fetch(`/compare/user/wishlist/toggle/${carId}/`, {
-    method: 'POST',                          // ← was missing
+    method: 'POST',
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
-      'X-CSRFToken': '{{ csrf_token }}',     // ← was missing
+      'X-CSRFToken': '{{ csrf_token }}',
     },
     credentials: 'same-origin',
   })
@@ -513,35 +429,10 @@ function toggleWishlistDetail(carId, btn) {
   .catch(err => console.error('Wishlist error:', err));
 }
 </script>
-
-{% comment %} <script>
-function toggleWishlistDetail(carId, btn) {
-  fetch(`/compare/user/wishlist/toggle/${carId}/`, {
-    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-    credentials: 'same-origin',
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (data.saved) {
-      btn.innerHTML = '❤️ Saved';
-      btn.style.border = '1.5px solid #e63946';
-      btn.style.background = 'rgba(230,57,70,0.08)';
-      btn.style.color = '#e63946';
-    } else {
-      btn.innerHTML = '🤍 Save Car';
-      btn.style.border = '1.5px solid rgba(15,23,42,0.12)';
-      btn.style.background = 'var(--card)';
-      btn.style.color = 'var(--text2)';
-    }
-  });
-}
-</script> {% endcomment %}
       </div>
     </div>
  
     <!-- Variants Section -->
-    {% with variants=car.variants.filter %}
-    {% endwith %}
     {% if car.variants.exists %}
     <div class="sec-label" style="margin-top:0;margin-bottom:16px;">
       <span class="dot"></span> Available Variants
@@ -552,61 +443,162 @@ function toggleWishlistDetail(carId, btn) {
                   padding:18px 20px;position:relative;transition:all 0.3s;
                   {% if v.variantTier == 'Top' %}border-top:3px solid var(--primary);{% endif %}
                   {% if v.variantTier == 'Special' %}border-top:3px solid #7c3aed;{% endif %}">
- 
+
         {% if v.variantTier == 'Top' %}
         <div style="position:absolute;top:-1px;right:16px;background:var(--primary);
                     color:#fff;font-size:9px;letter-spacing:2px;padding:3px 10px;
-                    border-radius:0 0 8px 8px;font-family:'Space Mono',monospace;text-transform:uppercase;">
-          Top
-        </div>
+                    border-radius:0 0 8px 8px;font-family:'Space Mono',monospace;text-transform:uppercase;">Top</div>
         {% elif v.variantTier == 'Special' %}
         <div style="position:absolute;top:-1px;right:16px;background:#7c3aed;
                     color:#fff;font-size:9px;letter-spacing:2px;padding:3px 10px;
-                    border-radius:0 0 8px 8px;font-family:'Space Mono',monospace;text-transform:uppercase;">
-          Special
-        </div>
+                    border-radius:0 0 8px 8px;font-family:'Space Mono',monospace;text-transform:uppercase;">Special</div>
         {% endif %}
- 
-        <div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:4px;">
-          {{ v.variantName }}
-        </div>
-        <div style="font-family:'Space Mono',monospace;font-size:16px;color:var(--accent);
-                    font-weight:700;margin-bottom:10px;">
-          ₹ {{ v.price|floatformat:0 }}
-        </div>
- 
+
+        <div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:4px;">{{ v.variantName }}</div>
+        <div style="font-family:'Space Mono',monospace;font-size:16px;color:var(--accent);font-weight:700;margin-bottom:10px;">₹ {{ v.price|floatformat:0 }}</div>
+
         {% if v.mileage %}
         <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">
-          ⛽ {{ v.mileage }} km/l
-          {% if v.transmission %} &nbsp;·&nbsp; {{ v.transmission }}{% endif %}
+          ⛽ {{ v.mileage }} km/l{% if v.transmission %} &nbsp;·&nbsp; {{ v.transmission }}{% endif %}
         </div>
         {% endif %}
- 
+
         {% if v.features_list %}
         <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;">
           {% for feat in v.features_list|slice:":4" %}
-          <span style="background:var(--bg);border:1px solid var(--border);border-radius:5px;
-                       padding:2px 8px;font-size:11px;color:var(--text2);">
-            {{ feat }}
-          </span>
+          <span style="background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:2px 8px;font-size:11px;color:var(--text2);">{{ feat }}</span>
           {% endfor %}
           {% if v.features_list|length > 4 %}
-          <span style="font-size:11px;color:var(--muted);padding:2px 4px;">
-            +{{ v.features_list|length|add:"-4" }} more
-          </span>
+          <span style="font-size:11px;color:var(--muted);padding:2px 4px;">+{{ v.features_list|length|add:"-4" }} more</span>
           {% endif %}
         </div>
         {% endif %}
- 
+
         {% if not v.isAvailable %}
         <div style="margin-top:8px;font-size:11px;color:var(--muted);">● Currently unavailable</div>
         {% endif %}
- 
       </div>
       {% endfor %}
     </div>
     {% endif %}
- 
+
+    <!-- ══════════════════════════════════════════════
+         OWNERSHIP HISTORY SECTION
+    ══════════════════════════════════════════════ -->
+    {% with ownership_records=car.ownership_history.all %}
+    {% if ownership_records %}
+
+    <div class="sec-label" style="margin-top:0;margin-bottom:20px;">
+      <span class="dot" style="background:var(--green);animation:greenPulse 2s infinite;"></span>
+      Ownership History
+    </div>
+
+    <div class="ownership-section">
+      <div class="ownership-card">
+        <div class="ownership-card-topbar"></div>
+
+        <!-- Head -->
+        <div class="ownership-card-head">
+          <div class="ownership-head-left">
+            <div class="ownership-icon-wrap">👥</div>
+            <div>
+              <div class="ownership-head-title">Owner Timeline</div>
+              <div class="ownership-head-sub">{{ car.brand }} {{ car.carName }} · Since {{ car.launchYear }}</div>
+            </div>
+          </div>
+          <div class="ownership-count-badge">
+            <span class="count-num">{{ ownership_records|length }}</span>
+            &nbsp;Total Owner{{ ownership_records|length|pluralize }}
+          </div>
+        </div>
+
+        <!-- Proportion bar -->
+        <div class="prop-bar-wrap">
+          <div class="prop-bar-label">Ownership Span</div>
+          <div class="prop-bar">
+            {% for r in ownership_records %}
+            <div class="prop-seg"
+                 style="flex: {{ r.duration_days }};
+                        background: {% cycle '#e63946' '#2563eb' '#10b981' '#f4a261' '#7c3aed' '#0d9488' '#ec4899' %};">
+              {{ forloop.counter }}
+              <div class="seg-tip">
+                <strong>{{ r.owner_name }}</strong><br>
+                {{ r.purchase_date|date:"d M Y" }} → {% if r.sale_date %}{{ r.sale_date|date:"d M Y" }}{% else %}Today{% endif %}<br>
+                <span style="color:rgba(255,255,255,0.6);">Duration: {{ r.duration_display }}</span>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Owner list -->
+        <div class="owner-cards">
+          {% for r in ownership_records %}
+          <div class="owner-card">
+
+            <!-- Number + line -->
+            <div class="owner-num-col">
+              <div class="owner-circle {% if r.is_current_owner %}is-current{% endif %}"
+                   style="background: {% cycle '#e63946' '#2563eb' '#10b981' '#f4a261' '#7c3aed' '#0d9488' '#ec4899' %};">
+                {{ forloop.counter }}
+              </div>
+              {% if not forloop.last %}<div class="owner-vline"></div>{% endif %}
+            </div>
+
+            <!-- Info -->
+            <div class="owner-info">
+              <div class="owner-name-row">
+                <span class="owner-name">{{ r.owner_name }}</span>
+                {% if forloop.first and ownership_records|length > 1 %}
+                  <span class="owner-badge badge-first">1st Owner</span>
+                {% endif %}
+                {% if r.is_current_owner %}
+                  <span class="owner-badge badge-current">🟢 Current</span>
+                {% else %}
+                  <span class="owner-badge badge-past">Past</span>
+                {% endif %}
+              </div>
+              <div class="owner-dates">
+                <span class="owner-date-val">{{ r.purchase_date|date:"d M Y" }}</span>
+                <span class="owner-arrow">→</span>
+                {% if r.sale_date %}
+                  <span class="owner-date-val">{{ r.sale_date|date:"d M Y" }}</span>
+                {% else %}
+                  <span class="owner-date-val" style="color:var(--green);">Present ({{ r.purchase_date|timesince }} ago)</span>
+                {% endif %}
+              </div>
+              {% if r.notes %}
+              <div style="font-size:12px;color:var(--muted);margin-top:5px;font-style:italic;">📝 {{ r.notes }}</div>
+              {% endif %}
+            </div>
+
+            <!-- Duration pill -->
+            <div class="owner-dur-col">
+              <span class="dur-pill {% if r.is_current_owner %}current{% else %}past{% endif %}">
+                ⏱ {{ r.duration_display }}
+              </span>
+            </div>
+
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Footer -->
+        <div class="ownership-footer">
+          <div class="ownership-footer-note">
+            Data maintained by VehicleVault admin &nbsp;·&nbsp;
+            {% for r in ownership_records %}{% if r.is_current_owner %}Current owner since {{ r.purchase_date|date:"d M Y" }}{% endif %}{% endfor %}
+          </div>
+          <a href="{% url 'car_ownership_timeline' car.pk %}" class="view-timeline-btn">
+            📋 Full Timeline →
+          </a>
+        </div>
+
+      </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
     <!-- Average Rating Banner -->
     {% if reviews %}
     <div class="rating-banner">
@@ -631,7 +623,6 @@ function toggleWishlistDetail(carId, btn) {
     <!-- Reviews Section -->
     <div class="sec-label"><span class="dot"></span> Customer Reviews</div>
  
-    <!-- Review Form -->
     {% if user.is_authenticated %}
     <div class="review-form-card">
       <div class="form-title">Write a Review</div>
@@ -656,7 +647,6 @@ function toggleWishlistDetail(carId, btn) {
     </div>
     {% endif %}
  
-    <!-- Reviews List -->
     <div class="sec-label" style="margin-top:32px"><span class="dot"></span> All Reviews</div>
     <div class="reviews-list">
       {% for review in reviews %}
@@ -693,14 +683,11 @@ function toggleWishlistDetail(carId, btn) {
   </div>
 </div>
  
-<!-- ── Fuel Cost Calculator ── -->
+<!-- Fuel Cost Calculator -->
 <div style="max-width:1200px;margin:0 auto;padding:0 48px 60px;">
 <div id="fuel-calc" style="background:#fff;border:1.5px solid rgba(15,23,42,.08);border-radius:24px;overflow:hidden;box-shadow:0 2px 12px rgba(15,23,42,.07);">
- 
   <div style="height:3px;background:linear-gradient(90deg,#e63946,#f4a261);"></div>
- 
   <div style="padding:28px 32px 32px;">
- 
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
       <div style="width:44px;height:44px;border-radius:12px;background:rgba(230,57,70,.1);border:1.5px solid rgba(230,57,70,.2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">⛽</div>
       <div>
@@ -708,63 +695,39 @@ function toggleWishlistDetail(carId, btn) {
         <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;margin-top:3px;">Based on {{ car.carName }} · {{ car.mileage }} km/l</div>
       </div>
     </div>
- 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
- 
-      <!-- Daily KM -->
       <div>
         <label style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;display:block;margin-bottom:6px;">Daily Distance (km)</label>
-        <input type="number" id="fc-km" value="40" min="1" max="1000"
-               style="width:100%;padding:12px 16px;border:1.5px solid rgba(15,23,42,.1);border-radius:10px;font-family:'Space Mono',monospace;font-size:14px;color:#0f172a;outline:none;transition:border-color .2s;"
-               oninput="calcFuel()" onfocus="this.style.borderColor='#e63946'" onblur="this.style.borderColor='rgba(15,23,42,.1)'">
+        <input type="number" id="fc-km" value="40" min="1" max="1000" style="width:100%;padding:12px 16px;border:1.5px solid rgba(15,23,42,.1);border-radius:10px;font-family:'Space Mono',monospace;font-size:14px;color:#0f172a;outline:none;transition:border-color .2s;" oninput="calcFuel()" onfocus="this.style.borderColor='#e63946'" onblur="this.style.borderColor='rgba(15,23,42,.1)'">
       </div>
- 
-      <!-- Fuel Price -->
       <div>
         <label style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;display:block;margin-bottom:6px;">Fuel Price (₹/litre)</label>
-        <input type="number" id="fc-price" value="{% if 'diesel' in car.fuelType|lower %}90{% elif 'electric' in car.fuelType|lower %}10{% elif 'cng' in car.fuelType|lower %}80{% else %}105{% endif %}" min="1" max="500"
-               style="width:100%;padding:12px 16px;border:1.5px solid rgba(15,23,42,.1);border-radius:10px;font-family:'Space Mono',monospace;font-size:14px;color:#0f172a;outline:none;transition:border-color .2s;"
-               oninput="calcFuel()" onfocus="this.style.borderColor='#e63946'" onblur="this.style.borderColor='rgba(15,23,42,.1)'">
+        <input type="number" id="fc-price" value="{% if 'diesel' in car.fuelType|lower %}90{% elif 'electric' in car.fuelType|lower %}10{% elif 'cng' in car.fuelType|lower %}80{% else %}105{% endif %}" min="1" max="500" style="width:100%;padding:12px 16px;border:1.5px solid rgba(15,23,42,.1);border-radius:10px;font-family:'Space Mono',monospace;font-size:14px;color:#0f172a;outline:none;transition:border-color .2s;" oninput="calcFuel()" onfocus="this.style.borderColor='#e63946'" onblur="this.style.borderColor='rgba(15,23,42,.1)'">
       </div>
- 
-      <!-- Driving days -->
       <div>
         <label style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;display:block;margin-bottom:6px;">Driving Days/Month</label>
-        <input type="number" id="fc-days" value="26" min="1" max="31"
-               style="width:100%;padding:12px 16px;border:1.5px solid rgba(15,23,42,.1);border-radius:10px;font-family:'Space Mono',monospace;font-size:14px;color:#0f172a;outline:none;transition:border-color .2s;"
-               oninput="calcFuel()" onfocus="this.style.borderColor='#e63946'" onblur="this.style.borderColor='rgba(15,23,42,.1)'">
+        <input type="number" id="fc-days" value="26" min="1" max="31" style="width:100%;padding:12px 16px;border:1.5px solid rgba(15,23,42,.1);border-radius:10px;font-family:'Space Mono',monospace;font-size:14px;color:#0f172a;outline:none;transition:border-color .2s;" oninput="calcFuel()" onfocus="this.style.borderColor='#e63946'" onblur="this.style.borderColor='rgba(15,23,42,.1)'">
       </div>
- 
     </div>
- 
-    <!-- Results grid -->
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;">
- 
       <div style="background:#fff0f1;border:1.5px solid rgba(230,57,70,.15);border-radius:14px;padding:18px 20px;">
         <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#e63946;margin-bottom:6px;">Daily Cost</div>
         <div id="fc-daily" style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;color:#0f172a;line-height:1;">₹0</div>
       </div>
- 
       <div style="background:#fff4ea;border:1.5px solid rgba(244,162,97,.25);border-radius:14px;padding:18px 20px;">
         <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#f4a261;margin-bottom:6px;">Monthly Cost</div>
         <div id="fc-monthly" style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;color:#0f172a;line-height:1;">₹0</div>
       </div>
- 
       <div style="background:#f0fdfa;border:1.5px solid rgba(13,148,136,.2);border-radius:14px;padding:18px 20px;">
         <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#0d9488;margin-bottom:6px;">Yearly Cost</div>
         <div id="fc-yearly" style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;color:#0f172a;line-height:1;">₹0</div>
       </div>
- 
       <div style="background:#f1f5f9;border:1.5px solid rgba(15,23,42,.08);border-radius:14px;padding:18px 20px;">
         <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;">Fuel / Month</div>
         <div id="fc-litres" style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;color:#0f172a;line-height:1;">0 L</div>
       </div>
- 
     </div>
- 
-    <!-- Tip -->
     <div id="fc-tip" style="margin-top:16px;padding:12px 16px;background:#f8fafd;border-radius:10px;font-size:12px;color:#64748b;font-family:'DM Sans',sans-serif;line-height:1.6;"></div>
- 
   </div>
 </div>
 </div>
@@ -773,44 +736,31 @@ function toggleWishlistDetail(carId, btn) {
 (function() {
   var mileage = {{ car.mileage }};
   var fuelType = "{{ car.fuelType|lower }}";
- 
   function fmt(n) {
     if (n >= 100000) return '₹' + (n/100000).toFixed(1) + 'L';
-    if (n >= 1000)   return '₹' + Math.round(n/1000)   + 'K';
+    if (n >= 1000)   return '₹' + Math.round(n/1000) + 'K';
     return '₹' + Math.round(n);
   }
- 
   window.calcFuel = function() {
     var km    = parseFloat(document.getElementById('fc-km').value)    || 0;
     var price = parseFloat(document.getElementById('fc-price').value) || 0;
     var days  = parseFloat(document.getElementById('fc-days').value)  || 0;
- 
     var litresPerDay   = km / mileage;
     var dailyCost      = litresPerDay * price;
     var monthlyCost    = dailyCost * days;
     var yearlyCost     = monthlyCost * 12;
     var litresPerMonth = litresPerDay * days;
- 
     document.getElementById('fc-daily').textContent   = fmt(dailyCost);
     document.getElementById('fc-monthly').textContent = fmt(monthlyCost);
     document.getElementById('fc-yearly').textContent  = fmt(yearlyCost);
     document.getElementById('fc-litres').textContent  = litresPerMonth.toFixed(1) + ' L';
- 
-    // Tip
     var tip = '';
-    if (fuelType.includes('electric')) {
-      tip = '⚡ Electric vehicles cost significantly less to run. The price above reflects electricity cost per unit.';
-    } else if (yearlyCost > 150000) {
-      tip = '💡 Your annual fuel cost is high. Consider carpooling, combining trips, or maintaining tyre pressure for better mileage.';
-    } else if (yearlyCost < 50000) {
-      tip = '✅ Great! Your estimated fuel cost is quite reasonable for this vehicle.';
-    } else {
-      tip = '📍 Tip: Keeping your engine well-tuned and driving at steady speeds can improve mileage by up to 15%.';
-    }
+    if (fuelType.includes('electric')) { tip = '⚡ Electric vehicles cost significantly less to run.'; }
+    else if (yearlyCost > 150000) { tip = '💡 Your annual fuel cost is high. Consider carpooling or combining trips.'; }
+    else if (yearlyCost < 50000) { tip = '✅ Great! Your estimated fuel cost is quite reasonable.'; }
+    else { tip = '📍 Tip: Keeping your engine well-tuned can improve mileage by up to 15%.'; }
     document.getElementById('fc-tip').textContent = tip;
   };
- 
-  // Run on load
   calcFuel();
 })();
 </script>
@@ -824,21 +774,16 @@ function toggleWishlistDetail(carId, btn) {
 </script>
 <script type="module">
   import { initCarViewer } from "{% static 'js/car_viewer.js' %}";
-  // Ensure the viewer fills the hero card height
   const wrap = document.getElementById('hero-img-wrap');
   const viewerEl = document.getElementById('car-3d-viewer');
-  if (viewerEl) {
-    viewerEl.style.height = wrap.offsetHeight + 'px';
-  }
-  initCarViewer('car-3d-viewer', '{{ car.model_3d.url }}', {
-    bgColor: 0x0f1117,
-    autoRotate: true,
-    rotateSpeed: 1.6
-  });
+  if (viewerEl) { viewerEl.style.height = wrap.offsetHeight + 'px'; }
+  initCarViewer('car-3d-viewer', '{{ car.model_3d.url }}', { bgColor: 0x0f1117, autoRotate: true, rotateSpeed: 1.6 });
 </script>
 {% endif %}
  
-{% endblock %} 
+{% endblock %}
+
+
 
 {% comment %}  {% extends 'base.html' %}
 {% block content %}

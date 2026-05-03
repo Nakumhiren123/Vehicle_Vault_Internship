@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .decorators import role_required
-from .models import Car, Review, Comparison, SearchHistory, Accessory, CarAccessoryMapping, CarVariant, Wishlist
+from .models import Car, Review, Comparison, SearchHistory, Accessory, CarAccessoryMapping, CarVariant, Wishlist, CarOwnership
 from .forms import CarForm, ReviewForm, AccessoryForm, CarVariantForm, CarVariantFormSet
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Avg, Count
@@ -14,7 +14,7 @@ from datetime import timedelta
 from .models import UserInteraction
 from django.core.paginator import Paginator
 from django.db.models import Q
-
+from datetime import date as _date
 
 # @login_required(login_url='login')
 @role_required(allowed_roles=['admin'])
@@ -318,7 +318,8 @@ def public_car_list(request):
         )
         # Save search to history for logged-in users
         if request.user.is_authenticated:
-            SearchHistory.objects.create(user=request.user, searchQuery=search)
+            SearchHistory.objects.create(user=request.user, keyword=search)
+            # SearchHistory.objects.create(user=request.user, searchQuery=search)
 
     if sel_fuel:
         cars = cars.filter(fuelType__iexact=sel_fuel)
@@ -2029,3 +2030,157 @@ def emi_calculator(request):
         'cars': cars,
         'selected_car': selected_car,
     })
+
+# ---------------------------------------------------------------------------
+# Admin: manage ownership records for a specific car
+# ---------------------------------------------------------------------------
+@login_required
+def car_ownership_admin(request, car_id):
+    """
+    GET  → show all ownership records for this car + a blank add-form.
+    POST → create a new ownership record.
+    Only accessible by admins (role == 'admin').
+    """
+    if request.user.role != 'admin':
+        from django.http import HttpResponseForbidden
+        return HttpResponseForbidden("Admin only.")
+ 
+    car = get_object_or_404(Car, id=car_id)
+    saved  = False
+    errors = []
+ 
+    if request.method == 'POST':
+        owner_name     = request.POST.get('owner_name', '').strip()
+        owner_contact  = request.POST.get('owner_contact', '').strip()
+        purchase_date  = request.POST.get('purchase_date', '').strip()
+        sale_date      = request.POST.get('sale_date', '').strip() or None
+        purchase_price = request.POST.get('purchase_price', '').strip() or None
+        notes          = request.POST.get('notes', '').strip()
+ 
+        if not owner_name:
+            errors.append("Owner name is required.")
+        if not purchase_date:
+            errors.append("Purchase date is required.")
+ 
+        if not errors:
+            CarOwnership.objects.create(
+                car=car,
+                owner_name=owner_name,
+                owner_contact=owner_contact,
+                purchase_date=purchase_date,
+                sale_date=sale_date,
+                purchase_price=int(purchase_price) if purchase_price else None,
+                notes=notes,
+            )
+            saved = True
+            return redirect(f"{request.path}?saved=1")
+ 
+    records = CarOwnership.objects.filter(car=car).order_by('purchase_date')
+    return render(request, 'compare/admin/car_ownership.html', {
+        'car':    car,
+        'records': records,
+        'saved':  request.GET.get('saved'),
+        'errors': errors,
+        'today':  _date.today().isoformat(),
+        'owner_count': records.count(),
+    })
+ 
+ 
+# ---------------------------------------------------------------------------
+# Admin: edit an existing ownership record
+# ---------------------------------------------------------------------------
+@login_required
+def car_ownership_edit(request, pk):
+    if request.user.role != 'admin':
+        from django.http import HttpResponseForbidden
+        return HttpResponseForbidden("Admin only.")
+ 
+    record = get_object_or_404(CarOwnership, pk=pk)
+    errors = []
+ 
+    if request.method == 'POST':
+        record.owner_name     = request.POST.get('owner_name', '').strip()
+        record.owner_contact  = request.POST.get('owner_contact', '').strip()
+        record.purchase_date  = request.POST.get('purchase_date')
+        sale_date             = request.POST.get('sale_date', '').strip()
+        record.sale_date      = sale_date if sale_date else None
+        pp                    = request.POST.get('purchase_price', '').strip()
+        record.purchase_price = int(pp) if pp else None
+        record.notes          = request.POST.get('notes', '').strip()
+ 
+        if not record.owner_name:
+            errors.append("Owner name is required.")
+        if not record.purchase_date:
+            errors.append("Purchase date is required.")
+ 
+        if not errors:
+            record.save()
+            return redirect(f"/compare/admin/cars/{record.car_id}/ownership/?saved=1")
+ 
+    return render(request, 'compare/admin/car_ownership_edit.html', {
+        'record': record,
+        'car':    record.car,
+        'errors': errors,
+        'today':  _date.today().isoformat(),
+    })
+ 
+ 
+# ---------------------------------------------------------------------------
+# Admin: delete an ownership record
+# ---------------------------------------------------------------------------
+@login_required
+def car_ownership_delete(request, pk):
+    if request.user.role != 'admin':
+        from django.http import HttpResponseForbidden
+        return HttpResponseForbidden("Admin only.")
+ 
+    record = get_object_or_404(CarOwnership, pk=pk)
+    car_id = record.car_id
+    if request.method == 'POST':
+        record.delete()
+    return redirect(f"/compare/admin/cars/{car_id}/ownership/")
+ 
+ 
+# ---------------------------------------------------------------------------
+# User-facing: ownership timeline for a car (read-only)
+# Embedded inside cost_of_ownership view or called standalone
+# ---------------------------------------------------------------------------
+@login_required
+def car_ownership_timeline(request, car_id):
+    """
+    Read-only ownership timeline shown to regular users.
+    Returns JSON for AJAX calls (used by cost_of_ownership.html)
+    or renders a standalone page.
+    """
+    import json
+    from django.http import JsonResponse
+ 
+    car = get_object_or_404(Car, id=car_id, status=True)
+    records = CarOwnership.objects.filter(car=car).order_by('purchase_date')
+ 
+    # If it's an AJAX / fetch request, return JSON
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        data = []
+        for i, r in enumerate(records, 1):
+            data.append({
+                'owner_number':   i,
+                'owner_name':     r.owner_name,
+                'purchase_date':  r.purchase_date.strftime('%d %b %Y'),
+                'sale_date':      r.sale_date.strftime('%d %b %Y') if r.sale_date else None,
+                'duration':       r.duration_display,
+                'duration_days':  r.duration_days,
+                'is_current':     r.is_current_owner,
+                'purchase_price': r.purchase_price,
+            })
+        return JsonResponse({
+            'owner_count': records.count(),
+            'owners': data,
+        })
+ 
+    # Otherwise render a standalone page
+    return render(request, 'compare/user/car_ownership_timeline.html', {
+        'car':         car,
+        'records':     records,
+        'owner_count': records.count(),
+    })
+ 

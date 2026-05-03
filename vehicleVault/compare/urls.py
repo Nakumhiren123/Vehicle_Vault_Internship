@@ -76,12 +76,20 @@ urlpatterns = [
     path('user/emi-calculator/',  views.emi_calculator,  name='emi_calculator'),
     
     # Car Battle / Voting
-    path('user/battles/',                          views.battle_list,    name='battle_list'),
-    path('user/battles/vote/<int:battle_id>/<int:choice>/', views.battle_vote, name='battle_vote'),
-    path('admin/battles/',                         views.admin_battles,  name='admin_battles'),
-    path('admin/battles/create/',                  views.battle_create,  name='battle_create'),
-    path('admin/battles/<int:battle_id>/toggle/',  views.battle_toggle,  name='battle_toggle'),
+    # path('user/battles/',                          views.battle_list,    name='battle_list'),
+    # path('user/battles/vote/<int:battle_id>/<int:choice>/', views.battle_vote, name='battle_vote'),
+    # path('admin/battles/',                         views.admin_battles,  name='admin_battles'),
+    # path('admin/battles/create/',                  views.battle_create,  name='battle_create'),
+    # path('admin/battles/<int:battle_id>/toggle/',  views.battle_toggle,  name='battle_toggle'),
     
+    # Car Ownership (admin manage)
+    path('admin/cars/<int:car_id>/ownership/',            views.car_ownership_admin,  name='car_ownership_admin'),
+    path('admin/cars/ownership/edit/<int:pk>/',           views.car_ownership_edit,   name='car_ownership_edit'),
+    path('admin/cars/ownership/delete/<int:pk>/',         views.car_ownership_delete, name='car_ownership_delete'),
+    
+    # Car Ownership (user read-only timeline)
+    path('user/cars/<int:car_id>/ownership/',             views.car_ownership_timeline, name='car_ownership_timeline'),
+
     # path('admin/cars/', views.car_list, name='car_list'),
     # path('admin/cars/add/', views.car_create, name='car_create'),
     # path('admin/cars/edit/<int:pk>/', views.car_update, name='car_update'),

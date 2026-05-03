@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Car, CarVariant, Accessory, CarAccessoryMapping,
-    Comparison, Review, UserPreference, SearchHistory, UserInteraction, CarPriceHistory
+    Comparison, Review, UserPreference, SearchHistory, UserInteraction, CarPriceHistory, CarOwnership
 )
 # Register your models here.
 
@@ -115,3 +115,23 @@ class UserInteractionAdmin(admin.ModelAdmin):
     search_fields = ['user__email', 'car__carName']
     ordering      = ['-interactionDate']
  
+class CarOwnershipInline(admin.TabularInline):
+    model  = CarOwnership
+    extra  = 1
+    fields = ['owner_name', 'purchase_date', 'sale_date', 'purchase_price', 'notes']
+    ordering = ['purchase_date']
+ 
+ 
+@admin.register(CarOwnership)
+class CarOwnershipAdmin(admin.ModelAdmin):
+    list_display   = ['car', 'owner_name', 'purchase_date', 'sale_date', 'purchase_price', 'is_current_owner']
+    list_filter    = ['car__brand']
+    search_fields  = ['car__carName', 'owner_name', 'owner_contact']
+    readonly_fields = ['createdAt']
+    ordering       = ['car', 'purchase_date']
+    date_hierarchy = 'purchase_date'
+ 
+    def is_current_owner(self, obj):
+        return obj.is_current_owner
+    is_current_owner.boolean = True
+    is_current_owner.short_description = 'Current Owner?' 

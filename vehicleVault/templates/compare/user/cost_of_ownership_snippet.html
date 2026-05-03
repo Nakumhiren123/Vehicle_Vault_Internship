@@ -1,0 +1,96 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   PASTE THIS BLOCK inside cost_of_ownership.html,
+   right after the car-picker section and before the two-col layout grid.
+   It shows the ownership timeline for whichever car is selected.
+   ────────────────────────────────────────────────────────────────────── #}
+
+{% if selected_car %}
+{% with records=selected_car.ownership_history.all %}
+{% if records %}
+
+<style>
+/* Ownership mini-timeline inside Cost of Ownership */
+.mini-ow-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--sh-sm);margin-bottom:22px;opacity:0;transform:translateY(14px);animation:fadeUp .55s ease .11s forwards;}
+.mini-ow-bar{height:3px;background:linear-gradient(90deg,var(--red),var(--orange));}
+.mini-ow-head{display:flex;align-items:center;justify-content:space-between;padding:16px 22px 12px;}
+.mini-ow-title{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--dark);display:flex;align-items:center;gap:8px;}
+.mini-ow-count{background:var(--red-l);color:var(--red);border-radius:20px;padding:2px 10px;font-family:"Space Mono",monospace;font-size:9px;letter-spacing:1px;}
+.view-all-link{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--red);text-decoration:none;transition:opacity .2s;}
+.view-all-link:hover{opacity:.7;}
+
+/* Horizontal ownership bar */
+.h-bar-wrap{padding:0 22px 14px;}
+.h-bar{display:flex;border-radius:8px;overflow:hidden;height:28px;gap:2px;margin-bottom:10px;}
+.h-seg{display:flex;align-items:center;justify-content:center;font-family:"Space Mono",monospace;font-size:8px;color:#fff;font-weight:700;cursor:default;min-width:24px;position:relative;}
+.h-seg:hover .h-tip{opacity:1;transform:translateY(-6px);}
+.h-tip{position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%) translateY(0);background:var(--dark);color:#fff;border-radius:6px;padding:6px 10px;font-size:10px;white-space:nowrap;opacity:0;pointer-events:none;transition:all .2s;z-index:20;font-family:"DM Sans",sans-serif;}
+.h-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--dark);}
+
+/* Owner rows */
+.owner-rows{padding:0 22px 18px;display:flex;flex-direction:column;gap:8px;}
+.owner-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fafbfd;border-radius:12px;border:1.5px solid var(--border);}
+.owner-row.current-row{border-color:rgba(16,185,129,.3);background:#f0fdf9;}
+.orn{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Space Mono",monospace;font-size:9px;color:#fff;font-weight:700;flex-shrink:0;}
+.or-info{flex:1;}
+.or-name{font-size:13px;font-weight:600;color:var(--dark);}
+.or-dates{font-family:"Space Mono",monospace;font-size:10px;color:var(--muted);margin-top:1px;}
+.or-dur{font-family:"Space Mono",monospace;font-size:9px;padding:2px 8px;border-radius:6px;letter-spacing:1px;}
+.or-cur-badge{font-family:"Space Mono",monospace;font-size:8px;letter-spacing:1px;background:var(--green);color:#fff;padding:2px 7px;border-radius:10px;text-transform:uppercase;}
+</style>
+
+<div class="mini-ow-card">
+  <div class="mini-ow-bar"></div>
+  <div class="mini-ow-head">
+    <div class="mini-ow-title">
+      👥 Ownership History
+      <span class="mini-ow-count">{{ records|length }} owner{{ records|length|pluralize }}</span>
+    </div>
+    <a class="view-all-link" href="{% url 'car_ownership_timeline' selected_car.pk %}">View Full Timeline →</a>
+  </div>
+
+  <!-- Horizontal bar -->
+  <div class="h-bar-wrap">
+    <div class="h-bar">
+      {% for r in records %}
+      <div class="h-seg"
+           style="flex: {{ r.duration_days }};
+                  background: {% cycle '#e63946' '#2563eb' '#10b981' '#f4a261' '#7c3aed' '#0d9488' %};">
+        {{ forloop.counter }}
+        <div class="h-tip">
+          <strong>{{ r.owner_name }}</strong><br>
+          {{ r.purchase_date|date:"d M Y" }} →
+          {% if r.sale_date %}{{ r.sale_date|date:"d M Y" }}{% else %}Present{% endif %}
+          · {{ r.duration_display }}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Owner rows -->
+  <div class="owner-rows">
+    {% for r in records %}
+    <div class="owner-row {% if r.is_current_owner %}current-row{% endif %}">
+      <div class="orn" style="background: {% cycle '#e63946' '#2563eb' '#10b981' '#f4a261' '#7c3aed' '#0d9488' %};">
+        {{ forloop.counter }}
+      </div>
+      <div class="or-info">
+        <div class="or-name">{{ r.owner_name }}</div>
+        <div class="or-dates">
+          {{ r.purchase_date|date:"d M Y" }}
+          &nbsp;→&nbsp;
+          {% if r.sale_date %}{{ r.sale_date|date:"d M Y" }}{% else %}Present{% endif %}
+        </div>
+      </div>
+      {% if r.is_current_owner %}
+        <span class="or-cur-badge">🟢 Current</span>
+      {% endif %}
+      <span class="or-dur" style="background:var(--red-l);color:var(--red);">{{ r.duration_display }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endif %}
+{% endwith %}
+{% endif %}

@@ -547,6 +547,17 @@
                   <a href="{% url 'car_delete' car.id %}"
                      class="vv-btn-sm btn-del"
                      onclick="return confirm('Delete {{ car.carName }}?')">🗑 Del</a>
+                
+                  <a href="{% url 'car_ownership_admin' car.id %}"
+                    class="btn btn-sm"
+                    style="background:var(--orange-l,#fff4ea);color:var(--orange,#f4a261);border:1px solid rgba(244,162,97,.25);border-radius:7px;padding:4px 10px;font-size:11px;text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:4px;"
+                    title="Manage ownership history">
+                    👥 Owners
+                    {% with cnt=car.ownership_history.count %}
+                    {% if cnt %}<span style="background:var(--orange,#f4a261);color:#fff;border-radius:10px;padding:1px 6px;font-size:9px;font-family:'Space Mono',monospace;">{{ cnt }}</span>{% endif %}
+                    {% endwith %}
+                  </a>
+
                 </div>
               </td>
             </tr>

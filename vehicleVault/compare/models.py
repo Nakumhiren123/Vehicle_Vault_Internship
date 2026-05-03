@@ -301,3 +301,57 @@ class CarPriceHistory(models.Model):
  
     def __str__(self):
         return f"{self.car.carName} — ₹{self.price} on {self.recorded_on}"
+    
+
+# ── Car Ownership History ─────────────────────────────────────────
+
+class CarOwnership(models.Model):
+   
+    car            = models.ForeignKey(Car, on_delete=models.CASCADE,
+                                       related_name='ownership_history')
+    owner_name     = models.CharField(max_length=150,
+                                      help_text='Full name of the owner')
+    owner_contact  = models.CharField(max_length=100, blank=True,
+                                      help_text='Phone / email (admin-only, not shown to users)')
+    purchase_date  = models.DateField(help_text='Date this owner purchased / received the car')
+    sale_date      = models.DateField(null=True, blank=True,
+                                      help_text='Date this owner sold the car (leave blank if still current owner)')
+    purchase_price = models.IntegerField(null=True, blank=True,
+                                         help_text='Price at which this owner bought the car (₹)')
+    notes          = models.TextField(blank=True,
+                                      help_text='e.g. accident history, condition at handover')
+    createdAt      = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'car_ownership'
+        ordering = ['purchase_date']
+
+    def __str__(self):
+        status = 'current' if not self.sale_date else f'sold {self.sale_date}'
+        return f"{self.car.carName} — {self.owner_name} ({status})"
+
+    @property
+    def is_current_owner(self):
+        return self.sale_date is None
+
+    @property
+    def duration_days(self):
+        """How many days this person owned / has owned the car."""
+        from datetime import date
+        end = self.sale_date or date.today()
+        return (end - self.purchase_date).days
+
+    @property
+    def duration_display(self):
+        days = self.duration_days
+        years  = days // 365
+        months = (days % 365) // 30
+        parts = []
+        if years:
+            parts.append(f"{years} yr{'s' if years > 1 else ''}")
+        if months:
+            parts.append(f"{months} mo")
+        if not parts:
+            parts.append(f"{days} day{'s' if days != 1 else ''}")
+        return ' '.join(parts)
+    
