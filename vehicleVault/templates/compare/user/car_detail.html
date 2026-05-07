@@ -342,7 +342,7 @@
     <!-- Hero Card -->
     <div class="hero-card">
       <div class="hero-img-wrap" id="hero-img-wrap">
-        <span class="img-badge">{% if car.model_3d %}360° View{% else %}Detail View{% endif %}</span>
+        {% comment %} <span class="img-badge">{% if car.model_3d %}360° View{% else %}Detail View{% endif %}</span> {% endcomment %}
         {% if car.model_3d %}
           <div id="car-3d-viewer" style="width:100%;height:100%;min-height:420px;"></div>
         {% elif car.carImage %}
